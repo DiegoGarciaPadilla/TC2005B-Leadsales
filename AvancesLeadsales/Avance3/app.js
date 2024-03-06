@@ -2,21 +2,25 @@ const express = require("express");
 
 const bodyParser = require("body-parser");
 
+const ejs = require("ejs");
+
 const app = express();
 
 const port = 3000;
 
-// Configurar body-parser
+//Motor de plantillas
 
-app.use(bodyParser.urlencoded({ extended: false }));
+const path = require("path");
+
+// app.use(express.static(path.join(__dirname, "public")));
 
 // Rutas
 
-const rutas = require("./routes/.routes");
+const routes = require("./routes/.routes.js");
 
 // Usar rutas
 
-app.use("/", rutas);
+app.use("/", routes);
 
 // Levantar el servidor
 
