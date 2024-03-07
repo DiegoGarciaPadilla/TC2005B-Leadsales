@@ -8,6 +8,9 @@ const app = express();
 
 const port = 3000;
 
+app.use(express.static("public"));
+
+
 //Motor de plantillas
 
 const path = require("path");
