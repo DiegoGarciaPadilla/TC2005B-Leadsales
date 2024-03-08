@@ -6,10 +6,6 @@ const router = express.Router();
 
 // Rutas
 
-router.use("/", (req, res) => {
-    res.render("home");
-});
-
 router.get("/historial", (req, res) => {
     res.render("history");
 });
@@ -21,5 +17,10 @@ router.get("/ayuda", (req, res) => {
 router.get("/ajustes", (req, res) => {
     res.render("settings");
 });
+
+router.use("/", (req, res) => {
+    res.render("home");
+});
+
 
 module.exports = router;
