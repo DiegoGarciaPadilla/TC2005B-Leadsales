@@ -5,6 +5,9 @@ const bodyParser = require("body-parser");
 const router = express.Router();
 
 // Rutas
+router.get("/usuario", (req, res) => {
+    res.render("user");
+});
 
 router.get("/historial", (req, res) => {
     res.render("history");
