@@ -10,10 +10,16 @@ router.use("/", (req, res) => {
     res.render("home");
 });
 
-router.get("/historial", (req, res) => {});
+router.get("/historial", (req, res) => {
+    res.render("history");
+});
 
-router.get("/ayuda", (req, res) => {});
+router.get("/ayuda", (req, res) => {
+    res.render("help");
+});
 
-router.get("/ajustes", (req, res) => {});
+router.get("/ajustes", (req, res) => {
+    res.render("settings");
+});
 
 module.exports = router;
