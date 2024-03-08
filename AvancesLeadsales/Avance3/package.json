@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch:css": "tailwindcss --input ./public/css/input.css --output ./public/css/output.css --watch",
+    "dev": "concurrently \"npm start\" \"npm run watch:css\""
   },
   "repository": {
     "type": "git",
@@ -23,6 +25,7 @@
     "express": "^4.18.3"
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.1.0",
