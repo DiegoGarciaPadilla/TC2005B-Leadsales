@@ -19,14 +19,25 @@ app.set("view engine", "ejs");
 
 app.set("views", "views");
 
+// Sesión
+const session = require("express-session");
+
+app.use(session({
+  secret: 'Mario',
+  resave: false,
+  saveUninitialized: false,
+}))
+
 // app.use(express.static(path.join(__dirname, "public")));
 
 // Rutas
 
 const routes = require("./routes/.routes.js");
+const usuariosRoutes = require("./routes/usuarios.routes.js");
 
 // Usar rutas
 
+app.use("/users", usuariosRoutes);
 app.use("/", routes);
 
 // Levantar el servidor
