@@ -1,6 +1,5 @@
 const express = require("express");
 
-const bodyParser = require("body-parser");
 
 const ejs = require("ejs");
 
@@ -9,6 +8,12 @@ const app = express();
 const port = 3000;
 
 app.use(express.static("public"));
+
+// Body parser
+const bodyParser = require("body-parser");
+
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 
 
 //Motor de plantillas
