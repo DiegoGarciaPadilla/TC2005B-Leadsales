@@ -1,8 +1,8 @@
 const express = require("express");
-
 const bodyParser = require("body-parser");
-
 const router = express.Router();
+
+const CSVController = require('../controllers/CSV.controller');
 
 // Rutas
 router.get("/usuario", (req, res) => {
@@ -22,9 +22,13 @@ router.get("/ajustes", (req, res) => {
 });
 
 router.use("/", (req, res) => {
+    res.render("home");
+});
+
+router.post("/", (req, res) => {
     res.render("home", {
         msg: 'File uploaded successfully!',
-        file: `uploads/${req.file.filename}`
+        file: `/uploads/${req.file.filename}`
     });
 });
 

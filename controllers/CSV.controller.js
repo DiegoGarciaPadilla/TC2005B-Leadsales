@@ -3,24 +3,16 @@ const CSV = require('../model/CSV.model');
 /* ========== CU. 26 IMPORTA DATOS DE LEADS | Sebas Colin =============== */
 
 exports.post_CSV = (req, res, next) => {
-    console.log(req.body);
-    console.log(req.file);
-    if (!req.file) {
-        return res.render('home', { msg: 'Error: No file selected!' });
-    }
+  if (!req.file) {
+      return res.status(400).send('No file uploaded.');
+  }
+  const csv = new CSV(req.file.filename);
+  csv.save();
 
-    const mi_csv = new CSV(req.file.filename);
-
-    const results = [];
-    fs.createReadStream(req.file.path)
-      .pipe(csvParser())
-      .on('data', (data) => results.push(data))
-      .on('end', () => {
-        mi_csv.save(results); // Pass req and res to handle response and rendering
-        // Delete uploaded CSV file
-        fs.unlinkSync(req.file.path);
-        res.render('home', { msg: 'File uploaded successfully!', file: req.file.path });
-      });
+  res.render("home", {
+      msg: 'File uploaded successfully!',
+      file: `/uploads/${req.file.filename}`
+  });
 }
 
 /* ========================== FIN CU. 26 ==============================  */
