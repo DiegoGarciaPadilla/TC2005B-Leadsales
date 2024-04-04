@@ -22,7 +22,10 @@ router.get("/ajustes", (req, res) => {
 });
 
 router.use("/", (req, res) => {
-    res.render("home");
+    res.render("home", {
+        msg: 'File uploaded successfully!',
+        file: `uploads/${req.file.filename}`
+    });
 });
 
 

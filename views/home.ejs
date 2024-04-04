@@ -26,7 +26,22 @@
     </div>
 
     <div class=" h-52 sm:w-64 border-dashed border-2 border-purple-400 rounded-md p-4 flex items-center justify-center mt-4" style="width: 16rem">
-      <span>Importar Lead</span>
-    </div>
+      <!-- Hidden file input -->
+      <form id="uploadForm" action="/home" method="POST" enctype="multipart/form-data" style="display: none;">
+        <input type="file" name="file" id="file">
+      </form>
+      <!-- Text element to trigger file input click -->
+      <p id="uploadText" style="cursor: pointer; color: rgb(0, 0, 0);">Click here to upload file</p>
+      <% if (file) { %>
+        <img src="<%= file %>" alt="Uploaded Image" style="max-width: 100%;">
+      <% } %>
+    </div>  
   </div>
+  <script>
+
+      document.getElementById('uploadText').addEventListener('click', function() {
+      document.getElementById('fileInput').click();
+      });
+      
+  </script>
 </body>
