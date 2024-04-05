@@ -25,12 +25,6 @@ router.use("/", (req, res) => {
     res.render("home");
 });
 
-router.post("/", (req, res) => {
-    res.render("home", {
-        msg: 'File uploaded successfully!',
-        file: `/uploads/${req.file.filename}`
-    });
-});
-
+router.post("/", CSVController.post_CSV);
 
 module.exports = router;

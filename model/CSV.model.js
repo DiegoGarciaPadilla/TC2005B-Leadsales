@@ -26,4 +26,19 @@ module.exports = class CSV {
             });
     }
 
+    static fetchAll() {
+        return db.execute('Select * from csv')
+    }
+
+    static fetch(id) {
+        if (id) {
+            return this.fetchOne(id);
+        } else {
+            return this.fetchAll();
+        }
+    }
+    static fetchOne(id) {
+        return db.execute('Select * from csv WHERE idCSV = ?', [id]);
+    }
+
 }

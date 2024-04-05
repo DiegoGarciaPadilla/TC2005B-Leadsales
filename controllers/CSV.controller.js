@@ -6,7 +6,10 @@ exports.post_CSV = (req, res, next) => {
   if (!req.file) {
       return res.status(400).send('No file uploaded.');
   }
-  const csv = new CSV(req.file.filename);
+  console.log(req.file);
+  const csv = new CSV(
+    req.file.filename
+  );
   csv.save();
 
   res.render("home", {
