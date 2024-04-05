@@ -16,7 +16,6 @@ module.exports = class CSV {
                 console.log(results)    
                 const query = 'INSERT INTO `lead` SET ?';
                 results.forEach((row) => {
-                    console.log(row.Teléfono);
                     db.query(query, row, (error, results, fields) => {
                         if (error) {
                             console.error('Error storing data in database:', error);
