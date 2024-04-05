@@ -16,10 +16,12 @@ module.exports = class Usuario {
 
     static getPrivilegios(Correo) {
         return db.execute(`
-            SELECT Descripcion
-            FROM privilegio AS pr, privilegio_rol AS prir, rol AS r, usuario_rol AS ur, usuario u
-            WHERE u.Correo = ? AND u.IDUsuario = ur.IDUsuario AND
-            ur.IDRol = r.IDRol AND r.IDRol = prir.IDRol AND prir.IDPrivilegio = pr.IDPrivilegio
+            SELECT pr.IDPrivilegio, pr.Descripcion FROM privilegios AS pr
+            JOIN privilegio_rol AS prir 	ON prir.IDPrivilegio = pr.IDPrivilegio
+            JOIN rol AS r 					ON r.IDRol = prir.IDRol
+            JOIN usuario_rol AS ur			ON ur.IDRol = r.IDRol
+            JOIN usuario AS u 				ON u.IDUsuario = ur.IDUsuario
+            WHERE u.Correo = ?
         `, [Correo]);
     }
 }

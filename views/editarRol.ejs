@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<head>
+  <title>Roles</title>
+  <link rel="stylesheet" href="/css/output.css" />
+</head>
+<body>
+  <nav><%- include('partials/sidebar.ejs') %></nav>
+  <%- include('partials/aside.ejs') %> <%-include('partials/background')%>
+  <div class="p-4 sm:ml-32">
+    <header class="text-left">
+        <div class="mb-4">
+            <%- include('partials/currentRoute', {path: ['config', 'roles']}) %>
+        </div>
+        <h1 class="mb-4 text-4xl font-bold text-gray-900">Editar rol</h1>
+    </header>
+    <form action="/config/roles/editarRol/<%= rol.IDRol %>" method="POST">
+        <div class="mb-4">
+            <label for="Nombre" class="block text-gray-700 text-sm font-bold mb-2">Nombre</label>
+            <input type="text" id="Nombre" name="Nombre" value="<%= rol.Nombre %>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+        <div class="mb-4">
+            <label for="DescripcionRol" class="block text gray-700 text-sm font-bold mb-2">Descripción</label>
+            <input type="text" id="DescripcionRol" name="DescripcionRol" value="<%= rol.DescripcionRol %>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Guardar</button>
+    </form>
+  </div>
+</body>
