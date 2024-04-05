@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<head>
+  <title>Directorio</title>
+  <link rel="stylesheet" href="/css/output.css" />
+</head>
+<body>
+  <nav><%- include('partials/sidebar.ejs') %></nav>
+  <%- include('partials/aside.ejs') %> <%-include('partials/background')%>
+  <div class="ml-14 mt-14">
+    <h1 class="mb-16 text-4xl text-gray-900">HI xxxxxx@xxxx</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Último recibido</th>
+          <th>Primer mensaje</th>
+          <th>Asignado a:</th>
+          <th>Teléfono</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <% leads.forEach((lead) => { %>
+          <tr>
+            <td><%= lead.Nombre %></td>
+            <td><%= lead.UltMensaje%></td>
+            <td><%= lead.PrimerMensaje%></td>
+            <td><%= lead.Asignadoa%></td>
+            <td><%= lead.Telefono%></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+</body>
