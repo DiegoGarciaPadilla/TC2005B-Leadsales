@@ -1,0 +1,63 @@
+@startuml
+
+actor Owner
+boundary routes
+boundary view.roles.ejs
+control rol.controller.js
+entity rol.model.js
+database leadtics
+
+Owner -> routes : GET /roles/editar/:id
+activate routes
+
+routes -> rol.controller.js : getRole
+deactivate routes
+activate rol.controller.js
+
+rol.controller.js -> rol.model.js : fetchById()
+deactivate rol.controller.js
+activate rol.model.js
+
+rol.model.js -> leadtics : SELECT * FROM roles WHERE id = :id AND FechaHoraEliminado IS NULL
+deactivate rol.model.js
+activate leadtics
+
+leadtics --> rol.model.js : rol
+deactivate leadtics
+activate rol.model.js
+
+rol.model.js --> rol.controller.js : rol
+deactivate rol.model.js
+activate rol.controller.js
+
+rol.controller.js --> view.roles.ejs : rol
+deactivate rol.controller.js
+
+view.roles.ejs -> Owner : HTML
+deactivate view.roles.ejs
+
+Owner -> routes : POST /roles/editar/:id
+activate routes
+
+routes -> rol.controller.js : updateRol
+deactivate routes
+
+rol.controller.js -> rol.model.js : updateRolById()
+activate rol.model.js
+
+rol.model.js -> leadtics : UPDATE roles SET nombre = :Nombre, DescripcionRol = :descripcion WHERE id = :id
+deactivate rol.model.js
+
+leadtics --> rol.model.js : result
+activate rol.model.js
+
+rol.model.js --> rol.controller.js : result
+deactivate rol.model.js
+
+rol.controller.js -> routes : redirect /roles
+deactivate rol.controller.js
+
+routes -> Owner : HTML
+deactivate routes
+
+@enduml
