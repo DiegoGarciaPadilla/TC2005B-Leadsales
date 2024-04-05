@@ -8,11 +8,15 @@ module.exports = class Rol {
     }
 
     static fetchAll() {
-        return db.execute('SELECT * FROM rol');
+        return db.execute('SELECT * FROM rol WHERE FechaHoraEliminado IS NULL');
     }
 
-    static updateRolById(id, nombre, descripcionRol) {
-        return db.execute('UPDATE rol SET nombre = ?, descripcionRol = ? WHERE id = ?', [nombre, descripcionRol, id]);
+    static fetchRolById(id) {
+        return db.execute('SELECT * FROM rol WHERE IDRol = ? AND FechaHoraEliminado IS NULL', [id]);
+    }
+
+    static updateRolById(id, nombre, descripcion) {
+        return db.execute('UPDATE rol SET Nombre = ?, DescripcionRol = ? WHERE IDRol = ?', [nombre, descripcion, id]);
     }
     
 }

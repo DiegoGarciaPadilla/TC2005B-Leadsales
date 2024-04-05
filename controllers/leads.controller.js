@@ -1,11 +1,5 @@
 const Lead = require('../model/leads.model');
 
-/* ========== CU. 26 IMPORTA DATOS DE LEADS | Sebas Colin =============== */
-
-
-/* ========================== FIN CU. 26 ==============================  */
-
-
 /* ========== CU. 24 CONSULTA HISTORIAL | Chimali Nava =============== */
 
 
