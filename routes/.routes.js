@@ -21,6 +21,11 @@ router.get("/ajustes", (req, res) => {
     res.render("settings");
 });
 
+router.get("/FAQ", (req, res) => {
+    res.render("FAQ");
+});
+
+
 router.use("/", (req, res) => {
     res.render("home");
 });
