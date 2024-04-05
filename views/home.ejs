@@ -27,10 +27,18 @@
 
     <div class=" h-52 sm:w-64 border-dashed border-2 border-purple-400 rounded-md p-4 flex items-center justify-center mt-4" style="width: 16rem">
       <!-- Hidden file input -->
-      <form id="uploadForm" action="/" method="POST" enctype="multipart/form-data">
-        <input type="file" id="file" name="file" accept=".csv"/>
+      <form class="max-w-lg mx-auto flex flex-col items-center" id="uploadForm" action="/" method="POST" enctype="multipart/form-data">
+        <input class="block w-full text-sm text-gray-900 border 
+        border-gray-300 rounded-lg cursor-pointer bg-gray-50 
+        dark:text-gray-400 focus:outline-none dark:bg-gray-700 
+        dark:border-gray-600 dark:placeholder-gray-400 mb-4" 
+        type="file" id="file" name="file" accept=".csv"/>
         <br><br> 
-        <button type="submit" value="Guardar">Subir archivo</button>
+        <button class="text-white bg-blue-700 hover:bg-blue-800 
+        focus:ring-4 focus:ring-blue-300 font-medium rounded-lg 
+        text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 
+        dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" 
+        type="submit" value="Guardar">Subir archivo</button>
       </form> 
     </div>  
   </div>
