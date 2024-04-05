@@ -39,14 +39,16 @@ app.use(session({
 
 const routes = require("./routes/.routes.js");
 const usuariosRoutes = require("./routes/usuarios.routes.js");
+const configRoutes = require("./routes/config.routes");
 
 // Usar rutas
 
 app.use("/users", usuariosRoutes);
+app.use("/config", configRoutes);
 app.use("/", routes);
 
 // Levantar el servidor
 
 app.listen(port, () => {
-  console.log("Servidor corriendo en http://localhost:", port);
+  console.log("Servidor corriendo en http://localhost:3000");
 });
