@@ -20,20 +20,20 @@ const path = require("path");
 app.set("view engine", "ejs");
 app.set("views", "views");
 
-//fileStorage: Es nuestra constante de configuración para manejar el almacenamiento
+// fileStorage: Es nuestra constante de configuración para manejar el almacenamiento
 const fileStorage = multer.diskStorage({
   destination: (request, file, callback) => {
-      //'public/uploads': Es el directorio del servidor donde se subirán los archivos 
+      // 'public/uploads': Es el directorio del servidor donde se subirán los archivos 
       callback(null, 'public/uploads');
   },
   filename: (request, file, callback) => {
-      //aquí configuramos el nombre que queremos que tenga el archivo en el servidor, 
-      //para que no haya problema si se suben 2 archivos con el mismo nombre concatenamos el timestamp
+      // aquí configuramos el nombre que queremos que tenga el archivo en el servidor, 
+      // para que no haya problema si se suben 2 archivos con el mismo nombre concatenamos el timestamp
       callback(null, file.originalname + '-' + Date.now() + '.csv');
   },
 });
 
-app.use(multer({storage: fileStorage }).single('file')); 
+app.use(multer({storage: fileStorage }).single("file")); 
 
 // Sesión
 const session = require("express-session");

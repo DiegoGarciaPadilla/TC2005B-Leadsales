@@ -21,10 +21,10 @@ router.get("/ajustes", (req, res) => {
     res.render("settings");
 });
 
+router.post("/", CSVController.post_CSV);   // ANTES de router,use("/")
+
 router.use("/", (req, res) => {
     res.render("home");
 });
-
-router.post("/", CSVController.post_CSV);
 
 module.exports = router;

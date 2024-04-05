@@ -27,10 +27,11 @@
 
     <div class=" h-52 sm:w-64 border-dashed border-2 border-purple-400 rounded-md p-4 flex items-center justify-center mt-4" style="width: 16rem">
       <!-- Hidden file input -->
-      <form id="uploadForm" action="/home" method="POST" enctype="multipart/form-data">
+      <form id="uploadForm" action="/" method="POST" enctype="multipart/form-data">
+        <input type="file" id="file" name="file" accept=".csv"/>
+        <br><br> 
+        <button type="submit" value="Guardar">Subir archivo</button>
       </form> 
-      <br><br> 
-      <button type="submit" value="Guardar">Subir archivo</button>
     </div>  
   </div>
   <script>  

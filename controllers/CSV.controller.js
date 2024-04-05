@@ -3,6 +3,7 @@ const CSV = require('../model/CSV.model');
 /* ========== CU. 26 IMPORTA DATOS DE LEADS | Sebas Colin =============== */
 
 exports.post_CSV = (req, res, next) => {
+  console.log('post_CSV called');       // No llega a post.csv
   if (!req.file) {
       return res.status(400).send('No file uploaded.');
   }
@@ -10,7 +11,9 @@ exports.post_CSV = (req, res, next) => {
   const csv = new CSV(
     req.file.filename
   );
-  csv.save();
+
+      // PROMISE
+  csv.save();       
 
   res.render("home", {
       msg: 'File uploaded successfully!',

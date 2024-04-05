@@ -9,18 +9,23 @@ module.exports = class CSV {
 
     save() {
         const results = [];
-        fs.createReadStream(`public/uploads/${this.name}`)
+        fs.createReadStream(`public/uploads/${this.name}`)      // Read the CSV file, NOT CREATE
             .pipe(csvParser())
             .on('data', (data) => results.push(data))
             .on('end', () => {
-                const query = `INSERT INTO lead SET ?`;
+                console.log(results)    
+                const query = 'INSERT INTO `lead` SET ?';
                 results.forEach((row) => {
+                    console.log(row.Teléfono);
                     db.query(query, row, (error, results, fields) => {
                         if (error) {
                             console.error('Error storing data in database:', error);
                         }
                     });
                 });
+                // Save CSV file to database
+                // db.execute('INSERT INTO csv (name) VALUES (?)', [this.name]);
+
                 // Delete the CSV file after saving to the database
                 fs.unlinkSync(`public/uploads/${this.name}`);
             });
@@ -37,6 +42,7 @@ module.exports = class CSV {
             return this.fetchAll();
         }
     }
+
     static fetchOne(id) {
         return db.execute('Select * from csv WHERE idCSV = ?', [id]);
     }
