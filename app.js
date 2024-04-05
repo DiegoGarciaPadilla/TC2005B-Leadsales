@@ -1,4 +1,5 @@
 const express = require("express");
+
 const ejs = require("ejs");
 const app = express();
 const multer = require('multer');
@@ -16,6 +17,8 @@ app.use(bodyParser.json());
 
 
 //Motor de plantillas
+// Motor de plantillas
+
 const path = require("path");
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -51,10 +54,12 @@ app.use(session({
 const routes = require("./routes/.routes");
 const usuariosRoutes = require("./routes/usuarios.routes");
 const configRoutes = require("./routes/config.routes");
+const leadsRoutes = require("./routes/leads.routes");
 
 // Usar rutas
 app.use("/users", usuariosRoutes);
 app.use("/config", configRoutes);
+app.use("/leads", leadsRoutes);
 app.use("/", routes);
 
 // Levantar el servidor
