@@ -26,7 +26,18 @@
     </div>
 
     <div class=" h-52 sm:w-64 border-dashed border-2 border-purple-400 rounded-md p-4 flex items-center justify-center mt-4" style="width: 16rem">
-      <span>Importar Lead</span>
-    </div>
+      <!-- Hidden file input -->
+      <form id="uploadForm" action="/" method="POST" enctype="multipart/form-data">
+        <input type="file" id="file" name="file" accept=".csv"/>
+        <br><br> 
+        <button type="submit" value="Guardar">Subir archivo</button>
+      </form> 
+    </div>  
   </div>
+  <script>  
+      document.getElementById('uploadText').addEventListener('click', function() {
+      document.getElementById('file').click();
+      });
+      
+  </script>
 </body>
