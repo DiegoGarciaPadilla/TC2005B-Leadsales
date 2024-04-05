@@ -4,7 +4,6 @@ const router = express.Router();
 
 const rolController = require('../controllers/rol.controller');
 
-router.get('/modificaRol', rolController.getModificaRol);
-router.post('/modificaRol', rolController.postModificaRol);
+router.get('/roles', rolController.getRoles);
 
 module.exports = router;

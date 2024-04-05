@@ -1,0 +1,40 @@
+@startuml
+
+actor Owner
+boundary routes
+boundary view.roles.ejs
+control rol.controller.js
+entity rol.model.js
+database leadtics
+
+Owner -> routes : GET /roles
+activate routes
+
+routes -> rol.controller.js : getRoles
+deactivate routes
+activate rol.controller.js
+
+rol.controller.js -> rol.model.js : fetchAll()
+deactivate rol.controller.js
+activate rol.model.js
+
+rol.model.js -> leadtics : SELECT * FROM roles WHERE FechaHoraEliminado IS NULL
+deactivate rol.model.js
+activate leadtics
+
+leadtics --> rol.model.js : roles
+deactivate leadtics
+activate rol.model.js
+
+rol.model.js --> rol.controller.js : roles
+deactivate rol.model.js
+activate rol.controller.js
+
+rol.controller.js --> view.roles.ejs : roles
+deactivate rol.controller.js
+activate view.roles.ejs
+
+view.roles.ejs -> Owner : HTML
+deactivate view.roles.ejs
+
+@enduml
