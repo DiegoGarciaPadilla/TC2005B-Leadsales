@@ -15,21 +15,30 @@ exports.getLogin = (request, response, next) => {
 };
 
 exports.postLogin = (request, response, next) => {
+    // Imprimir en consola el cuerpo de la solicitud
     console.log(request.body);
-    Usuario.fetchOne(request.body.email)
+
+    // Obtener el usuario del body
+    const { email, password } = request.body;
+
+    Usuario.fetchOne(email)
         .then(([usuarios, fieldData]) => {
+
+            // Si el usuario existe
             if (usuarios.length === 1) {
-                const usuario = usuarios[0];
-               console.log(usuario);
-               if (usuarios.length === 1) {
+                // Obtener el usuario
                 const usuario = usuarios[0];
                 console.log(usuario);
+
+                // Comparar la contraseña
                 if (request.body.password === usuario.Password) {
-                    Usuario.getPrivilegios(usuario.correo)
+
+                    // Guardar los privilegios en la sesion
+                    Usuario.getPrivilegios(usuario.Correo)
                         .then(([privilegios, fieldData]) => {
                             console.log(privilegios);
-                            request.session.privilegios = privilegios;
-                            request.session.correo = usuario.correo;
+                            request.session.Privilegios = privilegios;
+                            request.session.Correo = usuario.Correo;
                             response.redirect('/');
                         })
                         .catch((error) => {
@@ -38,9 +47,6 @@ exports.postLogin = (request, response, next) => {
                 } else {
                     console.log("error")
                 }
-            } else {
-                console.log("error")
-            }
             } else {
                 request.session.error = 'Correo o contraseña incorrectos';
                 response.redirect('/users/login');
