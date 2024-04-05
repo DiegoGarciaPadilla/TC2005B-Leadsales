@@ -7,7 +7,7 @@ control rol.controller.js
 entity rol.model.js
 database leadtics
 
-Owner -> routes : GET /roles/editar/:id
+Owner -> routes : GET /roles/editarRol/:id
 activate routes
 
 routes -> rol.controller.js : getRole
@@ -36,7 +36,7 @@ deactivate rol.controller.js
 view.roles.ejs -> Owner : HTML
 deactivate view.roles.ejs
 
-Owner -> routes : POST /roles/editar/:id
+Owner -> routes : POST /roles/editarRol/:id
 activate routes
 
 routes -> rol.controller.js : updateRol

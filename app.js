@@ -37,8 +37,8 @@ app.use(session({
 
 // Rutas
 
-const routes = require("./routes/.routes.js");
-const usuariosRoutes = require("./routes/usuarios.routes.js");
+const routes = require("./routes/.routes");
+const usuariosRoutes = require("./routes/usuarios.routes");
 const configRoutes = require("./routes/config.routes");
 
 // Usar rutas
