@@ -11,21 +11,21 @@
   <%- include('partials/aside.ejs') %> <%-include('partials/background')%>
   <div class="ml-14 mt-14">
     <h1 class="mb-16 text-4xl text-gray-900">HI xxxxxx@xxxx</h1>
-    <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 border-collapse rounded-lg overflow-hidden">
       <thead class="text-xs text-white bg-gray-50">
         <tr>
-          <th scope="col" class="px-6 py-3 bg-blue-500">Nombre</th>
-          <th scope="col" class="px-6 py-3 bg-blue-500">Último recibido</th>
-          <th scope="col" class="px-6 py-3 bg-blue-500">Primer mensaje</th>
-          <th scope="col" class="px-6 py-3 bg-blue-500">Asignado a</th>
-          <th scope="col" class="px-6 py-3 bg-blue-500">Teléfono</th>
+          <th scope="col" class="px-6 py-3 bg-blue-700">Nombre</th>
+          <th scope="col" class="px-6 py-3 bg-blue-700">Último mensaje</th>
+          <th scope="col" class="px-6 py-3 bg-blue-700">Primer mensaje</th>
+          <th scope="col" class="px-6 py-3 bg-blue-700">Asignado a:</th>
+          <th scope="col" class="px-6 py-3 bg-blue-700">Teléfono</th>
         </tr>
       </thead>
       <tbody>
         <% leads.forEach((lead) => { %>
           <tr class="bg-white border-b hover:bg-gray-50">
-            <td><%= lead.Nombre %></td>
-            <td>
+            <td class="px-4 py-2 sm:px-6 sm:py-3"><%= lead.Nombre %></td>
+            <td class="px-4 py-2 sm:px-6 sm:py-3">
               <!-- Mostrar solo el inicio del último mensaje -->
               <span class="cursor-pointer relative" 
                     onmouseover="document.getElementById('popover_<%= lead.IDLead %>').classList.remove('hidden')"
@@ -37,7 +37,7 @@
                 </div>
               </span>
             </td>
-            <td>
+            <td class="px-4 py-2 sm:px-6 sm:py-3">
               <!-- Mostrar solo el inicio del primer mensaje -->
               <span class="cursor-pointer relative" 
                     onmouseover="document.getElementById('popover2_<%= lead.IDLead %>').classList.remove('hidden')"
@@ -49,8 +49,8 @@
                 </div>
               </span>
             </td>
-            <td><%= lead.Asignadoa %></td>
-            <td><%= lead.Telefono %></td>
+            <td class="px-4 py-2 sm:px-6 sm:py-3"><%= lead.Asignadoa %></td>
+            <td class="px-4 py-2 sm:px-6 sm:py-3"><%= lead.Telefono %></td>
           </tr>
         <% }); %>
       </tbody>
