@@ -20,7 +20,8 @@ exports.getLeads = (request, response, next) => {
         Lead.fetchLeadsByUser(correo)
             .then(([leadsFetched, fieldData]) => {
                 response.render('leads', {
-                    leads: leadsFetched,    
+                    leads: leadsFetched,
+                    csrfToken: request.csrfToken(),    
                 });
             })
             .catch((error) => {
@@ -32,6 +33,7 @@ exports.getLeads = (request, response, next) => {
             .then(([leadsFetched, fieldData]) => {
                 response.render('leads', {
                     leads: leadsFetched,
+                    csrfToken: request.csrfToken(),
                 });
             })
             .catch((error) => {

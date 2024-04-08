@@ -9,6 +9,7 @@ exports.getLogin = (request, response, next) => {
     response.render('login', {
         correo: request.session.correo || '',
         registro: false,
+        csrfToken: request.csrfToken(),
         error: err,
         privilegios: request.session.privilegios || [],
     });
