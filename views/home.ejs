@@ -2,50 +2,75 @@
 <head>
   <title>Home</title>
   <link rel="stylesheet" href="/css/output.css" />
-</head>
-<body>
-  <nav><%- include('partials/sidebar.ejs') %></nav>
-  <%- include('partials/aside.ejs') %> <%-include('partials/background')%>
-  <div class="ml-14 mt-14">
-    <h1 class="mb-16 text-4xl text-gray-900">Hi xxxxxx@xxxx</h1>
-    <div class="w-full sm:w-64 bg-[#E1E7FD] mr-4 rounded-md p-4">
-      <h2 class="mb-4 font-bold">Reporte</h2>
-      <div class="flex justify-between items-center mb-2">
-        <label for="whatsapp" class="ml-2">Whatsapp</label>
-        <input type="checkbox" id="whatsapp" name="whatsapp" value="whatsapp">
-      </div>
-      <div class="flex justify-between items-center mb-2">
-        <label for="facebook" class="ml-2">Facebook</label>
-        <input type="checkbox" id="facebook" name="facebook" value="facebook">
-      </div>
-      <div class="flex justify-between items-center mb-2">
-        <label for="instagram" class="ml-2">Instagram</label>
-        <input type="checkbox" id="instagram" name="instagram" value="instagram">
-      </div>
-      <button class="ml-auto mr-8 mt-5 inline-block px-2 py-1 text-xs font-medium leading-6 text-center text-purple-700 border border-purple-700 transition bg-white rounded shadow ripple hover:shadow-lg hover:bg-purple-700 hover:text-white focus:outline-none">Generar Reporte</button>
-    </div>
+  <style>
 
-    <div class=" h-52 sm:w-64 border-dashed border-2 border-purple-400 rounded-md p-4 flex items-center justify-center mt-4" style="width: 16rem">
-      <!-- Hidden file input -->
-      <form class="max-w-lg mx-auto flex flex-col items-center" id="uploadForm" action="/" method="POST" enctype="multipart/form-data">
-        <input class="block w-full text-sm text-gray-900 border 
-        border-gray-300 rounded-lg cursor-pointer bg-gray-50 
-        dark:text-gray-400 focus:outline-none dark:bg-gray-700 
-        dark:border-gray-600 dark:placeholder-gray-400 mb-4" 
-        type="file" id="file" name="file" accept=".csv"/>
-        <br><br> 
-        <button class="text-white bg-blue-700 hover:bg-blue-800 
-        focus:ring-4 focus:ring-blue-300 font-medium rounded-lg 
-        text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 
-        dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" 
-        type="submit" value="Guardar">Subir archivo</button>
-      </form> 
-    </div>  
-  </div>
+    #main-content {
+      transition: padding-left 0.3s ease;
+      padding-left: 3.5rem;
+    } 
+    .sidebar:hover ~ #main-content {
+      padding-left: 20rem;
+    }
+
+  </style>
+</head>
+<body class="bg-[#E4E8EE]">
+  <nav><%- include('partials/sidebar.ejs') %></nav>
+    <div id="main-content" class="ml-14 mt-14 pl-20">
+      <h1 class="mb-16 text-4xl text-gray-900">Hi xxxxxx@xxxx</h1>
+      <div class="w-full sm:w-64 bg-[#C4CCD8] mr-4 rounded-md p-4">
+        <h2 class="mb-4 font-bold">Reporte</h2>
+        <div class="flex justify-between items-center mb-2">
+          <label for="whatsapp" class="ml-2">Whatsapp</label>
+          <input type="checkbox" id="whatsapp" name="whatsapp" value="whatsapp">
+        </div>
+        <div class="flex justify-between items-center mb-2">
+          <label for="facebook" class="ml-2">Facebook</label>
+          <input type="checkbox" id="facebook" name="facebook" value="facebook">
+        </div>
+        <div class="flex justify-between items-center mb-2">
+          <label for="instagram" class="ml-2">Instagram</label>
+          <input type="checkbox" id="instagram" name="instagram" value="instagram">
+        </div>
+        <button class="ml-auto mr-8 mt-5 inline-block px-2 py-1 text-xs font-medium leading-6 text-center text-purple-700 border border-purple-700 transition bg-white rounded shadow ripple hover:shadow-lg hover:bg-purple-700 hover:text-white focus:outline-none">Generar Reporte</button>
+      </div>
+  
+      <div class=" h-52 sm:w-64 border-dashed border-2 border-purple-400 rounded-md p-4 flex items-center justify-center mt-4" style="width: 16rem">
+        <!-- Hidden file input -->
+        <form class="max-w-lg mx-auto flex flex-col items-center" id="uploadForm" action="/" method="POST" enctype="multipart/form-data">
+          <input class="block w-full text-sm text-gray-900 border 
+          border-gray-300 rounded-lg cursor-pointer bg-gray-50 
+          dark:text-gray-400 focus:outline-none dark:bg-gray-700 
+          dark:border-gray-600 dark:placeholder-gray-400 mb-4" 
+          type="file" id="file" name="file" accept=".csv"/>
+          <br><br> 
+          <button class="text-white bg-blue-700 hover:bg-blue-800 
+          focus:ring-4 focus:ring-blue-300 font-medium rounded-lg 
+          text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 
+          dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" 
+          type="submit" value="Guardar">Subir archivo</button>
+        </form> 
+      </div>  
+    </div>
+  <%- include('partials/aside.ejs') %>  
+  <%-include('partials/background')%>
   <script>  
       document.getElementById('uploadText').addEventListener('click', function() {
       document.getElementById('file').click();
+      });     
+      // Get a reference to the sidebar element
+      const sidebar = document.querySelector('.sidebar');
+
+      // Add event listener for mouse enter (hover) on the sidebar
+      sidebar.addEventListener('mouseenter', function() {
+      // When the sidebar is hovered, increase padding of main content
+      document.getElementById('main-content').style.paddingLeft = '20rem';
       });
-      
+
+      // Add event listener for mouse leave (hover out) on the sidebar
+      sidebar.addEventListener('mouseleave', function() {
+      // When the mouse leaves the sidebar, reset padding of main content
+      document.getElementById('main-content').style.paddingLeft = '3.5rem';
+      });
   </script>
 </body>
