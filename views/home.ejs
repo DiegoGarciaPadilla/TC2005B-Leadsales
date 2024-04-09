@@ -8,14 +8,14 @@
       transition: padding-left 0.3s ease;
       padding-left: 3.5rem;
     } 
-    .sidebar:hover ~ #main-content {
-      padding-left: 20rem;
+    .side:hover ~ #main-content {
+      padding-left: 10rem;
     }
 
   </style>
 </head>
 <body class="bg-[#E4E8EE]">
-  <nav><%- include('partials/sidebar.ejs') %></nav>
+  <%- include('partials/sidebar.ejs') %>
     <div id="main-content" class="ml-14 mt-14 pl-20">
       <h1 class="mb-16 text-4xl text-gray-900">Hi xxxxxx@xxxx</h1>
       <div class="w-full sm:w-64 bg-[#C4CCD8] mr-4 rounded-md p-4">
@@ -53,24 +53,10 @@
       </div>  
     </div>
   <%- include('partials/aside.ejs') %>  
-  <%-include('partials/background')%>
   <script>  
       document.getElementById('uploadText').addEventListener('click', function() {
       document.getElementById('file').click();
       });     
-      // Get a reference to the sidebar element
-      const sidebar = document.querySelector('.sidebar');
 
-      // Add event listener for mouse enter (hover) on the sidebar
-      sidebar.addEventListener('mouseenter', function() {
-      // When the sidebar is hovered, increase padding of main content
-      document.getElementById('main-content').style.paddingLeft = '20rem';
-      });
-
-      // Add event listener for mouse leave (hover out) on the sidebar
-      sidebar.addEventListener('mouseleave', function() {
-      // When the mouse leaves the sidebar, reset padding of main content
-      document.getElementById('main-content').style.paddingLeft = '3.5rem';
-      });
   </script>
 </body>
