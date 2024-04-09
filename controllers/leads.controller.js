@@ -1,11 +1,5 @@
 const Lead = require('../model/leads.model');
 
-/* ========== CU. 24 CONSULTA HISTORIAL | Chimali Nava =============== */
-
-
-/* ========================== FIN CU. 24 ==============================  */
-
-
 /* ========== CU. 25 CONSULTA REPORTE EN HISTORIAL | Diego García =============== */
 
 
@@ -19,9 +13,8 @@ exports.getLeads = (request, response, next) => {
     if (!privilegios.includes("Ver todos los leads")) {
         Lead.fetchLeadsByUser(correo)
             .then(([leadsFetched, fieldData]) => {
-                response.render('leads', {
-                    leads: leadsFetched,
-                    csrfToken: request.csrfToken(),    
+                response.render('directory', {
+                    leads: leadsFetched,    
                 });
             })
             .catch((error) => {
@@ -31,7 +24,7 @@ exports.getLeads = (request, response, next) => {
     else {
         Lead.fetchAll()
             .then(([leadsFetched, fieldData]) => {
-                response.render('leads', {
+                response.render('directory', {
                     leads: leadsFetched,
                     csrfToken: request.csrfToken(),
                 });
