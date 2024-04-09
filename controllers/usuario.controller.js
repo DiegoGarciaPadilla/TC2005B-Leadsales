@@ -70,7 +70,22 @@ exports.postLogin = (request, response, next) => {
 /* ========================== FIN CU. 01 ==============================  */
 
 /* ========== CU. 28 CONSULTA USUARIOS | Andrea Medina  =============== */
-
+exports.getUsuarios = (request, response, next) => {
+    const err = request.session.error || '';
+    request.session.error = '';
+    
+    Usuario.fetchAllUsers()
+        .then(([usuariosFetched, fieldData]) => {
+            response.render('usuarios', {
+                usuarios: usuariosFetched,
+                error: err,
+                csrfToken: request.csrfToken(),
+            })
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
 
 /* ========================== FIN CU. 28 ==============================  */
 

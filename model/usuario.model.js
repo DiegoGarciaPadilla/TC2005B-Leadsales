@@ -14,6 +14,10 @@ module.exports = class Usuario {
         return db.execute('SELECT * FROM usuario WHERE Correo = ?', [Correo]);
     }
 
+    static fetchAllUsers() {
+        return db.execute('SELECT * FROM usuario');
+    }
+
     static login(IDUsuario) {
         return db.execute(`
             INSERT INTO sesion (IDUsuario, FechaHoraInicio)
