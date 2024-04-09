@@ -859,13 +859,8 @@ video {
   align-self: center;
 }
 
-<<<<<<< HEAD
 .overflow-auto {
   overflow: auto;
-=======
-.overflow-hidden {
-  overflow: hidden;
->>>>>>> c74120b3e6123835544c7070af5a6c3a0df69c90
 }
 
 .overflow-y-auto {
@@ -984,11 +979,6 @@ video {
   padding-right: 0.5rem;
 }
 
-.px-20 {
-  padding-left: 5rem;
-  padding-right: 5rem;
-}
-
 .px-3 {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
@@ -1061,29 +1051,12 @@ video {
   padding-left: 5rem;
 }
 
-<<<<<<< HEAD
 .pr-80 {
   padding-right: 20rem;
 }
 
 .ps-2 {
   padding-inline-start: 0.5rem;
-=======
-.ps-2 {
-  padding-inline-start: 0.5rem;
-}
-
-.pr-40 {
-  padding-right: 10rem;
-}
-
-.pr-60 {
-  padding-right: 15rem;
-}
-
-.pr-80 {
-  padding-right: 20rem;
->>>>>>> c74120b3e6123835544c7070af5a6c3a0df69c90
 }
 
 .text-left {

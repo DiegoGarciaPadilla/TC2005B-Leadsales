@@ -13,7 +13,7 @@ exports.getLeads = (request, response, next) => {
     if (!privilegios.includes("Ver todos los leads")) {
         Lead.fetchLeadsByUser(correo)
             .then(([leadsFetched, fieldData]) => {
-                response.render('leads', {
+                response.render('directory', {
                     leads: leadsFetched,    
                 });
             })
@@ -24,7 +24,7 @@ exports.getLeads = (request, response, next) => {
     else {
         Lead.fetchAll()
             .then(([leadsFetched, fieldData]) => {
-                response.render('leads', {
+                response.render('directory', {
                     leads: leadsFetched,
                 });
             })
