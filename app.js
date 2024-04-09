@@ -59,7 +59,7 @@ const leadsRoutes = require("./routes/leads.routes");
 // Usar rutas
 app.use("/users", usuariosRoutes);
 app.use("/config", configRoutes);
-app.use("/leads", leadsRoutes);
+app.use("/directory", leadsRoutes);
 app.use("/", routes);
 
 // Levantar el servidor
