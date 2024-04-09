@@ -9,7 +9,7 @@
 <body>
   <nav><%- include('partials/sidebar.ejs') %></nav>
   <%- include('partials/aside.ejs') %> <%-include('partials/background')%>
-  <div class="ml-14 mt-14">
+  <div class="px-20 py-10">
     <h1 class="mb-16 text-4xl text-gray-900">HI xxxxxx@xxxx</h1>
     <table class="w-full text-sm text-left rtl:text-right text-gray-500 border-collapse rounded-lg overflow-hidden">
       <thead class="text-xs text-white bg-gray-50">
@@ -24,33 +24,43 @@
       <tbody>
         <% leads.forEach((lead) => { %>
           <tr class="bg-white border-b hover:bg-gray-50">
-            <td class="px-4 py-2 sm:px-6 sm:py-3"><%= lead.Nombre %></td>
-            <td class="px-4 py-2 sm:px-6 sm:py-3">
+            <td class="px-4 py-2 sm:px-3 sm:py-3">
+              <span class="cursor-pointer relative" 
+                    onmouseover="document.getElementById('popover0_<%= lead.IDLead %>').classList.remove('hidden')"
+                    onmouseout="document.getElementById('popover0_<%= lead.IDLead %>').classList.add('hidden')"
+              >
+                <%= lead.Nombre.substr(0, 15) + (lead.Nombre.length > 15 ? '...' : '') %>
+                <div id="popover0_<%= lead.IDLead %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
+                  <%= lead.Nombre %>
+                </div>
+              </span>  
+            </td>
+            <td class="px-4 py-2 sm:px-3 sm:py-3">
               <!-- Mostrar solo el inicio del último mensaje -->
               <span class="cursor-pointer relative" 
                     onmouseover="document.getElementById('popover_<%= lead.IDLead %>').classList.remove('hidden')"
                     onmouseout="document.getElementById('popover_<%= lead.IDLead %>').classList.add('hidden')"
               >
-                <%= lead.UltMensaje.substr(0, 20) + (lead.UltMensaje.length > 20 ? '...' : '') %>
+                <%= lead.Ultimomensaje.substr(0, 20) + (lead.Ultimomensaje.length > 20 ? '...' : '') %>
                 <div id="popover_<%= lead.IDLead %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-                  <%= lead.UltMensaje %>
+                  <%= lead.Ultimomensaje %>
                 </div>
               </span>
             </td>
-            <td class="px-4 py-2 sm:px-6 sm:py-3">
+            <td class="px-4 py-2 sm:px-3 sm:py-3">
               <!-- Mostrar solo el inicio del primer mensaje -->
               <span class="cursor-pointer relative" 
                     onmouseover="document.getElementById('popover2_<%= lead.IDLead %>').classList.remove('hidden')"
                     onmouseout="document.getElementById('popover2_<%= lead.IDLead %>').classList.add('hidden')"
               >
-                <%= lead.PrimerMensaje.substr(0, 20) + (lead.PrimerMensaje.length > 20 ? '...' : '') %>
+                <%= lead.Primermensaje.substr(0, 20) + (lead.Primermensaje.length > 20 ? '...' : '') %>
                 <div id="popover2_<%= lead.IDLead %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-                  <%= lead.PrimerMensaje %>
+                  <%= lead.Primermensaje %>
                 </div>
               </span>
             </td>
-            <td class="px-4 py-2 sm:px-6 sm:py-3"><%= lead.Asignadoa %></td>
-            <td class="px-4 py-2 sm:px-6 sm:py-3"><%= lead.Telefono %></td>
+            <td class="px-4 py-2 sm:px-3 sm:py-3"><%= lead.Asignadoa %></td>
+            <td class="px-4 py-2 sm:px-3 sm:py-3"><%= lead.Telefono %></td>
           </tr>
         <% }); %>
       </tbody>

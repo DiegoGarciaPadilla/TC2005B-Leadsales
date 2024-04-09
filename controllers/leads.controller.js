@@ -1,11 +1,5 @@
 const Lead = require('../model/leads.model');
 
-/* ========== CU. 24 CONSULTA HISTORIAL | Chimali Nava =============== */
-
-
-/* ========================== FIN CU. 24 ==============================  */
-
-
 /* ========== CU. 25 CONSULTA REPORTE EN HISTORIAL | Diego García =============== */
 
 
