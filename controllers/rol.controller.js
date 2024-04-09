@@ -14,7 +14,8 @@ exports.getRoles = (request, response, next) => {
             console.log(rolesFetched);
             response.render('roles', {
                 roles: rolesFetched,
-                error: err
+                error: err,
+                csrfToken: request.csrfToken(),
             });
         })
         .catch((error) => {
@@ -40,7 +41,8 @@ exports.getEditarRol = (request, response, next) => {
         .then(([rolFetched, fieldData]) => {
             response.render('editarRol', {
                 rol: rolFetched[0],
-                error: err
+                error: err,
+                csrfToken: request.csrfToken(),
             });
         })
         .catch((error) => {

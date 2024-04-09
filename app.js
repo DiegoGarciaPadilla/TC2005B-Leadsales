@@ -9,14 +9,32 @@ const port = 3000;
 
 app.use(express.static("public"));
 
+// Sesión
+const session = require("express-session");
+
+app.use(session({
+  secret: 'Mario',
+  resave: false,
+  saveUninitialized: false,
+}));
+
 // Body parser
 const bodyParser = require("body-parser");
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
+// Cookie parser
+const cookieParser = require('cookie-parser');
 
-//Motor de plantillas
+app.use(cookieParser());
+
+// Protección CSRF
+const csrf = require("csurf");
+
+const csrfProtection = csrf();
+app.use(csrfProtection);
+
 // Motor de plantillas
 
 const path = require("path");
@@ -37,15 +55,6 @@ const fileStorage = multer.diskStorage({
 });
 
 app.use(multer({storage: fileStorage }).single("file")); 
-
-// Sesión
-const session = require("express-session");
-
-app.use(session({
-  secret: 'Mario',
-  resave: false,
-  saveUninitialized: false,
-}))
 
 // app.use(express.static(path.join(__dirname, "public")));
 

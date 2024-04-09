@@ -26,6 +26,7 @@ exports.getLeads = (request, response, next) => {
             .then(([leadsFetched, fieldData]) => {
                 response.render('directory', {
                     leads: leadsFetched,
+                    csrfToken: request.csrfToken(),
                 });
             })
             .catch((error) => {
