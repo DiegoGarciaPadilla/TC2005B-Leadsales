@@ -16,7 +16,7 @@ module.exports = class Usuario {
 
     static login(IDUsuario) {
         return db.execute(`
-            INSERT INTO session (IDUsuario, FechaHoraInicio)
+            INSERT INTO sesion (IDUsuario, FechaHoraInicio)
             VALUES (?, CURRENT_TIMESTAMP())
         `, [IDUsuario]);
     }
@@ -34,7 +34,7 @@ module.exports = class Usuario {
 
     static logout(IDUsuario) {
         return db.execute(`
-            UPDATE session
+            UPDATE sesion
             SET FechaHoraFin = CURRENT_TIMESTAMP()
             WHERE IDUsuario = ?
             AND FechaHoraFin IS NULL
