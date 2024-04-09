@@ -64,3 +64,18 @@ exports.postLogin = (request, response, next) => {
 
 
 /* ========================== FIN CU. 28 ==============================  */
+
+/* ========== CU. 29 CERRAR SESIÓN | Andrea Medina  =============== */
+exports.getLogout(request, response, next) => {
+    Usuario.logout(request.session.IDUsuario)
+    .then(() => {
+        request.session.destroy(() => {
+            response.redirect('/users/login');
+        });
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+};
+
+/* ========================== FIN CU. 29 ==============================  */
