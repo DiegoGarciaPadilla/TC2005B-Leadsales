@@ -64,12 +64,15 @@ const routes = require("./routes/.routes");
 const usuariosRoutes = require("./routes/usuarios.routes");
 const configRoutes = require("./routes/config.routes");
 const leadsRoutes = require("./routes/leads.routes");
+const reportesRoutes = require("./routes/reportes.routes");
 
 // Usar rutas
 app.use("/users", usuariosRoutes);
 app.use("/config", configRoutes);
 app.use("/directory", leadsRoutes);
+app.use("/history", reportesRoutes);
 app.use("/", routes);
+
 
 // Levantar el servidor
 app.listen(port, () => {

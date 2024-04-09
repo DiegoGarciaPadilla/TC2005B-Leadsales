@@ -843,8 +843,8 @@ video {
   align-self: center;
 }
 
-.overflow-hidden {
-  overflow: hidden;
+.overflow-auto {
+  overflow: auto;
 }
 
 .overflow-y-auto {
@@ -1033,6 +1033,10 @@ video {
 
 .pl-20 {
   padding-left: 5rem;
+}
+
+.pr-80 {
+  padding-right: 20rem;
 }
 
 .ps-2 {
@@ -1279,9 +1283,9 @@ video {
     padding: 2rem;
   }
 
-  .sm\:px-6 {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+  .sm\:px-3 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
   }
 
   .sm\:px-8 {
