@@ -44,6 +44,7 @@ exports.postLogin = (request, response, next) => {
                                     request.session.Privilegios = privilegios;
                                     request.session.Correo = usuario.Correo;
                                     request.session.IDUsuario = usuario.IDUsuario;
+                                    request.session.isLoggedIn = true;
                                     response.redirect('/');
                                 })
                                 .catch((error) => {
