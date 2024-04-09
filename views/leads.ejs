@@ -31,9 +31,9 @@
                     onmouseover="document.getElementById('popover_<%= lead.IDLead %>').classList.remove('hidden')"
                     onmouseout="document.getElementById('popover_<%= lead.IDLead %>').classList.add('hidden')"
               >
-                <%= lead.UltMensaje.substr(0, 20) + (lead.UltMensaje.length > 20 ? '...' : '') %>
+                <%= lead.Ultimomensaje.substr(0, 20) + (lead.Ultimomensaje.length > 20 ? '...' : '') %>
                 <div id="popover_<%= lead.IDLead %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-                  <%= lead.UltMensaje %>
+                  <%= lead.Ultimomensaje %>
                 </div>
               </span>
             </td>
@@ -43,9 +43,9 @@
                     onmouseover="document.getElementById('popover2_<%= lead.IDLead %>').classList.remove('hidden')"
                     onmouseout="document.getElementById('popover2_<%= lead.IDLead %>').classList.add('hidden')"
               >
-                <%= lead.PrimerMensaje.substr(0, 20) + (lead.PrimerMensaje.length > 20 ? '...' : '') %>
+                <%= lead.Primermensaje.substr(0, 20) + (lead.Primermensaje.length > 20 ? '...' : '') %>
                 <div id="popover2_<%= lead.IDLead %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-                  <%= lead.PrimerMensaje %>
+                  <%= lead.Primermensaje %>
                 </div>
               </span>
             </td>
