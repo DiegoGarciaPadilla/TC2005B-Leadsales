@@ -5,34 +5,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Historial</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <style> 
+
+    body {
+      background-color: #E4E8EE;
+    }
+
+    #container {
+      position: relative;
+      height:500px;
+      box-shadow: 1px 4px 8px rgba(36, 37, 42, 0.2);
+    }
+    #containerElements {
+      overflow-y: auto; 
+      height:100%;
+    }
+    #element {
+      position: relative;
+    }
+    #main-content {
+      transition: padding-left 0.3s ease;
+      padding-left: 3.5rem;
+    } 
+    .side:hover ~ #main-content {
+      padding-left: 10rem;
+    }
+
+  </style>
+
 </head>
 <body class="bg-[#E4E8EE]">
-  <nav><%- include('partials/sidebar.ejs') %></nav>
+  <%- include('partials/sidebar.ejs') %>
   <%- include('partials/aside.ejs') %> 
-  <h1 class="mb-16 text-4xl text-gray-900">Historial</h1>
-  <div class="pl-20 pr-80 py-10 overflow-auto">
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500 border-collapse rounded-lg w-full">
-          <thead class="text-xs text-white bg-gray-50">
-            <tr>
-              <th scope="col" class="px-6 py-3 bg-blue-700">Descripción</th>
-              <th scope="col" class="px-6 py-3 bg-blue-700">Fecha</th>
-              <th scope="col" class="px-6 py-3 bg-blue-700">Generado por:</th>
-              <th scope="col" class="px-6 py-3 bg-blue-700">Periodo</th>
-              <th scope="col" class="px-6 py-3 bg-blue-700"> </th>
-            </tr>
-          </thead>
-          <tbody>
-          <% reportes.forEach((reporte) => { %>
-            <tr class="bg-white border-b hover:bg-gray-50">
-              <td class="px-4 py-2 sm:px-3 sm:py-3"><%= reporte.Descripcion %></td>
-              <td class="px-4 py-2 sm:px-3 sm:py-3"><%= reporte.Fecha.toLocaleDateString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'}) %></td>
-              <td class="px-4 py-2 sm:px-3 sm:py-3"><%= reporte.NombreCompleto %></td>
-              <td class="px-4 py-2 sm:px-3 sm:py-3">''</td>
-              <td class="px-4 py-2 sm:px-3 sm:py-3">''</td>
-            </tr>
-          <% }); %>
-        </tbody>
-      </table>
+  <div id="main-content" class="ml-14 mt-14 pl-8">
+    <h1 class="mb-16 text-4xl text-gray-900">Historial</h1>
+    <div id="container" class="relative overflow-auto sm:rounded-lg w-3/4">
+          <table class="text-sm text-left rtl:text-right text-gray-500 border-collapse rounded-lg w-full">
+            <thead id="tableHead" class="text-xs text-white bg-gray-50">
+              <tr>
+                <th scope="col" class="px-6 py-3 bg-blue-700">Descripción</th>
+                <th scope="col" class="px-6 py-3 bg-blue-700">Fecha</th>
+                <th scope="col" class="px-6 py-3 bg-blue-700">Generado por:</th>
+                <th scope="col" class="px-6 py-3 bg-blue-700">Periodo</th>
+                <th scope="col" class="px-6 py-3 bg-blue-700"> </th>
+              </tr>
+            </thead>
+            <tbody id="containerElements">
+            <% reportes.forEach((reporte) => { %>
+              <tr id="element" class="bg-white border-b hover:bg-gray-50">
+                <td class="px-4 py-2 sm:px-3 sm:py-3"><%= reporte.Descripcion %></td>
+                <td class="px-4 py-2 sm:px-3 sm:py-3"><%= reporte.Fecha.toLocaleDateString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'}) %></td>
+                <td class="px-4 py-2 sm:px-3 sm:py-3"><%= reporte.NombreCompleto %></td>
+                <td class="px-4 py-2 sm:px-3 sm:py-3">''</td>
+                <td class="px-4 py-2 sm:px-3 sm:py-3">''</td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+    </div>
   </div>
 </body>
 </html>

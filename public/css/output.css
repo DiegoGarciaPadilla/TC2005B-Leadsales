@@ -1034,6 +1034,10 @@ video {
   padding-left: 5rem;
 }
 
+.pl-8 {
+  padding-left: 2rem;
+}
+
 .ps-2 {
   padding-inline-start: 0.5rem;
 }
