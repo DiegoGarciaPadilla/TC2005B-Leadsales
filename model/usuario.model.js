@@ -14,6 +14,13 @@ module.exports = class Usuario {
         return db.execute('SELECT * FROM usuario WHERE Correo = ?', [Correo]);
     }
 
+    static login(IDUsuario) {
+        return db.execute(`
+            INSERT INTO sesion (IDUsuario, FechaHoraInicio)
+            VALUES (?, CURRENT_TIMESTAMP())
+        `, [IDUsuario]);
+    }
+
     static getPrivilegios(Correo) {
         return db.execute(`
             SELECT pr.IDPrivilegio, pr.Descripcion FROM privilegios AS pr
@@ -23,5 +30,14 @@ module.exports = class Usuario {
             JOIN usuario AS u 				ON u.IDUsuario = ur.IDUsuario
             WHERE u.Correo = ?
         `, [Correo]);
+    }
+
+    static logout(IDUsuario) {
+        return db.execute(`
+            UPDATE sesion
+            SET FechaHoraFin = CURRENT_TIMESTAMP()
+            WHERE IDUsuario = ?
+            AND FechaHoraFin IS NULL
+        `, [IDUsuario]);
     }
 }
