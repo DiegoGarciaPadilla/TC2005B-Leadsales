@@ -18,6 +18,10 @@ module.exports = class Usuario {
         return db.execute('SELECT * FROM usuario');
     }
 
+    static fetchRoles() {
+        return db.execute('SELECT R.Nombre FROM rol AS r JOIN usuario_rol AS ur ON ur.IDRol = r.IDRol');
+    }
+
     static login(IDUsuario) {
         return db.execute(`
             INSERT INTO sesion (IDUsuario, FechaHoraInicio)

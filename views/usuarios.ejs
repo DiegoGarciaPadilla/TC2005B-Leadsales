@@ -15,7 +15,7 @@
                 <th scope="col" class="px-6 py-3 bg-blue-700"> Nombre completo </th>
                 <th scope="col" class="px-6 py-3 bg-blue-700"> Correo </th>
                 <th scope="col" class="px-6 py-3 bg-blue-700"> Teléfono </th>
-                <th scope="col" class="px-6 py-3 bg-blue-700"> Dirección </th>
+                <th scope="col" class="px-6 py-3 bg-blue-700"> Domicilio </th>
                 <th scope="col" class="px-6 py-3 bg-blue-700"> Rol </th>
               </tr>
             </thead>
@@ -28,9 +28,9 @@
                           onmouseover="document.getElementById('popover0_<%= usuario.IDUsuario %>').classList.remove('hidden')"
                           onmouseout="document.getElementById('popover0_<%= usuario.IDUsuario %>').classList.add('hidden')"
                     >
-                      <%= usuario.Nombre.substr(0, 15) + (usuario.Nombre.length > 15 ? '...' : '') %>
+                      <%= (usuario.Nombre + ' ' + usuario.ApellidoPaterno + ' ' + usuario.ApellidoMaterno).substr(0, 15) + ((usuario.Nombre + ' ' + usuario.ApellidoPaterno + ' ' + usuario.ApellidoMaterno).length > 15 ? '...' : '') %>
                       <div id="popover0_<%= usuario.IDUsuario %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-                        <%= usuario.Nombre %>
+                        <%= usuario.Nombre %> <%= usuario.ApellidoPaterno %> <%= usuario.ApellidoMaterno %>
                       </div>
                     </span>  
                   </td>
@@ -58,7 +58,18 @@
                       </div>
                     </span>
                   </td>
-                  <td class="px-4 py-2 sm:px-3 sm:py-3"><%= usuario.Direccion %></td>
+                  <td class="px-4 py-2 sm:px-3 sm:py-3">
+                   <!-- Mostrar solo el inicio del primer mensaje -->
+                   <span class="cursor-pointer relative" 
+                   onmouseover="document.getElementById('popover2_<%= usuario.IDUsuario %>').classList.remove('hidden')"
+                   onmouseout="document.getElementById('popover2_<%= usuario.IDUsuario %>').classList.add('hidden')"
+                    >
+                      <%= usuario.Domicilio.substr(0, 20) + (usuario.Domicilio.length > 20 ? '...' : '') %>
+                      <div id="popover2_<%= usuario.IDUsuario %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
+                        <%= usuario.Domicilio %>
+                      </div>
+                    </span>
+                  </td>
                   <td class="px-4 py-2 sm:px-3 sm:py-3"><%= usuario.ApellidoPaterno %></td>
                 </tr>
               <% }); %>
