@@ -76,11 +76,18 @@ exports.getUsuarios = (request, response, next) => {
     
     Usuario.fetchAllUsers()
         .then(([usuariosFetched, fieldData]) => {
-            response.render('usuarios', {
-                usuarios: usuariosFetched,
-                error: err,
-                csrfToken: request.csrfToken(),
-            })
+            Usuario.fetchRoles()
+                .then(([rolesFetched, fieldData]) => {
+                    response.render('usuarios', {
+                        usuarios: usuariosFetched,
+                        roles: rolesFetched,
+                        error: err,
+                        csrfToken: request.csrfToken(),
+                    })
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         })
         .catch((error) => {
             console.log(error);
