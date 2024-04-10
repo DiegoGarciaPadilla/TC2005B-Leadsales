@@ -34,17 +34,26 @@ exports.postLogin = (request, response, next) => {
                 // Comparar la contraseña
                 if (request.body.password === usuario.Password) {
 
-                    // Guardar los privilegios en la sesion
-                    Usuario.getPrivilegios(usuario.Correo)
-                        .then(([privilegios, fieldData]) => {
-                            console.log(privilegios);
-                            request.session.Privilegios = privilegios;
-                            request.session.Correo = usuario.Correo;
-                            response.redirect('/');
+                    // Registrar sesión
+                    Usuario.login(usuario.IDUsuario)
+                        .then(() => {
+                            // Guardar los privilegios en la sesion
+                            Usuario.getPrivilegios(usuario.Correo)
+                                .then(([privilegios, fieldData]) => {
+                                    console.log(privilegios);
+                                    request.session.Privilegios = privilegios;
+                                    request.session.Correo = usuario.Correo;
+                                    request.session.IDUsuario = usuario.IDUsuario;
+                                    request.session.isLoggedIn = true;
+                                    response.redirect('/');
+                                })
+                                .catch((error) => {
+                                    console.log(error);
+                                });
                         })
                         .catch((error) => {
                             console.log(error);
-                        });
+                        } );
                 } else {
                     console.log("error")
                 }
@@ -64,3 +73,19 @@ exports.postLogin = (request, response, next) => {
 
 
 /* ========================== FIN CU. 28 ==============================  */
+
+/* ========== CU. 29 CERRAR SESIÓN | Andrea Medina  =============== */
+exports.getLogout = (request, response, next) => {
+    console.log(request.session)
+    Usuario.logout(request.session.IDUsuario)
+    .then(() => {
+        request.session.destroy(() => {
+            response.redirect('/users/login');
+        });
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+};
+
+/* ========================== FIN CU. 29 ==============================  */
