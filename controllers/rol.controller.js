@@ -63,7 +63,7 @@ exports.postEditarRol = (request, response, next) => {
     // Actualiza el rol en la base de datos
     Rol.updateRolById(IDRol, Nombre, DescripcionRol)
         .then(() => {
-            response.redirect('/config/roles');
+            response.redirect('/ajustes/roles');
         })
         .catch((error) => {
             console.log(error);

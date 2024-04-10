@@ -1,8 +1,4 @@
 {
-<<<<<<< HEAD
     "files.autoSave": "afterDelay",
     "sqltools.connections": []
-=======
-    "files.autoSave": "off"
->>>>>>> DiegoLira-DiegoGarcia/CU10
 }

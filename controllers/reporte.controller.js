@@ -12,7 +12,7 @@ exports.getReportes = (request, response, next) => {
             if (rol.IDRol === 1 || rol.IDRol === 2) {
                 Reporte.fetchAll()
                     .then(([reportesFetched, fieldData]) => {
-                        response.render('history', {
+                        response.render('historial', {
                             reportes: reportesFetched,
                             csrfToken: request.csrfToken(),
                         });
@@ -24,7 +24,7 @@ exports.getReportes = (request, response, next) => {
             else {
                 Reporte.fetchReportesByUser(IDUsuario)
                     .then(([reportesFetched, fieldData]) => {
-                        response.render('history', {
+                        response.render('historial', {
                             reportes: reportesFetched,
                             csrfToken: request.csrfToken(),
                         });
