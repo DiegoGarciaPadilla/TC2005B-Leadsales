@@ -20,8 +20,7 @@ module.exports = class Reporte {
     }
 
     static fetchReportesByUser(IDUsuario) {
-        return db.execute("SELECT R.Fecha, R.Descripcion, R.Liga, CONCAT(U.Nombre, ' ', U.ApellidoPaterno) AS NombreCompleto FROM `Reporte` AS R JOIN `Usuario` AS U ON R.IDUsuario = U.IDUsuario WHERE IDUsuario = ?", [IDUsuario]);
-
+        return db.execute("SELECT R.Fecha, R.Descripcion, R.Liga, CONCAT(U.Nombre, ' ', U.ApellidoPaterno) AS NombreCompleto FROM `Reporte` AS R JOIN `Usuario` AS U ON R.IDUsuario = U.IDUsuario WHERE R.IDUsuario = ?", [IDUsuario]);
     }
 
     static fetchOne(idReporte) {
