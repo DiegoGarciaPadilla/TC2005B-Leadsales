@@ -40,6 +40,9 @@ exports.getLeads = (request, response, next) => {
 
 /* ========== CU. 6 CONSULTA LEAD | Sebas Colin =============== */
 
+exports.getOneLead = (req, res, next) => {
+
+};
 
 /* ========================== FIN CU. 6 ==============================  */
 
