@@ -15,7 +15,7 @@ exports.getLeads = (request, response, next) => {
             .then(([leadsFetched, fieldData]) => {
                 response.render('directory', {
                     leads: leadsFetched,    
-                });
+                }); 
             })
             .catch((error) => {
                 console.log(error);
@@ -39,6 +39,28 @@ exports.getLeads = (request, response, next) => {
 /* ========================== FIN CU. 10 ==============================  */
 
 /* ========== CU. 6 CONSULTA LEAD | Sebas Colin =============== */
+
+exports.getLeadDetails = async (req, res) => {
+    console.log('pedo');
+    const leadId = req.params.leadId;
+    let testLead = Lead.fetchOne(leadId);
+    console.log(testLead);
+    try {
+        const leadDetails = await Lead.fetchOne(leadId);
+        if (!leadDetails) {
+            return res.status(404).json({ error: 'Lead not found' });
+        }
+        res.json(leadDetails);
+    } catch (error) {
+        console.error('Error fetching lead details:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+// exports.getLeadDetails = async (req, res) => {
+//     console.log('controlador');
+//     res.send('Hello from getLeadDetails');
+// };
 
 
 /* ========================== FIN CU. 6 ==============================  */
