@@ -3,11 +3,13 @@ const Reporte = require('../model/reporte.model');
 /* ========== CU. 24 CONSULTA HISTORIAL | Chimali Nava =============== */
 
 exports.getReportes = (request, response, next) => {
-    const { idUsuario } = request.session;
-    console.log(idUsuario);
-    Reporte.fetchRol(idUsuario)
+    const { IDUsuario } = request.session;
+    console.log(IDUsuario);
+    Reporte.fetchRol(IDUsuario)
         .then (([idRolFetched, fieldData]) => {
-            if (idRolFetched === 1 || idRolFetched === 2) {
+            console.log(idRolFetched);
+            const rol = idRolFetched[0];
+            if (rol.IDRol === 1 || rol.IDRol === 2) {
                 Reporte.fetchAll()
                     .then(([reportesFetched, fieldData]) => {
                         response.render('history', {

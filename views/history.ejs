@@ -1,18 +1,38 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>Home</title>
-  <link rel="stylesheet" href="/css/output.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historial</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <nav><%- include('partials/sidebar.ejs') %></nav>
-    <%- include('partials/aside.ejs') %> <%-include('partials/background')%>
-    <div class="p-4 sm:ml-64">
-      <header>
-        <h1
-          class="mb-4 text-4xl font-bold text-gray-900"
-        >
-          Historial
-        </h1>
-      </header>
-    </div>
-  </body>
+<body class="bg-[#E4E8EE]">
+  <nav><%- include('partials/sidebar.ejs') %></nav>
+  <%- include('partials/aside.ejs') %> 
+  <h1 class="mb-16 text-4xl text-gray-900">Historial</h1>
+  <div class="pl-20 pr-80 py-10 overflow-auto">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 border-collapse rounded-lg w-full">
+          <thead class="text-xs text-white bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 bg-blue-700">Descripción</th>
+              <th scope="col" class="px-6 py-3 bg-blue-700">Fecha</th>
+              <th scope="col" class="px-6 py-3 bg-blue-700">Generado por:</th>
+              <th scope="col" class="px-6 py-3 bg-blue-700">Periodo</th>
+              <th scope="col" class="px-6 py-3 bg-blue-700"> </th>
+            </tr>
+          </thead>
+          <tbody>
+          <% reportes.forEach((reporte) => { %>
+            <tr class="bg-white border-b hover:bg-gray-50">
+              <td class="px-4 py-2 sm:px-3 sm:py-3"><%= reporte.Descripcion %></td>
+              <td class="px-4 py-2 sm:px-3 sm:py-3"><%= reporte.Fecha.toLocaleDateString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'}) %></td>
+              <td class="px-4 py-2 sm:px-3 sm:py-3">''</td>
+              <td class="px-4 py-2 sm:px-3 sm:py-3">''</td>
+              <td class="px-4 py-2 sm:px-3 sm:py-3">''</td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+  </div>
+</body>
+</html>
