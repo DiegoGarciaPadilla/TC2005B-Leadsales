@@ -36,13 +36,63 @@
         </div>
       </li>
       <li>
-        <a
-          href="/historial"
-          class="ml-8 mt-5 inline-block px-4 py-1 text-xs font-medium leading-6 text-center text-purple-700 border border-purple-700 transition bg-white rounded shadow ripple hover:shadow-lg hover:bg-purple-700 hover:text-white focus:outline-none"
-        >
-          Crear Lead
-        </a>
+        <button
+        onclick="toggleModal(event)"
+        id = "butonCrearLead"
+        class="ml-8 mt-5 inline-block px-4 py-1 text-xs font-medium leading-6 text-center text-purple-700 border border-purple-700 transition bg-white rounded shadow ripple hover:shadow-lg hover:bg-purple-700 hover:text-white focus:outline-none"
+      >
+        Crear Lead
+      </button>
       </li>
     </ul>
   </div>
+
+  <div id="fondoModalCrearLead" class="fixed inset-0 flex items-center justify-center z-50 hidden bg-black bg-opacity-50" onclick="toggleModal(event)">
+    <div id="modalForms" class="bg-white rounded shadow-lg p-8 m-4 max-w-xs max-h-full text-center" >
+      <form>
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="nombre">
+            Nombre
+          </label>
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nombre" type="text" placeholder="Nombre">
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="telefono">
+            Teléfono
+          </label>
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="telefono" type="text" placeholder="Teléfono">
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="embudo">
+            Embudo
+          </label>
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="embudo" type="text" placeholder="Embudo">
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="asignado">
+            Asignado a
+          </label>
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="asignado" type="text" placeholder="Asignado a">
+        </div>
+        <div class="flex items-center justify-between">
+          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+</div>
+<script>
+  function toggleModal(event) {
+    var modal = document.getElementById('fondoModalCrearLead');
+    if(event.target.id == "butonCrearLead" || event.target.id == "fondoModalCrearLead"){
+      if (modal.style.display === "none" || modal.style.display === "") {
+        modal.style.display = "flex";
+      } else {
+        modal.style.display = "none";
+      }
+    }
+  }
+  </script>
+
 </aside>
