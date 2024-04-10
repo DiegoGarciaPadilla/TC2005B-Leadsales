@@ -51,6 +51,7 @@
               </thead>
 
               <tbody>
+                <% i = 0 %>
                 <% usuarios.forEach((usuario) => { %>
                   <tr class="bg-white border-b hover:bg-gray-50">
                     <td class="px-4 py-2 sm:px-3 sm:py-3">
@@ -59,13 +60,13 @@
                             onmouseout="document.getElementById('popover0_<%= usuario.IDUsuario %>').classList.add('hidden')"
                       >
                         <%= (usuario.Nombre + ' ' + usuario.ApellidoPaterno + ' ' + usuario.ApellidoMaterno).substr(0, 15) + ((usuario.Nombre + ' ' + usuario.ApellidoPaterno + ' ' + usuario.ApellidoMaterno).length > 15 ? '...' : '') %>
-                        <div id="popover0_<%= usuario.IDUsuario %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
+                        <div id="popover0_<%= usuario.IDUsuario %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-5 top-8">
                           <%= usuario.Nombre %> <%= usuario.ApellidoPaterno %> <%= usuario.ApellidoMaterno %>
                         </div>
                       </span>  
                     </td>
                     <td class="px-4 py-2 sm:px-3 sm:py-3">
-                      <!-- Mostrar solo el inicio del último mensaje -->
+                      <!-- Mostrar solo el inicio del correo -->
                       <span class="cursor-pointer relative" 
                             onmouseover="document.getElementById('popover_<%= usuario.IDUsuario %>').classList.remove('hidden')"
                             onmouseout="document.getElementById('popover_<%= usuario.IDUsuario %>').classList.add('hidden')"
@@ -77,7 +78,7 @@
                       </span>
                     </td>
                     <td class="px-4 py-2 sm:px-3 sm:py-3">
-                      <!-- Mostrar solo el inicio del primer mensaje -->
+                      <!-- Mostrar solo el inicio del teléfono -->
                       <span class="cursor-pointer relative" 
                             onmouseover="document.getElementById('popover2_<%= usuario.IDUsuario %>').classList.remove('hidden')"
                             onmouseout="document.getElementById('popover2_<%= usuario.IDUsuario %>').classList.add('hidden')"
@@ -89,20 +90,24 @@
                       </span>
                     </td>
                     <td class="px-4 py-2 sm:px-3 sm:py-3">
-                    <!-- Mostrar solo el inicio del primer mensaje -->
+                    <!-- Mostrar solo el inicio del domicilio -->
                     <span class="cursor-pointer relative" 
-                    onmouseover="document.getElementById('popover2_<%= usuario.IDUsuario %>').classList.remove('hidden')"
-                    onmouseout="document.getElementById('popover2_<%= usuario.IDUsuario %>').classList.add('hidden')"
+                    onmouseover="document.getElementById('popover3_<%= usuario.IDUsuario %>').classList.remove('hidden')"
+                    onmouseout="document.getElementById('popover3_<%= usuario.IDUsuario %>').classList.add('hidden')"
                       >
                         <%= usuario.Domicilio.substr(0, 20) + (usuario.Domicilio.length > 20 ? '...' : '') %>
-                        <div id="popover2_<%= usuario.IDUsuario %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
+                        <div id="popover3_<%= usuario.IDUsuario %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
                           <%= usuario.Domicilio %>
                         </div>
                       </span>
                     </td>
-                    <td class="px-4 py-2 sm:px-3 sm:py-3"><%= usuario.ApellidoPaterno %></td>
+                    <td class="px-4 py-2 sm:px-3 sm:py-3">
+                        <%= roles[i].Nombre %> 
+                    </td>
+                        <% i = i + 1 %>
+                        <% }); %>
                   </tr>
-                <% }); %>
+
               </tbody>
             </table>
         </div>
