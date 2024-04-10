@@ -22,7 +22,7 @@ exports.getReportes = (request, response, next) => {
                     });
             }
             else {
-                Reporte.fetchReportesByUser(idUsuario)
+                Reporte.fetchReportesByUser(IDUsuario)
                     .then(([reportesFetched, fieldData]) => {
                         response.render('history', {
                             reportes: reportesFetched,
@@ -35,7 +35,7 @@ exports.getReportes = (request, response, next) => {
             }
         })
         .catch((error) => {
-            console.log("trake khe");
+            console.log("error");
         });
 };
 /* ========================== FIN CU. 24 ==============================  */
