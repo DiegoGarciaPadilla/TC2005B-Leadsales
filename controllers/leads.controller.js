@@ -58,6 +58,27 @@ exports.getLeadDetails = (req, res) => {
 //     res.send('Hello from getLeadDetails');
 // };
 
+exports.getLeadDetails = (req, res) => {
+    console.log('pedo');
+    const leadId = req.params.leadId;
+    Lead.fetchOne(leadId)
+    .then(([testLead, fieldData]) => {
+            return res.status(200).json(testLead[0]);
+    }).catch(() => {
+        console.log('Error fetching lead details:');
+        res.status(500).json({ error: 'Internal server error' });
+    });
+
+};
+
+// exports.getLeadDetails = async (req, res) => {
+//     console.log('controlador');
+//     res.send('Hello from getLeadDetails');
+// };
+
+exports.getOneLead = (req, res, next) => {
+
+};
 
 /* ========================== FIN CU. 6 ==============================  */
 
