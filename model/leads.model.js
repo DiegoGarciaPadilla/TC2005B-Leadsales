@@ -32,6 +32,6 @@ module.exports = class Lead {
   }
 
   static fetchOne(IDLead) {
-    return db.execute("SELECT * FROM `Lead` WHERE IDLead = ?", [IDLead]);
+    return db.execute("SELECT * FROM `lead` WHERE IDLead = ?", [IDLead]);
   }
 }

@@ -59,7 +59,6 @@ app.use(multer({storage: fileStorage }).single("file"));
 // app.use(express.static(path.join(__dirname, "public")));
 
 // Rutas
-
 const routes = require("./routes/.routes");
 const usuariosRoutes = require("./routes/usuarios.routes");
 const ajustesRoutes = require("./routes/ajustes.routes");
