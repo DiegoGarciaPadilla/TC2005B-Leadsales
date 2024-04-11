@@ -4,6 +4,8 @@ const router = express.Router();
 
 const reporteController = require('../controllers/reporte.controller');
 
-router.get('/', reporteController.getReportes);
+const isAuth = require('../util/privilegios/is-auth');
+
+router.get('/', isAuth, reporteController.getReportes);
 
 module.exports = router;
