@@ -4,15 +4,17 @@ const router = express.Router();
 
 const CSVController = require('../controllers/CSV.controller');
 
+const isAuth = require('../util/privilegios/is-auth');
+
 // Rutas
 
-router.get("/FAQ", (req, res) => {
+router.get("/FAQ", isAuth, (req, res) => {
     res.render("FAQ");
 });
 
-router.post("/", CSVController.post_CSV);   // ANTES de router,use("/")
+router.post("/", isAuth, CSVController.post_CSV);   // ANTES de router,use("/")
 
-router.use("/", (req, res) => {
+router.get("/", isAuth, (req, res) => {
     res.render("inicio");
 });
 
