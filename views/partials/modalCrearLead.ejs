@@ -1,0 +1,49 @@
+<div id="fondoModalCrearLead" class="fixed inset-0 flex items-center justify-center z-50 hidden bg-black bg-opacity-50" onclick="toggleModal(event)">
+    <div id="modalForms" class="bg-white rounded shadow-lg p-8 m-4 max-w-xs max-h-full text-center" >
+      <form action="/directorio/crearLead", method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="nombre">
+            Nombre
+          </label>
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nombre" type="text" placeholder="Nombre" name="nombre">
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="telefono">
+            Teléfono
+          </label>
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="telefono" type="text" placeholder="Teléfono" name="telefono">
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="embudo">
+            Embudo
+          </label>
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="embudo" type="text" placeholder="Embudo" name="embudo">
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="asignadoa">
+            Asignado a
+          </label>
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="asignado" type="text" placeholder="Asignado a" name="asignadoa">
+        </div>
+        <div class="flex items-center justify-between">
+          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+</div>
+
+<script>
+  function toggleModal(event) {
+    var modal = document.getElementById('fondoModalCrearLead');
+    if(event.target.id == "butonCrearLead" || event.target.id == "fondoModalCrearLead"){
+      if (modal.style.display === "none" || modal.style.display === "") {
+        modal.style.display = "flex";
+      } else {
+        modal.style.display = "none";
+      }
+    }
+  }
+</script>

@@ -7,4 +7,6 @@ router.get('/:leadId', leadsController.getLeadDetails);
 
 router.get('/', isAuth, leadsController.getLeads);
 
+router.post('/crearLead', isAuth, leadsController.postCrearLead);
+
 module.exports = router;    

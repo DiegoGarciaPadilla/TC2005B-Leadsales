@@ -83,3 +83,21 @@ exports.getOneLead = (req, res, next) => {
 /* ========================== FIN CU. 6 ==============================  */
 
 
+/* ========== CU. 5 CREA LEAD | Diego Lira =============== */
+
+exports.postCrearLead = (request, response) => {
+    const { privilegios = ["Crea lead"]} = request.session;
+    const { nombre, telefono, embudo, asignadoa} = request.body;
+    if(privilegios.includes("Crea lead")){
+        console.log(nombre);
+        console.log(telefono);
+        console.log(embudo);
+        console.log(asignadoa);
+        
+    }else{
+        response.redirect("/directorio");
+    }
+};
+
+/* ========================== FIN CU. 5 ==============================  */
+
