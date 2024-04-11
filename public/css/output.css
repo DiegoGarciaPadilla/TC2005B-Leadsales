@@ -635,6 +635,10 @@ video {
   margin-left: -1.25rem;
 }
 
+.-ml-5 {
+  margin-left: -1.25rem;
+}
+
 .mb-12 {
   margin-bottom: 3rem;
 }
@@ -1080,8 +1084,8 @@ video {
   padding-left: 2rem;
 }
 
-.pr-80 {
-  padding-right: 20rem;
+.pl-8 {
+  padding-left: 2rem;
 }
 
 .ps-2 {

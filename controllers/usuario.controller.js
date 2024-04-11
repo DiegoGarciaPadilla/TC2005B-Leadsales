@@ -59,7 +59,7 @@ exports.postLogin = (request, response, next) => {
                 }
             } else {
                 request.session.error = 'Correo o contraseña incorrectos';
-                response.redirect('/users/login');
+                response.redirect('/usuarios/login');
             }
         })
         .catch((error) => {
@@ -102,7 +102,7 @@ exports.getLogout = (request, response, next) => {
     Usuario.logout(request.session.IDUsuario)
     .then(() => {
         request.session.destroy(() => {
-            response.redirect('/users/login');
+            response.redirect('/usuarios/login');
         });
     })
     .catch((error) => {

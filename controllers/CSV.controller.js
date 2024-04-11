@@ -15,7 +15,7 @@ exports.post_CSV = (req, res, next) => {
       // PROMISE
   csv.save();       
 
-  res.render("home", {
+  res.render("inicio", {
       msg: 'File uploaded successfully!',
       file: `/uploads/${req.file.filename}`
   });
