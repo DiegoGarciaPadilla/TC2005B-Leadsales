@@ -40,21 +40,17 @@ exports.getLeads = (request, response, next) => {
 
 /* ========== CU. 6 CONSULTA LEAD | Sebas Colin =============== */
 
-exports.getLeadDetails = async (req, res) => {
+exports.getLeadDetails = (req, res) => {
     console.log('pedo');
     const leadId = req.params.leadId;
-    let testLead = Lead.fetchOne(leadId);
-    console.log(testLead);
-    try {
-        const leadDetails = await Lead.fetchOne(leadId);
-        if (!leadDetails) {
-            return res.status(404).json({ error: 'Lead not found' });
-        }
-        res.json(leadDetails);
-    } catch (error) {
-        console.error('Error fetching lead details:', error);
+    Lead.fetchOne(leadId)
+    .then(([testLead, fieldData]) => {
+            return res.status(200).json(testLead[0]);
+    }).catch(() => {
+        console.log('Error fetching lead details:');
         res.status(500).json({ error: 'Internal server error' });
-    }
+    });
+
 };
 
 // exports.getLeadDetails = async (req, res) => {

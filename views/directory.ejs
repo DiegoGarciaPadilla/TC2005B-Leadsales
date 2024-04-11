@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Directorio</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/output.css"/>
 
   <style> 
 
@@ -148,22 +148,25 @@
     }, 500);
   }
   
-  function showDialog(leadId) {
+  function showDialog(IDLead) {
 
-    console.log(`/directory/${leadId}`);
-    fetch(`/directory/${leadId}`, {
+    console.log(`/directory/${IDLead}`);
+    fetch(`/directory/${IDLead}`, {
         method: 'GET', 
         headers: {
           'Content-Type': 'application/json',
         }
     })
-      .then(response => console.log(response))
-      .then((data) => {
+      .then((result) => {
+        console.log(result);
+        return result.json(); //Regresa otra promesa
+      }).then((data) => {
         console.log(data);
         let dialog = document.getElementById('dialog');
         let leadDetails = data; // Assuming the response contains all lead details
         console.log('caca');
-        let leadInfo = `<table><thead id="tableHead" class="text-xs text-white bg-gray-50"><tr>`;
+        let leadInfo = '';
+        leadInfo += `<table><thead id="tableHead" class="text-xs text-white bg-gray-50"><tr>`;
 
         // Populate the dialog with lead details  
 
@@ -173,15 +176,30 @@
           leadInfo += `<th scope="col" class="px-6 py-3 bg-blue-700">${key}</th>`;
         }
 
-        leadInfo = `</tr></thead><tbody><tr id="element" class="bg-white border-b hover:bg-gray-50">`;
+        leadInfo += `</tr></thead><tbody><tr id="element" class="bg-white border-b hover:bg-gray-50">`;
 
         // <td> loop
         for (let key in leadDetails) {
-          leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3">${leadDetails[key]}</td>`;
+          console.log(`${key}:`);
+          console.log(`${key}: ${leadDetails[key]}`);
+
+          const str = leadDetails[key];
+          console.log(str, 'string');
+
+          if (str != null) {
+            if (str.length > 20) {
+              str.substr(0, 20) + '...';
+            } else {
+              leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3">${leadDetails[key]}</td>`; 
+            }
+          } else {
+            leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3"></td>`; 
+          }
+
         }
 
-        leadInfo = `</tr></tbody></table>`;
-
+        leadInfo += `</tr></tbody></table>`;
+        console.log(leadInfo);
         document.getElementById('leadDetails').innerHTML = leadInfo;
 
         dialog.classList.remove('hidden');
