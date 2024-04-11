@@ -127,7 +127,7 @@
       </div>
     </div>
 
-<script>
+<script defer>
 
   // function showDialog() {
   //   let dialog = document.getElementById('dialog');
@@ -150,8 +150,8 @@
   
   function showDialog(IDLead) {
 
-    console.log(`/directory/${IDLead}`);
-    fetch(`/directory/${IDLead}`, {
+    console.log(`/directorio/${IDLead}`);
+    fetch(`/directorio/${IDLead}`, {
         method: 'GET', 
         headers: {
           'Content-Type': 'application/json',

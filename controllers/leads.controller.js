@@ -61,6 +61,7 @@ exports.getLeadDetails = (req, res) => {
 exports.getLeadDetails = (req, res) => {
     console.log('pedo');
     const leadId = req.params.leadId;
+    console.log('IDLead: ', leadId);
     Lead.fetchOne(leadId)
     .then(([testLead, fieldData]) => {
             return res.status(200).json(testLead[0]);
