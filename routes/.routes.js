@@ -15,7 +15,12 @@ router.get("/FAQ", isAuth, (req, res) => {
 router.post("/", isAuth, CSVController.post_CSV);   // ANTES de router,use("/")
 
 router.get("/", isAuth, (req, res) => {
-    res.render("inicio");
+    res.render("inicio", {
+        csrfToken: req.csrfToken(),
+        privilegios: req.session.Privilegios,
+        correo: req.session.Correo,
+        rol: req.session.Rol,
+    });
 });
 
 module.exports = router;

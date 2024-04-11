@@ -40,12 +40,22 @@ exports.postLogin = (request, response, next) => {
                             // Guardar los privilegios en la sesion
                             Usuario.getPrivilegios(usuario.Correo)
                                 .then(([privilegios, fieldData]) => {
-                                    console.log(privilegios);
-                                    request.session.Privilegios = privilegios;
-                                    request.session.Correo = usuario.Correo;
-                                    request.session.IDUsuario = usuario.IDUsuario;
-                                    request.session.isLoggedIn = true;
-                                    response.redirect('/');
+                                    Usuario.fetchRol(usuario.IDUsuario)
+                                        .then(([rolFetched, fieldData]) => {
+                                            const rol = rolFetched[0].IDRol;
+
+                                            console.log(privilegios);
+                                            request.session.Privilegios = privilegios;
+                                            request.session.Correo = usuario.Correo;
+                                            request.session.IDUsuario = usuario.IDUsuario;
+                                            request.session.Rol = rol;
+                                            request.session.isLoggedIn = true;
+                                            console.log(request.session);
+                                            response.redirect('/');
+                                        })
+                                        .catch((error) => {
+                                            console.log(error);
+                                        });
                                 })
                                 .catch((error) => {
                                     console.log(error);

@@ -11,10 +11,6 @@ module.exports = class Reporte {
 
     }
 
-    static fetchRol(IDUsuario){
-        return db.execute("SELECT IDRol FROM usuario_rol WHERE IDUsuario= ?",[IDUsuario]);
-    }
-
     static fetchAll() {
         return db.execute("SELECT R.Fecha, R.Descripcion, R.Liga, CONCAT(U.Nombre, ' ', U.ApellidoPaterno) AS NombreCompleto FROM `Reporte` AS R JOIN `Usuario` AS U ON R.IDUsuario = U.IDUsuario");
     }
