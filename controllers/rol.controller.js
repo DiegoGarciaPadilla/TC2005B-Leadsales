@@ -2,20 +2,20 @@ const Rol = require('../model/rol.model');
 
 /* ========== CU. 14 CONSULTA ROLES | Diego García =============== */
 
-exports.getRoles = (request, response, next) => {
+exports.getRoles = (req, res) => {
     
     // Obtiene el error de la sesion si existe y lo elimina
-    const err = request.session.error || '';
-    request.session.error = '';
+    const err = req.session.error || '';
+    req.session.error = '';
 
     // Obtiene los roles de la base de datos
     Rol.fetchAll()
-        .then(([rolesFetched, fieldData]) => {
+        .then(([rolesFetched]) => {
             console.log(rolesFetched);
-            response.render('roles', {
+            res.render('roles', {
                 roles: rolesFetched,
                 error: err,
-                csrfToken: request.csrfToken(),
+                csrfToken: req.csrfToken(),
             });
         })
         .catch((error) => {
@@ -27,22 +27,22 @@ exports.getRoles = (request, response, next) => {
 
 /* ========== CU. 15 MODIFICA ROLES | Diego García =============== */
 
-exports.getEditarRol = (request, response, next) => {
+exports.getEditarRol = (req, res) => {
     
     // Obtiene el error de la sesion si existe y lo elimina
-    const err = request.session.error || '';
-    request.session.error = '';
+    const err = req.session.error || '';
+    req.session.error = '';
 
     // Obtiene el id del rol
-    const { IDRol } = request.params;
+    const { IDRol } = req.params;
 
     // Obtiene el rol de la base de datos
     Rol.fetchRolById(IDRol)
-        .then(([rolFetched, fieldData]) => {
-            response.render('editarRol', {
+        .then(([rolFetched]) => {
+            res.render('editarRol', {
                 rol: rolFetched[0],
                 error: err,
-                csrfToken: request.csrfToken(),
+                csrfToken: req.csrfToken(),
             });
         })
         .catch((error) => {
@@ -50,20 +50,20 @@ exports.getEditarRol = (request, response, next) => {
         });
 }
 
-exports.postEditarRol = (request, response, next) => {
+exports.postEditarRol = (req, res) => {
     
     // Obtiene el id del rol
-    const { IDRol } = request.params;
+    const { IDRol } = req.params;
     console.log(IDRol);
 
     // Obtiene los datos del formulario
-    const { Nombre, DescripcionRol } = request.body;
+    const { Nombre, DescripcionRol } = req.body;
     console.log(Nombre, DescripcionRol);
 
     // Actualiza el rol en la base de datos
     Rol.updateRolById(IDRol, Nombre, DescripcionRol)
         .then(() => {
-            response.redirect('/ajustes/roles');
+            res.redirect('/ajustes/roles');
         })
         .catch((error) => {
             console.log(error);
