@@ -4,26 +4,27 @@ const Lead = require("../model/leads.model");
 
 /* ========================== FIN CU. 25 ==============================  */
 
-/* ========== CU. 10 CONSULTA DIRECTORIO | Diego Lira - Diego García (Puro Peer Programing) =============== */
+/* ========== CU. 10 CONSULTA DIRECTORIO | Diego Lira - Diego García - Chimali (Puro Peer Programing) =============== */
 
 exports.getLeads = (req, res) => {
     const {
-        correo = "pednobr@gmail.com",
-        privilegios = ["Ver todos los leads"],
+        Correo,
+        Privilegios,
     } = req.session; // Test user
 
-    if (!privilegios.includes("Ver todos los leads")) {
-        Lead.fetchLeadsByUser(correo)
+    if (Privilegios.some((Privilegios => Privilegios.Descripcion === 'Consulta directorio todos.'))) {
+        Lead.fetchAll()
             .then(([leadsFetched]) => {
                 res.render("directorio", {
                     leads: leadsFetched,
+                    csrfToken: req.csrfToken(),
                 });
             })
             .catch((error) => {
                 console.log(error);
             });
     } else {
-        Lead.fetchAll()
+        Lead.fetchLeadsByUser(Correo)
             .then(([leadsFetched]) => {
                 res.render("directorio", {
                     leads: leadsFetched,
