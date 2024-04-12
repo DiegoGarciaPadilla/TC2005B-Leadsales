@@ -10,7 +10,7 @@ exports.ver_roles = (request, response, next) => {
 
     // Verifica si el usuario tiene el privilegio de ver roles
     for (let i = 0; i < Privilegios.length; i++) {
-        if (Privilegios[i].Descripcion === 'Consulta rol.') {
+        if (Privilegios[i].Descripcion === 'Consulta roles.') {
             puedeVerRoles = true;
             break;
         }
