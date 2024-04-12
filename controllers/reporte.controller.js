@@ -3,9 +3,9 @@ const Reporte = require('../model/reporte.model');
 /* ========== CU. 24 CONSULTA HISTORIAL | Chimali Nava =============== */
 
 exports.getReportes = (request, response, next) => {
-    const { IDUsuario, privilegios } = request.session;
-    console.log(IDUsuario, privilegios);
-    if (privilegios.includes('Consulta historial todos.')){
+    const { IDUsuario, Privilegios } = request.session;
+    console.log(IDUsuario, Privilegios);
+    if (Privilegios.some( Privilegios => Privilegios.Descripcion === 'Consulta historial todos.')){
         Reporte.fetchAll()
             .then(([reportesFetched, fieldData]) => {
                 response.render('historial', {
@@ -17,12 +17,12 @@ exports.getReportes = (request, response, next) => {
                 console.log(error);
             });
     }
-    else {
+    else if (Privilegios.some(Privilegios => Privilegios.Descripcion === 'Consulta historial propios.')){
         Reporte.fetchReportesByUser(IDUsuario)
                     .then(([reportesFetched, fieldData]) => {
                         response.render('historial', {
                             reportes: reportesFetched,
-                            csrfToken: req.csrfToken(),
+                            csrfToken: request.csrfToken(),
                         });
                     })
                     .catch((error) => {
