@@ -1,6 +1,8 @@
-const db = require('../util/db/db');
 const fs = require('fs');
+
 const csvParser = require('csv-parser');
+
+const db = require('../util/db/db');
 
 module.exports = class CSV {
     constructor(fName) {
@@ -25,7 +27,7 @@ module.exports = class CSV {
                     }, {});
 
 
-                    db.query(query, data, (error, results, fields) => {
+                    db.query(query, data, (error) => {
                         if (error) {
                             console.error('Error storing data in database:', error);
                         }
@@ -46,9 +48,8 @@ module.exports = class CSV {
     static fetch(id) {
         if (id) {
             return this.fetchOne(id);
-        } else {
-            return this.fetchAll();
         }
+        return this.fetchAll();
     }
 
     static fetchOne(id) {
