@@ -9,24 +9,17 @@ exports.ver_roles = (request, response, next) => {
     console.log("Privilegios: ", Privilegios);
 
     // Verifica si el usuario tiene el privilegio de ver roles
-    for (let i = 0; i < Privilegios.length; i++) {
-        if (Privilegios[i].Descripcion === 'Consulta roles.') {
+    if (Privilegios.some (Privilegios => Privilegios.Descripcion === 'Consulta roles.')) {
             puedeVerRoles = true;
-            break;
         }
-    }
-
-    // Si el usuario tiene el privilegio de ver roles, permite continuar con la operacion
-    if (puedeVerRoles) {
-        next();
-    }
 
     // Si el usuario no tiene el privilegio de ver roles, redirige a la pagina de inicio
     else {
         response.redirect('/');
-        console.log('No tiene el privilegio de ver roles');
+        console.log('Accion no permitida');
     }
 
+    next();
 }
 
 // --- 15. Modifica rol. ---
@@ -40,22 +33,15 @@ exports.modifica_rol = (request, response, next) => {
     console.log("Privilegios: ", Privilegios);
 
     // Verifica si el usuario tiene el privilegio de modificar roles
-    for (let i = 0; i < Privilegios.length; i++) {
-        if (Privilegios[i].Descripcion === 'Modifica rol.') {
-            puedeModificarRoles = true;
-            break;
-        }
-    }
-
-    // Si el usuario tiene el privilegio de modificar roles, permite continuar con la operacion
-    if (puedeModificarRoles) {
-        next();
+    if (Privilegios.some (Privilegios => Privilegios.Descripcion === 'Modifica rol.')) {
+        puedeModificarRoles = true;
     }
 
     // Si el usuario no tiene el privilegio de modificar roles, redirige a la pagina de inicio
     else {
-        response.redirect('/');
-        console.log('No tiene el privilegio de modificar roles');
+        response.redirect('/ajustes/roles');
+        console.log('Accion no permitida');
     }
 
+    next();
 }

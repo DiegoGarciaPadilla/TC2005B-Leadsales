@@ -10,7 +10,7 @@ exports.consulta_historial = (request, response, next) => {
     console.log("Privilegios: ", Privilegios);
 
     // Verifica si el usuario tiene el privilegio
-    if (Privilegios.some( Privilegios => Privilegios.Descripcion === 'Consulta historial todos.') || (Privilegios => Privilegios.Descripcion ===('Consulta historial propios.'))) {
+    if (Privilegios.some(Privilegios => Privilegios.Descripcion === 'Consulta historial todos.') || (Privilegios => Privilegios.Descripcion ===('Consulta historial propios.'))) {
         puedeVerHistorial = true;
     }
 
