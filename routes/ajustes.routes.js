@@ -6,11 +6,12 @@ const isAuth = require('../util/privilegios/is-auth');
 
 const rolController = require('../controllers/rol.controller');
 const usuarioController = require('../controllers/usuario.controller');
-const privilegios = require('../util/privilegios/privilegios');
+const privilegio14 = require('../util/privilegios/privilegioCU14');
+const privilegio15 = require('../util/privilegios/privilegioCU15');
 
-router.get('/roles', isAuth, privilegios.ver_roles, rolController.getRoles);
-router.get('/roles/editarRol/:IDRol', isAuth, privilegios.modifica_rol, rolController.getEditarRol);
-router.post('/roles/editarRol/:IDRol', isAuth, privilegios.modifica_rol, rolController.postEditarRol);
+router.get('/roles', isAuth, privilegio14.ver_roles, rolController.getRoles);
+router.get('/roles/editarRol/:IDRol', isAuth, privilegio15.modifica_rol, rolController.getEditarRol);
+router.post('/roles/editarRol/:IDRol', isAuth, privilegio15.modifica_rol, rolController.postEditarRol);
 
 router.get('/usuarios', isAuth, usuarioController.getUsuarios);
 
