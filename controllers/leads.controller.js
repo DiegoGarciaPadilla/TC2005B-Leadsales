@@ -77,13 +77,22 @@ exports.getLeadDetails = (req, res) => {
 /* ========== CU. 5 CREA LEAD | Diego Lira =============== */
 
 exports.postCrearLead = (req, res) => {
-    const { privilegios = ["Crea lead"] } = req.session;
+    const { Privilegios } = req.session;
     const { nombre, telefono, embudo, asignadoa } = req.body;
-    if (privilegios.includes("Crea lead")) {
-        console.log(nombre);
-        console.log(telefono);
-        console.log(embudo);
-        console.log(asignadoa);
+    if (Privilegios.some((Privilegios => Privilegios.Descripcion === 'Crea lead todos.'))) {
+
+        Lead.createLead({
+                Nombre: nombre,
+                Telefono: telefono,
+                Embudo: embudo,
+                Asignadoa: asignadoa,
+            })
+            .then(() => {
+                res.redirect("/directorio");
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     } else {
         res.redirect("/directorio");
     }

@@ -36,6 +36,6 @@ module.exports = class Lead {
   }
 
   static createLead(lead) {
-    return db.execute("INSERT INTO `Lead` (Nombre, Telefono, Correo, Asignadoa, Creado, Horadecreacion) VALUES (?, ?, ?, ?, CURDATE(), CURTIME())", [lead.Nombre, lead.Telefono, lead.Correo, lead.Asignadoa]);
+    return db.execute("INSERT INTO `Lead` (Nombre, Telefono, Embudo, Asignadoa, Creado, Horadecreacion, Archivado) VALUES (?, ?, ?, ?, CURDATE(), CURTIME(), 'No')", [lead.Nombre, lead.Telefono, lead.Embudo, lead.Asignadoa]);
   }
 }
