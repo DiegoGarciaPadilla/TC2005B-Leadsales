@@ -1,10 +1,16 @@
+// Importamos express y creamos un router
+
 const express = require("express");
-const bodyParser = require("body-parser");
+
 const router = express.Router();
 
-const CSVController = require('../controllers/CSV.controller');
+// Importamos el controlador de CSV
 
-const isAuth = require('../util/privilegios/is-auth');
+const { postCSV } = require("../controllers/CSV.controller");
+
+// Importamos el middleware isAuth (para verificar si el usuario está autenticado)
+
+const { isAuth } = require("../util/privilegios/is-auth");
 
 // Rutas
 
@@ -12,7 +18,7 @@ router.get("/FAQ", isAuth, (req, res) => {
     res.render("FAQ");
 });
 
-router.post("/", isAuth, CSVController.post_CSV);   // ANTES de router,use("/")
+router.post("/", isAuth, postCSV); // ANTES de router,use("/")
 
 router.get("/", isAuth, (req, res) => {
     res.render("inicio", {
@@ -22,5 +28,7 @@ router.get("/", isAuth, (req, res) => {
         rol: req.session.Rol,
     });
 });
+
+// Exportamos el router
 
 module.exports = router;

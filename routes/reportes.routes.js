@@ -1,11 +1,25 @@
-const express = require('express');
+// Importamos el router de express y creamos un router
+
+const express = require("express");
 
 const router = express.Router();
 
-const isAuth = require('../util/privilegios/is-auth');
-const reporteController = require('../controllers/reporte.controller');
-const privilegio24 = require('../util/privilegios/privilegioCU24');
+// Importamos el middleware isAuth (para verificar si el usuario está autenticado)
 
-router.get('/', isAuth, privilegio24.consulta_historial, reporteController.getReportes);
+const isAuth = require("../util/privilegios/is-auth");
+
+// Importamos el controlador de reporte
+
+const { getReportes } = require("../controllers/reporte.controller");
+
+// Importamos el middleware de privilegios
+
+const { consultaHistorial } = require("../util/privilegios/privilegios");
+
+// Rutas
+
+router.get("/", isAuth, consultaHistorial, getReportes);
+
+// Exportamos el router
 
 module.exports = router;

@@ -1,18 +1,39 @@
-const express = require('express');
+// Importamos express y creamos un router
+
+const express = require("express");
 
 const router = express.Router();
 
-const isAuth = require('../util/privilegios/is-auth');
+// Importamos el middleware isAuth (para verificar si el usuario está autenticado)
 
-const rolController = require('../controllers/rol.controller');
-const usuarioController = require('../controllers/usuario.controller');
-const privilegio14 = require('../util/privilegios/privilegioCU14');
-const privilegio15 = require('../util/privilegios/privilegioCU15');
+const { isAuth } = require("../util/privilegios/is-auth");
 
-router.get('/roles', isAuth, privilegio14.ver_roles, rolController.getRoles);
-router.get('/roles/editarRol/:IDRol', isAuth, privilegio15.modifica_rol, rolController.getEditarRol);
-router.post('/roles/editarRol/:IDRol', isAuth, privilegio15.modifica_rol, rolController.postEditarRol);
+// Importamos el controlador de rol
 
-router.get('/usuarios', isAuth, usuarioController.getUsuarios);
+const { getRoles, getEditarRol, postEditarRol } = require("../controllers/rol.controller");
+
+// Importamos el controlador de usuario
+
+const { getUsuarios } = require("../controllers/usuario.controller");
+
+const { consultaRol, modificaRol } = require("../util/privilegios/privilegios");
+
+router.get("/roles", isAuth, consultaRol, getRoles);
+
+router.get(
+    "/roles/editarRol/:IDRol",
+    isAuth,
+    modificaRol,
+    getEditarRol
+);
+
+router.post(
+    "/roles/editarRol/:IDRol",
+    isAuth,
+    modificaRol,
+    postEditarRol
+);
+
+router.get("/usuarios", isAuth, getUsuarios);
 
 module.exports = router;

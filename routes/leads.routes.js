@@ -1,13 +1,29 @@
-const express = require('express');
+// Importamos el router de express y creamos un router
+
+const express = require("express");
+
 const router = express.Router();
-const isAuth = require('../util/privilegios/is-auth');
-const privilegioCU10 = require('../util/privilegios/privilegioCU10');
-const leadsController = require('../controllers/leads.controller');
 
-router.get('/:leadId', leadsController.getLeadDetails);
+// Importamos el middleware isAuth (para verificar si el usuario está autenticado)
 
-router.get('/', isAuth, privilegioCU10.consulta_directorio, leadsController.getLeads);
+const isAuth = require("../util/privilegios/is-auth");
 
-router.post('/crearLead', isAuth, leadsController.postCrearLead);
+// Importamos el controlador de leads
 
-module.exports = router;    
+const leadsController = require("../controllers/leads.controller");
+
+// Importamos el middleware de privilegios
+
+const { consultaDirectorio } = require("../util/privilegios/privilegios");
+
+// Rutas
+
+router.get("/:leadId", leadsController.getLeadDetails);
+
+router.get("/", isAuth, consultaDirectorio, leadsController.getLeads);
+
+router.post("/crearLead", isAuth, leadsController.postCrearLead);
+
+// Exportamos el router
+
+module.exports = router;
