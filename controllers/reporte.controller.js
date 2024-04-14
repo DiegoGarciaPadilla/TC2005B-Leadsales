@@ -2,41 +2,33 @@ const Reporte = require('../model/reporte.model');
 
 /* ========== CU. 24 CONSULTA HISTORIAL | Chimali Nava =============== */
 
-exports.getReportes = (req, res) => {
-    const { IDUsuario } = req.session;
-    console.log(IDUsuario);
-    Reporte.fetchRol(IDUsuario)
-        .then (([idRolFetched]) => {
-            console.log(idRolFetched);
-            const rol = idRolFetched[0];
-            if (rol.IDRol === 1 || rol.IDRol === 2) {
-                Reporte.fetchAll()
-                    .then(([reportesFetched]) => {
-                        res.render('historial', {
+exports.getReportes = (request, response, next) => {
+    const { IDUsuario, Privilegios } = request.session;
+    console.log(IDUsuario, Privilegios);
+    if (Privilegios.some( Privilegios => Privilegios.Descripcion === 'Consulta historial todos.')){
+        Reporte.fetchAll()
+            .then(([reportesFetched, fieldData]) => {
+                response.render('historial', {
+                    reportes: reportesFetched,
+                    csrfToken: request.csrfToken(),
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+    else if (Privilegios.some(Privilegios => Privilegios.Descripcion === 'Consulta historial propios.')){
+        Reporte.fetchReportesByUser(IDUsuario)
+                    .then(([reportesFetched, fieldData]) => {
+                        response.render('historial', {
                             reportes: reportesFetched,
-                            csrfToken: req.csrfToken(),
+                            csrfToken: request.csrfToken(),
                         });
                     })
                     .catch((error) => {
                         console.log(error);
                     });
-            }
-            else {
-                Reporte.fetchReportesByUser(IDUsuario)
-                    .then(([reportesFetched]) => {
-                        res.render('historial', {
-                            reportes: reportesFetched,
-                            csrfToken: req.csrfToken(),
-                        });
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-};
+    }
+}
 /* ========================== FIN CU. 24 ==============================  */
 
