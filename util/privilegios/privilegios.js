@@ -467,3 +467,7 @@ exports.consultaUsuarios = (req, res, next) => {
 
     next();
 };
+
+// Exporta el módulo
+
+module.exports = exports;

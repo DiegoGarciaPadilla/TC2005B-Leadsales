@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Importamos el middleware isAuth (para verificar si el usuario está autenticado)
 
-const isAuth = require("../util/privilegios/is-auth");
+const { isAuth } = require("../util/privilegios/is-auth");
 
 // Importamos el controlador de reporte
 
