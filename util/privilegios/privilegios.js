@@ -18,8 +18,6 @@ exports.generaReporte = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 03. Exporta el reporte. ---
@@ -39,8 +37,6 @@ exports.exportaReporte = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 04. Recupera contraseña. ---
@@ -60,8 +56,6 @@ exports.recuperaContrasenia = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 05. Crea lead. ---
@@ -82,8 +76,6 @@ exports.creaLead = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 06. Consulta lead. ---
@@ -101,8 +93,6 @@ exports.consultaLead = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 07. Modifica lead. ---
@@ -120,8 +110,6 @@ exports.modificaLead = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 08. Elimina lead. ---
@@ -139,8 +127,6 @@ exports.eliminaLead = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 09. Consulta FAQ. ---
@@ -158,8 +144,6 @@ exports.consultaFAQ = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 10. Consulta directorio. ---
@@ -182,8 +166,6 @@ exports.consultaDirectorio = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 11. Registra cuenta de usuario. ---
@@ -205,8 +187,6 @@ exports.registraCuenta = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 12. Elimina cuenta de usuario. ---
@@ -228,8 +208,6 @@ exports.eliminaUsuario = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 13. Crea rol. ---
@@ -247,8 +225,6 @@ exports.creaRol = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 14. Consulta rol. ---
@@ -266,8 +242,6 @@ exports.consultaRol = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 15. Modifica rol. ---
@@ -285,8 +259,6 @@ exports.modificaRol = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 16. Elimina rol. ---
@@ -304,8 +276,6 @@ exports.eliminaRol = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 17. Cambia contraseña de usuario. ---
@@ -327,8 +297,6 @@ exports.cambiaContrasena = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 18. Registra asignación de rol a usuario. ---
@@ -351,8 +319,6 @@ exports.asignaRol = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 19. Registra asignación de permiso a rol. ---
@@ -375,8 +341,6 @@ exports.asignaPermiso = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 24. Consulta historial. ---
@@ -399,8 +363,6 @@ exports.consultaHistorial = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 25. Consulta reporte en el historial. ---
@@ -422,8 +384,6 @@ exports.consultaReporte = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 27. Exporta datos de leads. ---
@@ -445,8 +405,6 @@ exports.exportaLead = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // --- 28. Consulta usuarios. ---
@@ -464,8 +422,6 @@ exports.consultaUsuarios = (req, res, next) => {
     else {
         res.redirect("/");
     }
-
-    next();
 };
 
 // Exporta el módulo
