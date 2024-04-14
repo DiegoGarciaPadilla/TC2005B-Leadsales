@@ -1,11 +1,13 @@
 const express = require('express');
-
 const router = express.Router();
-
 const isAuth = require('../util/privilegios/is-auth');
-
+const privilegioCU10 = require('../util/privilegios/privilegioCU10');
 const leadsController = require('../controllers/leads.controller');
 
-router.get('/', isAuth, leadsController.getLeads);
+router.get('/:leadId', leadsController.getLeadDetails);
 
-module.exports = router;
+router.get('/', isAuth, privilegioCU10.consulta_directorio, leadsController.getLeads);
+
+router.post('/crearLead', isAuth, leadsController.postCrearLead);
+
+module.exports = router;    

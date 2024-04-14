@@ -1,70 +1,62 @@
 const express = require("express");
-
-const ejs = require("ejs");
-const app = express();
 const multer = require('multer');
-const fs = require('fs');
-const csvParser = require('csv-parser');
-const port = 3000;
-
-app.use(express.static("public"));
-
-// Sesión
-const session = require("express-session");
-
-app.use(session({
-  secret: 'Mario',
-  resave: false,
-  saveUninitialized: false,
-}));
-
-// Body parser
-const bodyParser = require("body-parser");
-
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
-
-// Cookie parser
-const cookieParser = require('cookie-parser');
-
-app.use(cookieParser());
-
-// Protección CSRF
 const csrf = require("csurf");
-
-const csrfProtection = csrf();
-app.use(csrfProtection);
-
-// Motor de plantillas
-
-const path = require("path");
-app.set("view engine", "ejs");
-app.set("views", "views");
-
-// fileStorage: Es nuestra constante de configuración para manejar el almacenamiento
-const fileStorage = multer.diskStorage({
-  destination: (request, file, callback) => {
-      // 'public/uploads': Es el directorio del servidor donde se subirán los archivos 
-      callback(null, 'public/uploads');
-  },
-  filename: (request, file, callback) => {
-      // aquí configuramos el nombre que queremos que tenga el archivo en el servidor, 
-      // para que no haya problema si se suben 2 archivos con el mismo nombre concatenamos el timestamp
-      callback(null, file.originalname + '-' + Date.now() + '.csv');
-  },
-});
-
-app.use(multer({storage: fileStorage }).single("file")); 
-
-// app.use(express.static(path.join(__dirname, "public")));
-
-// Rutas
-
+const session = require("express-session");
+const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser');
 const routes = require("./routes/.routes");
 const usuariosRoutes = require("./routes/usuarios.routes");
 const ajustesRoutes = require("./routes/ajustes.routes");
 const leadsRoutes = require("./routes/leads.routes");
 const reportesRoutes = require("./routes/reportes.routes");
+
+const app = express();
+
+app.use(express.static("public"));
+
+// Sesión
+
+app.use(session({
+    secret: 'Mario',
+    resave: false,
+    saveUninitialized: false,
+}));
+
+// Body parser
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// Cookie parser
+
+app.use(cookieParser());
+
+// Protección CSRF
+const csrfProtection = csrf();
+app.use(csrfProtection);
+
+// Motor de plantillas
+app.set("view engine", "ejs");
+app.set("views", "views");
+
+// fileStorage: Es nuestra constante de configuración para manejar el almacenamiento
+const fileStorage = multer.diskStorage({
+    destination: (request, file, callback) => {
+        // 'public/uploads': Es el directorio del servidor donde se subirán los archivos 
+        callback(null, 'public/uploads');
+    },
+    filename: (request, file, callback) => {
+        // aquí configuramos el nombre que queremos que tenga el archivo en el servidor, 
+        // para que no haya problema si se suben 2 archivos con el mismo nombre concatenamos el timestamp
+        callback(null, file.originalname, '-', Date.now(), '.csv');
+    },
+});
+
+app.use(multer({ storage: fileStorage }).single("file"));
+
+// app.use(express.static(path.join(__dirname, "public")));
+
+// Rutas
 
 // Usar rutas
 app.use("/usuarios", usuariosRoutes);
@@ -73,8 +65,7 @@ app.use("/directorio", leadsRoutes);
 app.use("/historial", reportesRoutes);
 app.use("/", routes);
 
-
 // Levantar el servidor
-app.listen(port, () => {
-  console.log("Servidor corriendo en http://localhost:3000");
+app.listen(3000, () => {
+    console.log("Servidor corriendo en http://localhost:3000");
 });

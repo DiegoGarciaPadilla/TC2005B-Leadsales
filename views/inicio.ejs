@@ -11,29 +11,65 @@
     .side:hover ~ #main-content {
       padding-left: 10rem;
     }
-
-  </style>
+    
+    </style>
 </head>
 <body class="bg-[#E4E8EE]">
   <%- include('partials/sidebar.ejs') %>
-    <div id="main-content" class="ml-14 mt-14 pl-20">
+  <%- include('partials/aside.ejs') %>  
+    <div id="main-content" class="w-full ml-14 mt-14 pl-20 display:flex">
       <h1 class="mb-16 text-4xl text-gray-900">Hi xxxxxx@xxxx</h1>
-      <div class="w-full sm:w-64 bg-[#C4CCD8] mr-4 rounded-md p-4">
-        <h2 class="mb-4 font-bold">Reporte</h2>
-        <div class="flex justify-between items-center mb-2">
-          <label for="whatsapp" class="ml-2">Whatsapp</label>
-          <input type="checkbox" id="whatsapp" name="whatsapp" value="whatsapp">
-        </div>
-        <div class="flex justify-between items-center mb-2">
-          <label for="facebook" class="ml-2">Facebook</label>
-          <input type="checkbox" id="facebook" name="facebook" value="facebook">
-        </div>
-        <div class="flex justify-between items-center mb-2">
-          <label for="instagram" class="ml-2">Instagram</label>
-          <input type="checkbox" id="instagram" name="instagram" value="instagram">
-        </div>
-        <button class="ml-auto mr-8 mt-5 inline-block px-2 py-1 text-xs font-medium leading-6 text-center text-purple-700 border border-purple-700 transition bg-white rounded shadow ripple hover:shadow-lg hover:bg-purple-700 hover:text-white focus:outline-none">Generar Reporte</button>
+
+      <div id="redes_calendar" class="flex">
+        <div id="reporteSelect" class="w-full sm:w-64 bg-[#C4CCD8] mr-4 rounded-md p-4">
+          <h2 class="mb-4 font-bold">Reporte</h2>
+  
+          <form id="reporteForm" class="max-w-lg mx-auto flex items-center" method="POST" action="/">
+            <div id="división_redes" class="ml-10 mt-5 w-full">
+              <div class="flex justify-start items-center mb-2">
+                <label for="whatsapp" class="ml-2">Whatsapp</label>
+                <input type="checkbox" id="check_whatsapp" name="whatsapp" value="whatsapp" class="ml-5">
+              </div>
+      
+              <div class="flex justify-start items-center mb-2">
+                <label for="facebook" class="ml-2">Facebook</label>
+                <input type="checkbox" id="check_facebook" name="facebook" value="facebook" class="ml-6">
+              </div>
+      
+              <div class="flex justify-start items-center mb-2">
+                <label for="instagram" class="ml-2">Instagram</label>
+                <input type="checkbox" id="check_instagram" name="instagram" value="instagram" class="ml-5">
+              </div>
+      
+              <button class="ml-auto mr-8 mt-5 inline-block px-2 py-1 text-xs font-medium leading-6 text-center text-purple-700 border border-purple-700 transition bg-white rounded shadow ripple hover:shadow-lg hover:bg-purple-700 hover:text-white focus:outline-none" type="submit">Generar Reporte</button>
+            </div>
+      
+              <div date-rangepicker class="flex items-center ml-auto -mt-10">
+                <div class="relative">
+                  <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                      <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                      </svg>
+                  </div>
+                  <input name="start" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 placeholder="Select date start">
+                </div>
+
+                <span class="mx-4 text-gray-500">to</span>
+                
+                <div class="relative">
+                  <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                      <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                      </svg>
+                  </div>
+                  <input name="end" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 placeholder="Select date end">
+                </div>
+              </div>
+      
+            </div>
       </div>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
+        </form>
   
       <div class=" h-52 sm:w-64 border-dashed border-2 border-purple-400 rounded-md p-4 flex items-center justify-center mt-4" style="width: 16rem">
         <!-- Hidden file input -->
@@ -49,10 +85,11 @@
           text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 
           dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" 
           type="submit" value="Guardar">Subir archivo</button>
+
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
         </form> 
       </div>  
     </div>
-  <%- include('partials/aside.ejs') %>  
   <script>  
       document.getElementById('uploadText').addEventListener('click', function() {
       document.getElementById('file').click();

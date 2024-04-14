@@ -32,6 +32,10 @@ module.exports = class Lead {
   }
 
   static fetchOne(IDLead) {
-    return db.execute("SELECT * FROM `Lead` WHERE IDLead = ?", [IDLead]);
+    return db.execute("SELECT * FROM `lead` WHERE IDLead = ?", [IDLead]);
+  }
+
+  static createLead(lead) {
+    return db.execute("INSERT INTO `Lead` (Nombre, Telefono, Correo, Asignadoa, Creado, Horadecreacion) VALUES (?, ?, ?, ?, CURDATE(), CURTIME())", [lead.Nombre, lead.Telefono, lead.Correo, lead.Asignadoa]);
   }
 }

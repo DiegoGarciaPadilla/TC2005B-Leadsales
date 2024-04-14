@@ -18,6 +18,10 @@ module.exports = class Usuario {
         return db.execute('SELECT * FROM usuario');
     }
 
+    static fetchRol(IDUsuario){
+        return db.execute("SELECT IDRol FROM usuario_rol WHERE IDUsuario= ?",[IDUsuario]);
+    }
+
     static fetchRoles() {
         return db.execute('SELECT R.Nombre FROM rol AS r JOIN usuario_rol AS ur ON ur.IDRol = r.IDRol');
     }
