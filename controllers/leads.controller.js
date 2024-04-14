@@ -7,12 +7,13 @@ const Lead = require("../model/leads.model");
 /* ========== CU. 10 CONSULTA DIRECTORIO | Diego Lira - Diego García - Chimali (Puro Peer Programing) =============== */
 
 exports.getLeads = (req, res) => {
-    const {
-        Correo,
-        Privilegios,
-    } = req.session; // Test user
+    const { Correo, Privilegios } = req.session; // Test user
 
-    if (Privilegios.some((Privilegios => Privilegios.Descripcion === 'Consulta directorio todos.'))) {
+    if (
+        Privilegios.some(
+            (priv) => priv.Descripcion === "Consulta directorio todos."
+        )
+    ) {
         Lead.fetchAll()
             .then(([leadsFetched]) => {
                 res.render("directorio", {
@@ -90,3 +91,5 @@ exports.postCrearLead = (req, res) => {
 };
 
 /* ========================== FIN CU. 5 ==============================  */
+
+module.exports = exports;
