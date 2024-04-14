@@ -71,7 +71,7 @@
                           onmouseover="document.getElementById('popover_<%= lead.IDLead %>').classList.remove('hidden')"
                           onmouseout="document.getElementById('popover_<%= lead.IDLead %>').classList.add('hidden')"
                     >
-                      <<%= lead.Ultimomensaje ? lead.Ultimomensaje.substr(0, 20) + (lead.Ultimomensaje.length > 20 ? '...' : '') : '' %>
+                      <%= lead.Ultimomensaje ? lead.Ultimomensaje.substr(0, 20) + (lead.Ultimomensaje.length > 20 ? '...' : '') : '' %>
                       <div id="popover_<%= lead.IDLead %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
                         <%= lead.Ultimomensaje %>
                       </div>
