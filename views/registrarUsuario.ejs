@@ -20,42 +20,47 @@
       <div id="bloque1" class="grid gap-6 mb-0 md:grid-cols-3">
           <div>
               <label for="nombre" class="block mb-2 text-sm font-bold text-gray-700"> Nombre </label>
-              <input type="text" id="nombre" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Martha" required maxlength="64"/>
+              <input type="text" id="nombre" name="nombre" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Martha" required maxlength="64"/>
           </div>
           <div>
               <label for="apellidoPaterno" class="block mb-2 text-sm font-bold text-gray-700"> Apellido Paterno </label>
-              <input type="text" id="apellidoPaterno" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Rojas" required maxlength="32"/>
+              <input type="text" id="apellidoPaterno" name="apellidoPaterno" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Rojas" required maxlength="32"/>
           </div>
           <div>
               <label for="apellidoMaterno" class="block mb-2 text-sm font-bold text-gray-700"> Apellido Materno</label>
-              <input type="text" id="apellidoMaterno" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Contreras" maxlength="32"/>
+              <input type="text" id="apellidoMaterno" name="apellidoMaterno" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Contreras" maxlength="32"/>
           </div>  
           <div>
               <label for="correo" class="block mb-2 text-sm font-bold text-gray-700"> Correo </label>
-              <input type="text" id="correo" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="martharoco@gmail.com" required />
+              <input type="text" id="correo" name="correo" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="martharoco@gmail.com" required />
           </div>
           <div>
               <label for="password" class="block mb-2 text-sm font-bold text-gray-700"> Contraseña </label>
-              <input type="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="•••••••••" required maxlength="32"/>
+              <input type="password" id="password" name="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="•••••••••" required maxlength="32"/>
           </div>
           <div>
               <label for="confirmarPassword" class="block mb-2 text-sm font-bold text-gray-700"> Confirmar contraseña  </label>
-              <input type="password" id="confirmarPassword" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="•••••••••" required maxlength="32" />
+              <input type="password" id="confirmarPassword" name="confirmarPassword" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="•••••••••" required maxlength="32" />
           </div>
         
           <div class="mb-6">
               <label for="telefono" class="block mb-2 text-sm font-bold text-gray-700"> Teléfono </label>
-              <input type="text" id="telefono" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="4425189756" />
+              <input type="text" id="telefono" name="telefono" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="4425189756" />
           </div>
           <div class="mb-4">
-              <label for="confirm_password" class="block mb-2 text-sm font-bold text-gray-700"> Rol </label>
-              <input type="password" id="confirm_password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Seller" required />
+            <label for="rol" class="block mb-2 text-sm font-bold text-gray-700"> Rol </label>
+            <select id="rol" name="rol" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+              <option selected> Elige un rol</option>
+              <% for (let i = 0; i < roles.length; i++) { %> 
+                <option value="<%= roles[i].IDRol %>"> <%= roles[i].Nombre %> </option>
+              <% } %>
+            </select>
           </div> 
         </div>
         
         <div class="mt-0 mb-6">
             <label for="domicilio" class="block mb-2 text-sm font-bold text-gray-700"> Domicilio </label>
-            <input type="text" id="domicilio" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Av. Las Fuentes #512" maxlength="256"/>
+            <input type="text" id="domicilio" name="domicilio" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Av. Las Fuentes #512" maxlength="256"/>
         </div> 
       
       <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"> Registrar cuenta </button>

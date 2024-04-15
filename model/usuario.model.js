@@ -1,5 +1,7 @@
 const db = require("../util/db/db");
 
+const bcrypt = require('bcryptjs');
+
 module.exports = class Usuario {
     constructor(
         miNombre,
@@ -19,33 +21,34 @@ module.exports = class Usuario {
         this.Domicilio = miDomicilio;
     }
 
-    save(IDUsuario, IDRol) {
+    save(IDRol) {
         return bcrypt.hash(this.Password, 12)
-            .then(async (hashedPassword) => {
-                try {
-                    await db.execute(
-                        `
-                        INSERT INTO usuario (Nombre, ApellidoPaterno, ApellidoMaterno, Correo, Password, Telefono, Domicilio)
-                        VALUES (?, ?, ?, ?, ?, ?, ?)
-                    `,
-                        [
-                            this.Nombre,
-                            this.ApellidoPaterno,
-                            this.ApellidoMaterno,
-                            this.Correo,
-                            hashedPassword,
-                            this.Telefono,
-                            this.Domicilio,
-                        ]
-                    );
-
-                    return db.execute("INSERT INTO usuario_rol (IDUsuario, IDRol) VALUES (?, ?)", 
-                    [IDUsuario, IDRol])
-                } 
-                catch(error) {
-
-                }
+            .then((hashedPassword) => {
+                return db.execute(
+                    `
+                    INSERT INTO usuario (Nombre, ApellidoPaterno, ApellidoMaterno, Correo, Password, Telefono, Domicilio)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                `,
+                    [
+                        this.Nombre,
+                        this.ApellidoPaterno,
+                        this.ApellidoMaterno,
+                        this.Correo,
+                        hashedPassword,
+                        this.Telefono,
+                        this.Domicilio,
+                    ]
+                );
             })
+            .then((result) => {
+                const IDUsuario = result[0].insertId;
+    
+                return db.execute("INSERT INTO usuario_rol (IDUsuario, IDRol, FechaHoraInicio) VALUES (?, ?, ?)", 
+                [IDUsuario, IDRol, new Date()])
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     static fetchOne(Correo) {

@@ -1,5 +1,9 @@
 const Usuario = require("../model/usuario.model");
 
+const Rol = require("../model/rol.model");
+
+const bcrypt = require('bcryptjs');
+
 // const bcrypt = require('bcryptjs');
 
 /* ======== CU. 01 AUTENTICA USUARIO | Andrea - Diego García  ============= */
@@ -110,14 +114,16 @@ exports.getUsuarios = (req, res) => {
 
 /* ====== CU. 11 REGISTRA USUARIO | Andrea Medina - Sebastián Colín  ======= */
 exports.getRegistrarUsuario = (req, res) => {
-   res.render("registrarUsuario", {
-        csrfToken: req.csrfToken(),
-        correo: req.session.correo || "",
-        nombre: req.session.nombre || "",
-        apellidoPaterno: req.session.apellidoPaterno || "",
-        apellidoMaterno: req.session.apellidoMaterno || "",
-        rol: req.session.rol || "",
-    });
+    Rol.fetchAll()
+        .then(([rolesFetched, fieldData]) => {
+            res.render("registrarUsuario", {
+                 csrfToken: req.csrfToken(),
+                roles: rolesFetched,
+             });
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 };
 
 exports.postRegistrarUsuario = (req, res) => {
@@ -131,25 +137,27 @@ exports.postRegistrarUsuario = (req, res) => {
         req.body.domicilio
     );
 
+    console.log(req.body);
+    console.log(nuevoUsuario);
+
     Usuario.fetchAllUsers()
         .then(([usuariosFetched, fieldData]) => {
-            const existente = usuariosFetched.find(
-                (existente) => usuario.Correo === nuevoUsuario.Correo
-            );
-            if (existente) {
-                console.log(existente);
-                console.log("El correo ya está registrado");
-                req.session.error = "El correo ya está registrado";
-                res.redirect("/usuarios/agregarUsuario");
-            } else {
-                Usuario.save(nuevoUsuario)
-                    .then(() => {
-                        res.redirect("/usuarios");
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+            for (let i = 0; i < usuariosFetched.length; i++) {
+                if (usuariosFetched[i].Correo === nuevoUsuario.Correo) {
+                    if (usuariosFetched[i].FechaHoraEliminado === null) {
+                        console.log("El correo ya está registrado");
+                        req.session.error = "El correo ya está registrado";
+                        res.redirect("/usuarios/agregarUsuario");
+                    }
+                }
             }
+            nuevoUsuario.save(req.body.rol)
+                .then(() => {
+                    res.redirect("/ajustes/usuarios");
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         })
         .catch();
 };
