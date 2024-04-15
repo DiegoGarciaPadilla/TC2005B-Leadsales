@@ -16,7 +16,9 @@ exports.postCSV = (req, res) => {
     res.render("inicio", {
         msg: "File uploaded successfully!",
         file: `/uploads/${req.file.filename}`,
+        csrfToken: req.csrfToken(),
     });
+
     return null; // Add a return statement at the end of the function
 };
 
