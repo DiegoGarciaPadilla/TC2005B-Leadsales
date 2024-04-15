@@ -36,9 +36,16 @@
 
 </head>
 <body>
-  <%- include('partials/sidebar.ejs') %> <%- include('partials/aside.ejs') %> 
+  <%- include('partials/sidebar.ejs') %> 
+  <%- include('partials/aside.ejs', {
+    correo: correo,
+    nombre: nombre, 
+    apellidoPaterno: apellidoPaterno,
+    apellidoMaterno: apellidoMaterno,
+    rol: rol,
+    })  %> 
   <div id="main-content" class="ml-14 mt-14 pl-8">
-    <h1 class="mb-16 text-4xl text-gray-900">Hi xxxxxx@xxxx</h1>
+    <h1 class="mb-16 text-4xl text-gray-900">Hi <i><%= correo %></i></h1>
         <div id="container" class="relative overflow-auto sm:rounded-lg w-3/4">
           <table class="text-sm text-left rtl:text-right text-gray-500 border-collapse rounded-lg w-full">
             <thead id="tableHead" class="text-xs text-white bg-gray-50">
