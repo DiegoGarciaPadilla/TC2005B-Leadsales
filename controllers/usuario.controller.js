@@ -45,6 +45,9 @@ exports.postLogin = (req, res) => {
                                             req.session.Privilegios =
                                                 privilegios;
                                             req.session.Correo = usuario.Correo;
+                                            req.session.Nombre = usuario.Nombre;
+                                            req.session.ApellidoPaterno = usuario.ApellidoPaterno;
+                                            req.session.ApellidoMaterno = usuario.ApellidoMaterno;
                                             req.session.IDUsuario =
                                                 usuario.IDUsuario;
                                             req.session.Rol = rol;

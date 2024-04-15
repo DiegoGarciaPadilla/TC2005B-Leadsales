@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Importamos el controlador de CSV
 
-const { postCSV } = require("../controllers/CSV.controller");
+const { post_CSV } = require("../controllers/CSV.controller");
 
 // Importamos el middleware isAuth (para verificar si el usuario está autenticado)
 const reporteController = require('../controllers/reporte.controller');
@@ -19,11 +19,9 @@ router.get("/FAQ", isAuth, (req, res) => {
     res.render("FAQ");
 });
 
-router.post('/reporte', isAuth, reporteController.postReporte);
+//router.post('/reporte', isAuth, reporteController.postReporte);
 
-router.post('/reporte', isAuth, reporteController.postReporte);
-
-router.post("/", isAuth, postCSV); // ANTES de router,use("/")
+router.post("/", isAuth, post_CSV); // ANTES de router,use("/")
 
 router.get("/", isAuth, (req, res) => {
     res.render("inicio", {
@@ -31,6 +29,9 @@ router.get("/", isAuth, (req, res) => {
         privilegios: req.session.Privilegios,
         correo: req.session.Correo,
         rol: req.session.Rol,
+        nombre: req.session.Nombre,
+        apellidoPaterno: req.session.ApellidoPaterno,
+        apellidoMaterno: req.session.apellidoMaterno,
     });
 });
 

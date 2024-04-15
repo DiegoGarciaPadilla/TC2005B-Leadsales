@@ -16,9 +16,15 @@
 </head>
 <body class="bg-[#E4E8EE]">
   <%- include('partials/sidebar.ejs') %>
-  <%- include('partials/aside.ejs') %>  
-    <div id="main-content" class="w-full ml-14 mt-14 pl-20 display:flex">
-      <h1 class="mb-12 text-4xl text-gray-900">Hi xxxxxx@xxxx</h1>
+  <%- include('partials/aside.ejs', {
+  correo: correo,
+  nombre: nombre, 
+  apellidoPaterno: apellidoPaterno,
+  apellidoMaterno: apellidoMaterno,
+  rol: rol
+  }) %>  
+    <div id="main-content" class="w-full ml-14 mt-12 pl-20 display:flex">
+      <h1 class="mb-8 text-4xl text-gray-900">Hi <i><%= correo %></i></h1>
 
       <div id="redes_calendar" class="flex">
         <div id="reporteSelect" class="bg-[#C4CCD8] w-2/5 mr-4 rounded-md p-4">
@@ -63,12 +69,12 @@
                       </svg>
                   </div>
                   <input name="end" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 placeholder="Select date end">
-                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <!-- <input type="hidden" name="_csrf" value="<%= csrfToken %>"> -->
                 </div>
               </div>
           </form>
         </div>
-      </div>
+      </div>  
   
       <div class="h-52 sm:w-64 border-dashed border-2 border-purple-400 rounded-md p-4 flex items-center justify-center mt-8" style="width: 20rem">
         <!-- Hidden file input -->
