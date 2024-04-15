@@ -112,6 +112,11 @@ exports.getUsuarios = (req, res) => {
 exports.getRegistrarUsuario = (req, res) => {
    res.render("registrarUsuario", {
         csrfToken: req.csrfToken(),
+        correo: req.session.correo || "",
+        nombre: req.session.nombre || "",
+        apellidoPaterno: req.session.apellidoPaterno || "",
+        apellidoMaterno: req.session.apellidoMaterno || "",
+        rol: req.session.rol || "",
     });
 };
 
