@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const router = express.Router();
 
 const CSVController = require('../controllers/CSV.controller');
+const reporteController = require('../controllers/reporte.controller');
 
 const isAuth = require('../util/privilegios/is-auth');
 
@@ -11,6 +12,8 @@ const isAuth = require('../util/privilegios/is-auth');
 router.get("/FAQ", isAuth, (req, res) => {
     res.render("FAQ");
 });
+
+router.post('/reporte', isAuth, reporteController.postReporte);
 
 router.post("/", isAuth, CSVController.post_CSV);   // ANTES de router,use("/")
 

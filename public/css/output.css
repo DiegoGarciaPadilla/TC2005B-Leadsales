@@ -701,10 +701,6 @@ video {
   margin-inline-end: 0.625rem;
 }
 
-.ml-10 {
-  margin-left: 2.5rem;
-}
-
 .ml-14 {
   margin-left: 3.5rem;
 }
@@ -763,6 +759,10 @@ video {
 
 .mt-5 {
   margin-top: 1.25rem;
+}
+
+.mt-8 {
+  margin-top: 2rem;
 }
 
 .block {
@@ -831,6 +831,10 @@ video {
 
 .w-2\/3 {
   width: 66.666667%;
+}
+
+.w-2\/5 {
+  width: 40%;
 }
 
 .w-3 {

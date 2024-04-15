@@ -20,15 +20,45 @@ module.exports = class Lead {
     // Primera consulta: obtener el nombre y apellido paterno basado en el correo
     const [rows] = await db.execute("SELECT CONCAT(Nombre, ' ', ApellidoPaterno) AS NombreCompleto FROM `Usuario` WHERE Correo = ?", [correo]);
     console.log(rows[0].NombreCompleto);
-  
+    
     if (rows.length === 0) {
       // No se encontró ningún usuario con ese correo
       return [];
     }
-  
+    
     // Segunda consulta: obtener los leads donde Asignadoa es igual al nombre completo obtenido
     const nombreCompleto = rows[0].NombreCompleto;
     return db.execute("SELECT * FROM `Lead` WHERE Asignadoa = ? AND FechaHoraEliminado IS NULL", [nombreCompleto]);
+  }
+
+  static async fetchAllByDate(start, end) {
+    
+    // Espacio para formato de fechas 
+    const fechaInicio = start;
+    const fechaFin = end;
+
+    return db.execute("SELECT * FROM `Lead` WHERE FechaHoraEliminado IS NULL AND Creado BETWEEN ? AND ?", [fechaInicio, fechaFin]);
+  }
+  
+  static async fetchLeadsByUserByDate(correo, start, end) {
+
+    // Espacio para formato de fechas 
+    const fechaInicio = start;
+    const fechaFin = end;
+
+    // Primera consulta: obtener el nombre y apellido paterno basado en el correo
+    const [rows] = await db.execute("SELECT CONCAT(Nombre, ' ', ApellidoPaterno) AS NombreCompleto FROM `Usuario` WHERE Correo = ?", [correo]);
+    console.log(rows[0].NombreCompleto);
+    
+    if (rows.length === 0) {
+      // No se encontró ningún usuario con ese correo
+      return [];
+    }
+
+    // Segunda consulta: obtener los leads donde Asignadoa es igual al nombre completo obtenido
+    const nombreCompleto = rows[0].NombreCompleto;
+    return db.execute("SELECT * FROM `Lead` WHERE Asignadoa = ? AND FechaHoraEliminado IS NULL AND Creado BETWEEN ? AND ?", [nombreCompleto, fechaInicio, fechaFin]);
+    
   }
 
   static fetchOne(IDLead) {
