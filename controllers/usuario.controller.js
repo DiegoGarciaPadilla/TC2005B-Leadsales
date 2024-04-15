@@ -108,6 +108,49 @@ exports.getUsuarios = (req, res) => {
 
 /* ========================== FIN CU. 28 ==============================  */
 
+/* ====== CU. 11 REGISTRA USUARIO | Andrea Medina - Sebastián Colín  ======= */
+exports.getRegistrarUsuario = (req, res) => {
+   res.render("registrarUsuario", {
+        csrfToken: req.csrfToken(),
+    });
+};
+
+exports.postRegistrarUsuario = (req, res) => {
+    const nuevoUsuario = new Usuario(
+        req.body.nombre,
+        req.body.apellidoPaterno,
+        req.body.apellidoMaterno,
+        req.body.correo,
+        req.body.password,
+        req.body.telefono,
+        req.body.domicilio
+    );
+
+    Usuario.fetchAllUsers()
+        .then(([usuariosFetched, fieldData]) => {
+            const existente = usuariosFetched.find(
+                (existente) => usuario.Correo === nuevoUsuario.Correo
+            );
+            if (existente) {
+                console.log(existente);
+                console.log("El correo ya está registrado");
+                req.session.error = "El correo ya está registrado";
+                res.redirect("/usuarios/agregarUsuario");
+            } else {
+                Usuario.save(nuevoUsuario)
+                    .then(() => {
+                        res.redirect("/usuarios");
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+        })
+        .catch();
+};
+
+/* ========================== FIN CU. 11 ==============================  */
+
 /* ========== CU. 29 CERRAR SESIÓN | Andrea Medina  =============== */
 exports.getLogout = (req, res) => {
     console.log(req.session);

@@ -23,7 +23,7 @@ router.get("/FAQ", isAuth, (req, res) => {
 
 router.post("/", isAuth, post_CSV); // ANTES de router,use("/")
 
-router.get("/", isAuth, (req, res) => {
+router.get("/", isAuth,  (req, res) => {
     res.render("inicio", {
         csrfToken: req.csrfToken(),
         privilegios: req.session.Privilegios,

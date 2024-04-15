@@ -79,6 +79,8 @@
       <div class="h-52 sm:w-64 border-dashed border-2 border-purple-400 rounded-md p-4 flex items-center justify-center mt-8" style="width: 20rem">
         <!-- Hidden file input -->
         <form class="max-w-lg mx-auto flex flex-col items-center" id="uploadForm" action="/" method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
+
           <input class="block w-full text-sm text-gray-900 border 
           border-gray-300 rounded-lg cursor-pointer bg-gray-50 
           dark:text-gray-400 focus:outline-none dark:bg-gray-700 
@@ -91,7 +93,6 @@
           dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" 
           type="submit" value="Guardar">Subir archivo</button>
 
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
         </form> 
       </div>  
     </div>

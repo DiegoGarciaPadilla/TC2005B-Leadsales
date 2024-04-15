@@ -6,13 +6,46 @@ module.exports = class Usuario {
         miApellidoPaterno,
         miApellidoMaterno,
         miCorreo,
-        miPasword
+        miPasword,
+        miTelefono,
+        miDomicilio
     ) {
         this.Nombre = miNombre;
         this.ApellidoPaterno = miApellidoPaterno;
         this.ApellidoMaterno = miApellidoMaterno;
         this.Correo = miCorreo;
         this.Password = miPasword;
+        this.Telefono = miTelefono;
+        this.Domicilio = miDomicilio;
+    }
+
+    save(IDUsuario, IDRol) {
+        return bcrypt.hash(this.Password, 12)
+            .then(async (hashedPassword) => {
+                try {
+                    await db.execute(
+                        `
+                        INSERT INTO usuario (Nombre, ApellidoPaterno, ApellidoMaterno, Correo, Password, Telefono, Domicilio)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                    `,
+                        [
+                            this.Nombre,
+                            this.ApellidoPaterno,
+                            this.ApellidoMaterno,
+                            this.Correo,
+                            hashedPassword,
+                            this.Telefono,
+                            this.Domicilio,
+                        ]
+                    );
+
+                    return db.execute("INSERT INTO usuario_rol (IDUsuario, IDRol) VALUES (?, ?)", 
+                    [IDUsuario, IDRol])
+                } 
+                catch(error) {
+
+                }
+            })
     }
 
     static fetchOne(Correo) {
