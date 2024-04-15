@@ -7,12 +7,13 @@ const Lead = require("../model/leads.model");
 /* ========== CU. 10 CONSULTA DIRECTORIO | Diego Lira - Diego García - Chimali (Puro Peer Programing) =============== */
 
 exports.getLeads = (req, res) => {
-    const {
-        Correo,
-        Privilegios,
-    } = req.session; // Test user
+    const { Correo, Privilegios } = req.session; // Test user
 
-    if (Privilegios.some((Privilegios => Privilegios.Descripcion === 'Consulta directorio todos.'))) {
+    if (
+        Privilegios.some(
+            (priv) => priv.Descripcion === "Consulta directorio todos."
+        )
+    ) {
         Lead.fetchAll()
             .then(([leadsFetched]) => {
                 res.render("directorio", {
@@ -77,16 +78,27 @@ exports.getLeadDetails = (req, res) => {
 /* ========== CU. 5 CREA LEAD | Diego Lira =============== */
 
 exports.postCrearLead = (req, res) => {
-    const { privilegios = ["Crea lead"] } = req.session;
+    const { Privilegios } = req.session;
     const { nombre, telefono, embudo, asignadoa } = req.body;
-    if (privilegios.includes("Crea lead")) {
-        console.log(nombre);
-        console.log(telefono);
-        console.log(embudo);
-        console.log(asignadoa);
+    if (Privilegios.some((Privilegios => Privilegios.Descripcion === 'Crea lead todos.'))) {
+
+        Lead.createLead({
+                Nombre: nombre,
+                Telefono: telefono,
+                Embudo: embudo,
+                Asignadoa: asignadoa,
+            })
+            .then(() => {
+                res.redirect("/directorio");
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     } else {
         res.redirect("/directorio");
     }
 };
 
 /* ========================== FIN CU. 5 ==============================  */
+
+module.exports = exports;

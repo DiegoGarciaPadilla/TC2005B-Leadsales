@@ -1,20 +1,18 @@
 const db = require("../util/db/db");
 
 module.exports = class Lead {
-
     constructor(Uname, Utel) {
         this.name = Uname;
         this.tel = Utel;
     }
 
-    save() {
+    save() {}
 
+    static fetchAll() {
+        return db.execute(
+            "SELECT * FROM `Lead` WHERE FechaHoraEliminado IS NULL"
+        );
     }
-    
-
-  static fetchAll() {
-    return db.execute("SELECT * FROM `Lead` WHERE FechaHoraEliminado IS NULL");
-  }
 
   static async fetchLeadsByUser(correo) {
     // Primera consulta: obtener el nombre y apellido paterno basado en el correo
@@ -61,11 +59,11 @@ module.exports = class Lead {
     
   }
 
-  static fetchOne(IDLead) {
-    return db.execute("SELECT * FROM `lead` WHERE IDLead = ?", [IDLead]);
-  }
+    static fetchOne(IDLead) {
+        return db.execute("SELECT * FROM `lead` WHERE IDLead = ?", [IDLead]);
+    }
 
   static createLead(lead) {
-    return db.execute("INSERT INTO `Lead` (Nombre, Telefono, Correo, Asignadoa, Creado, Horadecreacion) VALUES (?, ?, ?, ?, CURDATE(), CURTIME())", [lead.Nombre, lead.Telefono, lead.Correo, lead.Asignadoa]);
+    return db.execute("INSERT INTO `Lead` (Nombre, Telefono, Embudo, Asignadoa, Creado, Horadecreacion, Archivado, CreadoManualmente) VALUES (?, ?, ?, ?, CURDATE(), CURTIME(), 'No', 'TRUE')", [lead.Nombre, lead.Telefono, lead.Embudo, lead.Asignadoa]);
   }
 }

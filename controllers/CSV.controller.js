@@ -21,3 +21,5 @@ exports.post_CSV = (req, res) => {
 };
 
 /* ========================== FIN CU. 26 ==============================  */
+
+module.exports = exports;

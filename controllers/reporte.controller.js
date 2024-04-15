@@ -78,33 +78,41 @@ function generarPDF(data) {
 
 /* ========== CU. 24 CONSULTA HISTORIAL | Chimali Nava =============== */
 
-exports.getReportes = (request, response, next) => {
-    const { IDUsuario, Privilegios } = request.session;
+exports.getReportes = (req, res) => {
+    const { IDUsuario, Privilegios } = req.session;
     console.log(IDUsuario, Privilegios);
-    if (Privilegios.some( Privilegios => Privilegios.Descripcion === 'Consulta historial todos.')){
+    if (
+        Privilegios.some(
+            (priv) => priv.Descripcion === "Consulta historial todos."
+        )
+    ) {
         Reporte.fetchAll()
-            .then(([reportesFetched, fieldData]) => {
-                response.render('historial', {
+            .then(([reportesFetched]) => {
+                res.render("historial", {
                     reportes: reportesFetched,
-                    csrfToken: request.csrfToken(),
+                    csrfToken: req.csrfToken(),
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    } else if (
+        Privilegios.some(
+            (priv) => priv.Descripcion === "Consulta historial propios."
+        )
+    ) {
+        Reporte.fetchReportesByUser(IDUsuario)
+            .then(([reportesFetched]) => {
+                res.render("historial", {
+                    reportes: reportesFetched,
+                    csrfToken: req.csrfToken(),
                 });
             })
             .catch((error) => {
                 console.log(error);
             });
     }
-    else if (Privilegios.some(Privilegios => Privilegios.Descripcion === 'Consulta historial propios.')){
-        Reporte.fetchReportesByUser(IDUsuario)
-                    .then(([reportesFetched, fieldData]) => {
-                        response.render('historial', {
-                            reportes: reportesFetched,
-                            csrfToken: request.csrfToken(),
-                        });
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-    }
-}
+};
 /* ========================== FIN CU. 24 ==============================  */
 
+module.exports = exports;
