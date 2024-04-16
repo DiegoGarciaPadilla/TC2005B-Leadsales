@@ -17,6 +17,11 @@ exports.post_CSV = (req, res) => {
         msg: "File uploaded successfully!",
         file: `/uploads/${req.file.filename}`,
         csrfToken: req.csrfToken(),
+        correo: req.session.Correo,
+        nombre: req.session.Nombre,
+        apellidoPaterno: req.session.ApellidoPaterno,
+        apellidoMaterno: req.session.ApellidoMaterno,
+        rol: req.session.Rol,   
     });
 
     return null; // Add a return statement at the end of the function
