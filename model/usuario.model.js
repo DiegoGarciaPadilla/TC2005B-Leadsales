@@ -1,18 +1,54 @@
 const db = require("../util/db/db");
 
+const bcrypt = require('bcryptjs');
+
 module.exports = class Usuario {
     constructor(
         miNombre,
         miApellidoPaterno,
         miApellidoMaterno,
         miCorreo,
-        miPasword
+        miPasword,
+        miTelefono,
+        miDomicilio
     ) {
         this.Nombre = miNombre;
         this.ApellidoPaterno = miApellidoPaterno;
         this.ApellidoMaterno = miApellidoMaterno;
         this.Correo = miCorreo;
         this.Password = miPasword;
+        this.Telefono = miTelefono;
+        this.Domicilio = miDomicilio;
+    }
+
+    save(IDRol) {
+        return bcrypt.hash(this.Password, 12)
+            .then((hashedPassword) => {
+                return db.execute(
+                    `
+                    INSERT INTO usuario (Nombre, ApellidoPaterno, ApellidoMaterno, Correo, Password, Telefono, Domicilio)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                `,
+                    [
+                        this.Nombre,
+                        this.ApellidoPaterno,
+                        this.ApellidoMaterno,
+                        this.Correo,
+                        hashedPassword,
+                        this.Telefono,
+                        this.Domicilio,
+                    ]
+                );
+            })
+            .then((result) => {
+                const IDUsuario = result[0].insertId;
+    
+                return db.execute("INSERT INTO usuario_rol (IDUsuario, IDRol, FechaHoraInicio) VALUES (?, ?, ?)", 
+                [IDUsuario, IDRol, new Date()])
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     static fetchOne(Correo) {
