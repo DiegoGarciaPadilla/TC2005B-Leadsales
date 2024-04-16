@@ -21,6 +21,18 @@ router.get("/FAQ", isAuth, (req, res) => {
 
 router.post('/reporte', isAuth, reporteController.postReporte);
 
+router.get('/reporte', isAuth, (request, response) => {
+    response.render('reporte'), {
+        csrfToken: req.csrfToken(),
+        privilegios: req.session.Privilegios,
+        correo: req.session.Correo,
+        rol: req.session.Rol,
+        nombre: req.session.Nombre,
+        apellidoPaterno: req.session.ApellidoPaterno,
+        apellidoMaterno: req.session.apellidoMaterno,
+    }
+});
+
 router.post("/", isAuth, post_CSV); // ANTES de router,use("/")
 
 router.get("/", isAuth, (req, res) => {
