@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Directorio</title>
+  <link rel="stylesheet" href="/css/output.css"/>
+
+  <style> 
+
+    body {
+      background-color: #E4E8EE;
+    }
+
+    #container {
+      position: relative;
+      height:500px;
+      box-shadow: 1px 4px 8px rgba(36, 37, 42, 0.2);
+    }
+    #containerElements {
+      overflow-y: auto; 
+      height:100%;
+    }
+    #element {
+      position: relative;
+    }
+    #main-content {
+      transition: padding-left 0.3s ease;
+      padding-left: 3.5rem;
+    } 
+    .side:hover ~ #main-content {
+      padding-left: 10rem;
+    }
+
+  </style>
+
+</head>
+<body>
+    <%- include('partials/sidebar.ejs') %> 
+
+    <div id="main-content" class="w-full ml-14 mt-12 pl-20 display:flex">
+        <h1 class="mb-8 text-4xl text-gray-900">Hi</h1>
+    </div>
+</body>
+
+<script defer>
+
+    const graficas_asincronas = () => {
+
+        fetch(`/reporte`, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json',
+        }
+    }).then((result) => {
+        if (!result.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return result.json();
+    })
+    .then((data) => {
+        // console.log(data);
+        const graph1Data = data.graph1Data;
+        // console.log(graph1Data);
+        window.location.href = '/reportes';
+    }).catch((error) => {
+        console.log(error);
+    })
+
+
+    }
+
+</script>
+
+</html>

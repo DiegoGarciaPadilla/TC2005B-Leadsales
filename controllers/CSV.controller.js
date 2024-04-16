@@ -12,11 +12,18 @@ exports.post_CSV = (req, res) => {
 
     // PROMISE
     csv.save();
+    
+    console.log(csv);
 
     res.render("inicio", {
         msg: "File uploaded successfully!",
         file: `/uploads/${req.file.filename}`,
         csrfToken: req.csrfToken(),
+        correo: req.session.Correo,
+        rol: req.session.Rol,
+        nombre: req.session.Nombre,
+        apellidoPaterno: req.session.ApellidoPaterno,
+        apellidoMaterno: req.session.apellidoMaterno,
     });
 
     return null; // Add a return statement at the end of the function
