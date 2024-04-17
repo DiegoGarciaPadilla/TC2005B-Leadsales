@@ -56,7 +56,7 @@ module.exports = class Usuario {
     }
 
     static fetchAllUsers() {
-        return db.execute("SELECT * FROM usuario");
+        return db.execute("SELECT * FROM usuario WHERE FechaHoraEliminado IS NULL");
     }
 
     static fetchRol(IDUsuario) {
@@ -96,7 +96,10 @@ module.exports = class Usuario {
     }
 
     static eliminar(IDUsuario) {
-        return db.execute('UPDATE usuario SET FechaHoraEliminado = CURRENT_TIMESTAMP() WHERE IDUsuario = ?', [IDUsuario]);
+        let query1 = db.execute('UPDATE usuario SET FechaHoraEliminado = CURRENT_TIMESTAMP() WHERE IDUsuario = ?', [IDUsuario]);
+        let query2 = db.execute('UPDATE usuario_rol SET FechaHoraFin = CURRENT_TIMESTAMP() WHERE IDUsuario = ?', [IDUsuario]);
+
+        return Promise.all([query1, query2]);
     }
 
     static logout(IDUsuario) {

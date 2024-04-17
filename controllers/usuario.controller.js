@@ -171,12 +171,17 @@ exports.postRegistrarUsuario = (req, res) => {
 
 /* ====== CU. 12 ELIMINA USUARIO | Andrea Medina - Diego Lira  ======= */
 exports.postEliminarUsuario = (req, res) => {
+
     const { IDUsuario } = req.body;
+    console.log("IDUsuario controller: ",   IDUsuario);
 
     Usuario.eliminar(IDUsuario)
-        .then()
+        .then(() => {
+            res.status(200).json({ success: true });
+        })
         .catch((error) => {
             console.log(error);
+            res.status(500).json({ error: "Error al eliminar el usuario" });
         });
 }
 
