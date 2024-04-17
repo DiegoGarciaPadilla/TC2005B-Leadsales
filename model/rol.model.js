@@ -23,4 +23,17 @@ module.exports = class Rol {
             [nombre, descripcion, id]
         );
     }
+
+    static deleteRolById(IDRol, IDUsuario) {
+        let query1 = db.execute(
+            "UPDATE rol SET FechaHoraEliminado = CURRENT_TIMESTAMP WHERE IDRol = ?",
+            [IDRol]
+        );
+        let query2 = db.execute(
+            "UPDATE usuario_rol SET FechaHoraFin = CURRENT_TIMESTAMP WHERE IDRol = ?",
+            [IDRol]
+        );
+
+        return Promise.all([query1, query2]);
+    }
 };

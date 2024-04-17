@@ -1,22 +1,35 @@
+const Chart = require('chart.js');
+
 const Reporte = require('../model/reporte.model');
+
 const Lead = require('../model/leads.model');
-// const Chart = require('chart.js');
+
 // const jsPDF = require('jspdf');
 
 /* ========== CU. 02 CONSULTA HISTORIAL | Sebas Colín - Andrea Medina =============== */
 
 exports.postReporte = (request, response, next) => {
+<<<<<<< Updated upstream
     const { IDUsuario, Correo, Privilegios, Nombre, ApellidoPaterno } = request.session;
     const NombreCompleto = Nombre + " " + ApellidoPaterno;
     let valorInput = request.body._csrf;
     //console.log(NombreCompleto, Privilegios);
+=======
+>>>>>>> Stashed changes
 
+    // Obtiene los datos de la sesión
+    const { Correo, Privilegios, Nombre, ApellidoPaterno } = request.session;
+
+    // Obtiene el nombre completo del usuario
+    const NombreCompleto = String(Nombre, " ", ApellidoPaterno);
+
+    // Recibe las fechas de inicio y fin para la consulta
     const { start, end } = request.body;
+    
     console.log(start, end);
-    console.log(typeof start);
-    console.log(typeof end);
 
-    // Caso cuando se pueden consultar los leads de todos   
+    // Caso cuando se pueden consultar los leads de todos  
+     
     if (
         Privilegios.some(
         (priv) => priv.Descripcion === "Consulta directorio todos."
@@ -86,6 +99,7 @@ exports.postReporte = (request, response, next) => {
                     graph7Data: results[6][0],
                     graph8Data: results[7][0],
                 };
+<<<<<<< Updated upstream
 
                 // Respuesta de JSON con datos para todas las gráficas
                 //response.status(200).json(responseData);
@@ -94,6 +108,15 @@ exports.postReporte = (request, response, next) => {
                     data: responseData,
                     csrfToken: valorInput,
                  });
+=======
+                
+                // Renderiza la vista de reporte
+                response.render('reporte', { 
+                    csrfToken: request.csrfToken(),
+                    correo: Correo,
+                    data: responseData,
+                });
+>>>>>>> Stashed changes
             })
             .catch((error) => {
                 console.log("Error recogiendo datos de leads:", error);
@@ -167,9 +190,18 @@ exports.postReporte = (request, response, next) => {
                     graph8Data: results[7][0],
                 };
 
+<<<<<<< Updated upstream
                 // Respuesta de JSON con datos para todas las gráficas
                 //response.status(200).json(responseData);
                 response.render('reporte', { data: responseData, csrfToken: CSRF });
+=======
+                response.render('reporte', { 
+                    csrfToken: request.csrfToken(),
+                    correo: Correo,
+                    data: responseData
+                });
+
+>>>>>>> Stashed changes
             })
             .catch((error) => {
                 console.log("Error recogiendo datos de leads:", error);

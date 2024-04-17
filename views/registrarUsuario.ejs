@@ -11,6 +11,14 @@
     .side:hover ~ #main-content {
       padding-left: 10rem;
     }
+    button:disabled {
+      background-color: #cccccc;
+      color: #ffffff;
+    }
+    button:disabled:hover {
+      background-color: #cccccc;
+      color: #ffffff;
+    }
     
     </style>
 
@@ -25,10 +33,17 @@
               <%- include('partials/rutaActual', {path: ['Ajustes', 'Usuarios', 'Registrar cuenta de usuario']}) %>
           </div>
           <h1 class="mb-4 text-4xl font-bold text-gray-900"> Registrar cuenta de usuario </h1>
+          <p class="mt-2 font-bold text-red-700"> * Obligatorio </p>
       </header>
     
       <form action="/ajustes/usuarios/agregarUsuario" method="POST" class="mt-8 mr-5">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
+
+        <div id="div-error" class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert" style="display: none;">
+          <span class="font-bold"> Alerta: </span> 
+          <span id="error-message"> </span>
+        </div>
+
         <div id="bloque1" class="grid gap-6 mb-0 md:grid-cols-3">
             <div>
                 <label for="nombre" class="block mb-2 text-sm font-bold text-gray-700"> Nombre <span class="font-bold text-red-700"> * </span> </label>
@@ -49,7 +64,6 @@
             <div>
                 <label for="password" class="block mb-2 text-sm font-bold text-gray-700"> Contraseña <span class="font-bold text-red-700"> * </span> </label>
                 <input type="password" id="password" name="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="•••••••••" required maxlength="32"/>
-                <p id="error-password" style="color: red;" class="mt-2"></p>
             </div>
             <div>
                 <label for="confirmarPassword" class="block mb-2 text-sm font-bold text-gray-700"> Confirmar contraseña <span class="font-bold text-red-700"> * </span> </label>
@@ -58,7 +72,7 @@
           
             <div class="mb-6">
                 <label for="telefono" class="block mb-2 text-sm font-bold text-gray-700"> Teléfono </label>
-                <input type="text" id="telefono" name="telefono" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="4425189756" />
+                <input type="tel" id="telefono" name="telefono" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="4425189756" />
             </div>
             <div class="mb-4">
               <label for="rol" class="block mb-2 text-sm font-bold text-gray-700"> Rol <span class="font-bold text-red-700"> * </span> </label>
@@ -87,20 +101,57 @@
     const submitButton = document.getElementById('submit-button');
     const password = document.getElementById('password');
     const confirmPassword = document.getElementById('confirmarPassword');
-    const errorMessage = document.getElementById('error-password');
+    const telefono = document.getElementById('telefono');
+    const nombre = document.getElementById('nombre');
+    const apellidoPaterno = document.getElementById('apellidoPaterno');
+    const apellidoMaterno = document.getElementById('apellidoMaterno');
+
+    const errorDiv = document.getElementById('div-error');
+    const errorMessage = document.getElementById('error-message');
   
     function checkPasswords() {
       if (password.value !== confirmPassword.value) {
-        errorMessage.textContent = '* Las contraseñas no coinciden.';
+        errorMessage.textContent = 'Las contraseñas no coinciden.';
         submitButton.disabled = true;
+        errorDiv.style.display = 'block';
+
       } else {
         errorMessage.textContent = '';
         submitButton.disabled = false;
+        errorDiv.style.display = 'none';
+      }
+    }
+
+    function checkTelefono() {
+      const phoneRegex = /^[0-9]*$/;
+      if (!phoneRegex.test(telefono.value)) {
+          errorMessage.textContent = 'El teléfono solo debe contener números.';
+          submitButton.disabled = true;
+          errorDiv.style.display = 'block';
+      } else {
+          errorMessage.textContent = '';
+          submitButton.disabled = false;
+          errorDiv.style.display = 'none';
+      }
+    }
+
+    function checkNombre() {
+      const nombreRegex = /^[a-zA-Z\s-]*$/;
+      if (!nombreRegex.test(nombre.value) || !nombreRegex.test(apellidoPaterno.value) || !nombreRegex.test(apellidoMaterno.value)) {
+          errorMessage.textContent = 'El nombre completo solo debe contener letras.';
+          submitButton.disabled = true;
+          errorDiv.style.display = 'block';
+      } else {
+          errorMessage.textContent = '';
+          submitButton.disabled = false;
+          errorDiv.style.display = 'none';
       }
     }
   
     password.addEventListener('input', checkPasswords);
     confirmPassword.addEventListener('input', checkPasswords);
+    telefono.addEventListener('input', checkTelefono);
+    nombre.addEventListener('input', checkNombre);
   </script>
 
 </body>
