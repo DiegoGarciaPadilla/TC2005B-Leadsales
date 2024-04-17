@@ -8,6 +8,7 @@ const Lead = require('../model/leads.model');
 exports.postReporte = (request, response, next) => {
     const { IDUsuario, Correo, Privilegios, Nombre, ApellidoPaterno } = request.session;
     const NombreCompleto = Nombre + " " + ApellidoPaterno;
+    let valorInput = request.body._csrf;
     //console.log(NombreCompleto, Privilegios);
 
     const { start, end } = request.body;
@@ -78,17 +79,21 @@ exports.postReporte = (request, response, next) => {
                     // Datos a JSON de cada gráfica
                     graph1Data: results[0][0], 
                     graph2Data: results[1][0],
-                    graph3Data: results[2][0],     // Datos gráficas
+                    graph3Data: results[2][0],
                     graph4Data: results[3][0],
-                    graph5Data: results[4][0],
+                    graph5Data: results[4][0],     // Datos gráficas
                     graph6Data: results[5][0],
                     graph7Data: results[6][0],
                     graph8Data: results[7][0],
                 };
 
                 // Respuesta de JSON con datos para todas las gráficas
-                response.status(200).json(responseData);
-                //response.render('reporte');
+                //response.status(200).json(responseData);
+                // console.log(responseData);
+                response.render('reporte', { 
+                    data: responseData,
+                    csrfToken: valorInput,
+                 });
             })
             .catch((error) => {
                 console.log("Error recogiendo datos de leads:", error);
@@ -164,7 +169,7 @@ exports.postReporte = (request, response, next) => {
 
                 // Respuesta de JSON con datos para todas las gráficas
                 //response.status(200).json(responseData);
-                response.render('reporte', { data: responseData });
+                response.render('reporte', { data: responseData, csrfToken: CSRF });
             })
             .catch((error) => {
                 console.log("Error recogiendo datos de leads:", error);
