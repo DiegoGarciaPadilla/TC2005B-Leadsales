@@ -1,5 +1,7 @@
 const Lead = require("../model/leads.model");
 
+const Usuario = require("../model/usuario.model");
+
 /* ========== CU. 25 CONSULTA REPORTE EN HISTORIAL | Diego García =============== */
 
 /* ========================== FIN CU. 25 ==============================  */
@@ -16,15 +18,22 @@ exports.getLeads = (req, res) => {
     ) {
         Lead.fetchAll()
             .then(([leadsFetched]) => {
-                res.render("directorio", {
-                    leads: leadsFetched,
-                    csrfToken: req.csrfToken(),
-                    correo: req.session.Correo,
-                    rol: req.session.Rol,
-                    nombre: req.session.Nombre,
-                    apellidoPaterno: req.session.ApellidoPaterno,
-                    apellidoMaterno: req.session.apellidoMaterno,
-                });
+                Usuario.fetchAllUsers()
+                    .then(([usuariosFetched]) => {
+                        res.render("directorio", {
+                            leads: leadsFetched,
+                            csrfToken: req.csrfToken(),
+                            correo: req.session.Correo,
+                            rol: req.session.Rol,
+                            nombre: req.session.Nombre,
+                            apellidoPaterno: req.session.ApellidoPaterno,
+                            apellidoMaterno: req.session.apellidoMaterno,
+                            usuarios: usuariosFetched,
+                        });
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
             })
             .catch((error) => {
                 console.log(error);

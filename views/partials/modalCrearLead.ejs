@@ -1,12 +1,20 @@
 <div id="fondoModalCrearLead" class="fixed inset-0 flex items-center justify-center z-50 hidden bg-black bg-opacity-50" onclick="toggleModal(event)">
-    <div id="modalForms" class="bg-white rounded shadow-lg p-8 m-4 max-w-xs max-h-full text-center" >
+  <div id="modalForms" class="bg-white rounded shadow-lg p-8 m-4 max-w-xs max-h-full text-center" >
+
+      <p class="mt-2 mb-2 font-bold text-red-700 text-left" style="font-size: 12px;"> * Obligatorio </p>
+      <div id="div-error" class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert" style="display: none;">
+        <span class="font-bold"> ¡Cuidado!</span> 
+        <span id="error-message"> </span>
+      </div>
+
       <form action="/directorio/crearLead", method="POST">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="nombre">
             Nombre
+            <span class="font-bold text-red-700"> * </span>
           </label>
-          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nombre" type="text" placeholder="Nombre" name="nombre">
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nombre" type="text" placeholder="Nombre" name="nombre" required>
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="telefono">
@@ -17,14 +25,21 @@
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="embudo">
             Embudo
+            <span class="font-bold text-red-700"> * </span>
           </label>
-          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="embudo" type="text" placeholder="Embudo" name="embudo">
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="embudo" type="text" placeholder="Embudo" name="embudo" required>
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="asignadoa">
             Asignado a
+            <span class="font-bold text-red-700"> * </span>
           </label>
-          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="asignado" type="text" placeholder="Asignado a" name="asignadoa">
+          <select id="asignadoa" name="asignadoa" class="bg-gray-50 border border-gray-300 text-gray-700 leading-tight rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+            <option selected> Elige un usuario </option>
+            <% for (let i = 0; i < usuarios.length; i++) { %> 
+              <option value="<%= usuarios[i].Nombre + usuarios[i].ApellidoPaterno %>"> <%= usuarios[i].Nombre + ' ' + usuarios[i].ApellidoPaterno %> </option>
+            <% } %>
+          </select>
         </div>
         <div class="flex items-center justify-between">
           <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
@@ -36,6 +51,12 @@
 </div>
 
 <script>
+  const telefono = document.getElementById('telefono');
+  const submitButton = document.getElementById('submit-button');
+
+  const errorDiv = document.getElementById('div-error');
+  const errorMessage = document.getElementById('error-message');
+
   function toggleModal(event) {
     var modal = document.getElementById('fondoModalCrearLead');
     if(event.target.id == "butonCrearLead" || event.target.id == "fondoModalCrearLead"){
@@ -46,4 +67,19 @@
       }
     }
   }
+
+  function checkTelefono() {
+      const phoneRegex = /^[0-9]*$/;
+      if (!phoneRegex.test(telefono.value)) {
+          errorMessage.textContent = 'El teléfono solo debe contener números.';
+          submitButton.disabled = true;
+          errorDiv.style.display = 'block';
+      } else {
+          errorMessage.textContent = '';
+          submitButton.disabled = false;
+          errorDiv.style.display = 'none';
+      }
+    }
+
+    telefono.addEventListener('input', checkTelefono);
 </script>
