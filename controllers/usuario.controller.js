@@ -35,29 +35,35 @@ exports.postLogin = (req, res) => {
                 console.log(usuario);
 
                 // Comparar la contraseña
-                if (password === usuario.Password) {
-                    // Registrar sesión
-                    Usuario.login(usuario.IDUsuario)
-                        .then(() => {
-                            // Guardar los privilegios en la sesion
-                            Usuario.getPrivilegios(usuario.Correo)
-                                .then(([privilegios]) => {
-                                    Usuario.fetchRol(usuario.IDUsuario)
-                                        .then(([rolFetched]) => {
-                                            const rol = rolFetched[0].IDRol;
-                                            console.log(privilegios);
-                                            req.session.Privilegios =
-                                                privilegios;
-                                            req.session.Correo = usuario.Correo;
-                                            req.session.Nombre = usuario.Nombre;
-                                            req.session.ApellidoPaterno = usuario.ApellidoPaterno;
-                                            req.session.ApellidoMaterno = usuario.ApellidoMaterno;
-                                            req.session.IDUsuario =
-                                                usuario.IDUsuario;
-                                            req.session.Rol = rol;
-                                            req.session.isLoggedIn = true;
-                                            console.log(req.session);
-                                            res.redirect("/");
+                bcrypt.compare(password, usuario.Password)
+                    .then((doMatch) => {
+                        if (doMatch) {
+                            // Registrar sesión
+                            Usuario.login(usuario.IDUsuario)
+                                .then(() => {
+                                    // Guardar los privilegios en la sesion
+                                    Usuario.getPrivilegios(usuario.Correo)
+                                        .then(([privilegios]) => {
+                                            Usuario.fetchRol(usuario.IDUsuario)
+                                                .then(([rolFetched]) => {
+                                                    const rol = rolFetched[0].IDRol;
+                                                    console.log(privilegios);
+                                                    req.session.Privilegios =
+                                                        privilegios;
+                                                    req.session.Correo = usuario.Correo;
+                                                    req.session.Nombre = usuario.Nombre;
+                                                    req.session.ApellidoPaterno = usuario.ApellidoPaterno;
+                                                    req.session.ApellidoMaterno = usuario.ApellidoMaterno;
+                                                    req.session.IDUsuario =
+                                                        usuario.IDUsuario;
+                                                    req.session.Rol = rol;
+                                                    req.session.isLoggedIn = true;
+                                                    console.log(req.session);
+                                                    res.redirect("/");
+                                                })
+                                                .catch((error) => {
+                                                    console.log(error);
+                                                });
                                         })
                                         .catch((error) => {
                                             console.log(error);
@@ -66,13 +72,12 @@ exports.postLogin = (req, res) => {
                                 .catch((error) => {
                                     console.log(error);
                                 });
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                        });
-                } else {
-                    console.log("Contraseña incorrecta");
-                }
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        console.log("Contraseña incorrecta");
+                    });
             } else {
                 req.session.error = "Correo o contraseña incorrectos";
                 res.redirect("/usuarios/login");

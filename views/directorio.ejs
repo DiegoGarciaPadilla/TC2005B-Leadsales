@@ -175,8 +175,6 @@
         let leadInfo = '';
         leadInfo += `<table><thead id="tableHead" class="text-xs text-white bg-gray-50"><tr>`;
 
-        // Populate the dialog with lead details  
-
         // <thead> loop
         let leadHead;
         for (let key in leadDetails) {
@@ -186,24 +184,35 @@
         leadInfo += `</tr></thead><tbody><tr id="element" class="bg-white border-b hover:bg-gray-50">`;
 
         // <td> loop
-        for (let key in leadDetails) {
-          console.log(`${key}:`);
-          console.log(`${key}: ${leadDetails[key]}`);
+          let cont = 0;
+          for (let key in leadDetails) {
+              let str = leadDetails[key];
 
-          const str = leadDetails[key];
-          console.log(str, 'string');
+              if (typeof str === 'string' && !isNaN(Date.parse(str))) {
+                  let date = new Date(str);
+                  str = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+              }
 
-          if (str != null) {
-            if (str.length > 20) {
-              str.substr(0, 20) + '...';
-            } else {
-              leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3">${leadDetails[key]}</td>`; 
-            }
-          } else {
-            leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3"></td>`; 
+              if (str != null) {
+                  let strShort = str;
+                  if (typeof str === 'string' && str.length > 20) {
+                      strShort = str.substr(0, 20) + '...';
+                  }
+                  leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3">${str}
+                                  <span class="cursor-pointer relative" 
+                                        onmouseover="document.getElementById('popover${cont}').classList.remove('hidden')"
+                                        onmouseout="document.getElementById('popover${cont}').classList.add('hidden')"
+                                  >
+                                    ${strShort} 
+                                    <div id="popover${cont}" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
+                                      ${str} 
+                                    </div>
+                              </td>`; 
+              } else {
+                  leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3"></td>`; 
+              }
+              cont++;
           }
-
-        }
 
         leadInfo += `</tr></tbody></table>`;
         console.log(leadInfo);
