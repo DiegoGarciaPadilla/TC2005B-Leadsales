@@ -107,5 +107,12 @@
         graficas_asincronas();
       })
 
+      document.getElementById('reporteForm').addEventListener('submit', function(x) {
+        x.preventDefault();
+
+        let datosForma = new FormData(this);
+        let valorInput = datosForma.get('_csrf');
+      })
+
   </script>
 </body>

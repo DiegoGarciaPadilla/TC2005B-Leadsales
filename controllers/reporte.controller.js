@@ -8,6 +8,7 @@ const Lead = require('../model/leads.model');
 exports.postReporte = (request, response, next) => {
     const { IDUsuario, Correo, Privilegios, Nombre, ApellidoPaterno } = request.session;
     const NombreCompleto = Nombre + " " + ApellidoPaterno;
+    let valorInput = request.body._csrf;
     //console.log(NombreCompleto, Privilegios);
 
     const { start, end } = request.body;
@@ -88,8 +89,11 @@ exports.postReporte = (request, response, next) => {
 
                 // Respuesta de JSON con datos para todas las gráficas
                 //response.status(200).json(responseData);
-                console.log(responseData);
-                response.render('reporte', { data: responseData });
+                // console.log(responseData);
+                response.render('reporte', { 
+                    data: responseData,
+                    csrfToken: valorInput,
+                 });
             })
             .catch((error) => {
                 console.log("Error recogiendo datos de leads:", error);
@@ -165,7 +169,7 @@ exports.postReporte = (request, response, next) => {
 
                 // Respuesta de JSON con datos para todas las gráficas
                 //response.status(200).json(responseData);
-                response.render('reporte', { data: responseData });
+                response.render('reporte', { data: responseData, csrfToken: CSRF });
             })
             .catch((error) => {
                 console.log("Error recogiendo datos de leads:", error);
