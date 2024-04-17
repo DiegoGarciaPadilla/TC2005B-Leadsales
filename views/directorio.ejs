@@ -175,8 +175,6 @@
         let leadInfo = '';
         leadInfo += `<table><thead id="tableHead" class="text-xs text-white bg-gray-50"><tr>`;
 
-        // Populate the dialog with lead details  
-
         // <thead> loop
         let leadHead;
         for (let key in leadDetails) {
@@ -186,24 +184,23 @@
         leadInfo += `</tr></thead><tbody><tr id="element" class="bg-white border-b hover:bg-gray-50">`;
 
         // <td> loop
-        for (let key in leadDetails) {
-          console.log(`${key}:`);
-          console.log(`${key}: ${leadDetails[key]}`);
+          for (let key in leadDetails) {
+              let str = leadDetails[key];
 
-          const str = leadDetails[key];
-          console.log(str, 'string');
+              // Convert dates to strings
+              if (str instanceof Date) {
+                  str = str.toISOString();
+              }
 
-          if (str != null) {
-            if (str.length > 20) {
-              str.substr(0, 20) + '...';
-            } else {
-              leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3">${leadDetails[key]}</td>`; 
-            }
-          } else {
-            leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3"></td>`; 
+              if (str != null) {
+                  if (typeof str === 'string' && str.length > 20) {
+                      str = str.substr(0, 20) + '...';
+                  }
+                  leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3">${str}</td>`; 
+              } else {
+                  leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3"></td>`; 
+              }
           }
-
-        }
 
         leadInfo += `</tr></tbody></table>`;
         console.log(leadInfo);
