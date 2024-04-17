@@ -184,22 +184,34 @@
         leadInfo += `</tr></thead><tbody><tr id="element" class="bg-white border-b hover:bg-gray-50">`;
 
         // <td> loop
+          let cont = 0;
           for (let key in leadDetails) {
               let str = leadDetails[key];
 
-              // Convert dates to strings
-              if (str instanceof Date) {
-                  str = str.toISOString();
+              if (typeof str === 'string' && !isNaN(Date.parse(str))) {
+                  let date = new Date(str);
+                  str = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
               }
 
               if (str != null) {
+                  let strShort = str;
                   if (typeof str === 'string' && str.length > 20) {
-                      str = str.substr(0, 20) + '...';
+                      strShort = str.substr(0, 20) + '...';
                   }
-                  leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3">${str}</td>`; 
+                  leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3">${str}
+                                  <span class="cursor-pointer relative" 
+                                        onmouseover="document.getElementById('popover${cont}').classList.remove('hidden')"
+                                        onmouseout="document.getElementById('popover${cont}').classList.add('hidden')"
+                                  >
+                                    ${strShort} 
+                                    <div id="popover${cont}" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
+                                      ${str} 
+                                    </div>
+                              </td>`; 
               } else {
                   leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3"></td>`; 
               }
+              cont++;
           }
 
         leadInfo += `</tr></tbody></table>`;
