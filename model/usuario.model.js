@@ -95,6 +95,10 @@ module.exports = class Usuario {
         );
     }
 
+    static eliminar(IDUsuario) {
+        return db.execute('UPDATE usuario SET FechaHoraEliminado = CURRENT_TIMESTAMP() WHERE IDUsuario = ?', [IDUsuario]);
+    }
+
     static logout(IDUsuario) {
         return db.execute(
             `

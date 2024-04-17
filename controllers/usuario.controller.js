@@ -169,6 +169,19 @@ exports.postRegistrarUsuario = (req, res) => {
 
 /* ========================== FIN CU. 11 ==============================  */
 
+/* ====== CU. 12 ELIMINA USUARIO | Andrea Medina - Diego Lira  ======= */
+exports.postEliminarUsuario = (req, res) => {
+    const { IDUsuario } = req.body;
+
+    Usuario.eliminar(IDUsuario)
+        .then()
+        .catch((error) => {
+            console.log(error);
+        });
+}
+
+/* ========================== FIN CU. 12 ==============================  */
+
 /* ========== CU. 29 CERRAR SESIÓN | Andrea Medina  =============== */
 exports.getLogout = (req, res) => {
     console.log(req.session);
