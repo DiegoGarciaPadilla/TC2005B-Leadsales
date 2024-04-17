@@ -13,7 +13,7 @@
     }
     
     </style>
-    <script src="/TC2005B-Leadsales/util/reporte.js"></script>
+    <!-- <script src="/TC2005B-Leadsales/util/reporte.js"></script> -->
 </head>
 <body class="bg-[#E4E8EE]">
   <%- include('partials/sidebar.ejs') %>
@@ -31,7 +31,7 @@
         <div id="reporteSelect" class="bg-[#C4CCD8] w-2/5 mr-4 rounded-md p-4">
           <h2 class="mb-4 font-bold">Reporte</h2>
   
-          <form id="reporteForm" class="max-w-lg mx-auto flex items-center" method="POST" action="/reporte" enctype="multipart/form-data">
+          <form id="reporteForm" class="max-w-lg mx-auto flex items-center" method="POST" action="/reporte/:graficaId" enctype="multipart/form-data">
             <div id="división_redes" class="ml-2 mt-5 w-full">
               <div class="flex justify-start items-center mb-2">
                 <label for="whatsapp" class="ml-2">Whatsapp</label>

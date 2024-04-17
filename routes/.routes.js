@@ -19,7 +19,7 @@ router.get("/FAQ", isAuth, (req, res) => {
     res.render("FAQ");
 });
 
-router.post('/reporte', isAuth, reporteController.postReporte);
+router.post('/reporte/:graficaId', isAuth, reporteController.postReporte);
 
 router.get('/reporte', isAuth, (request, response) => {
     response.render('reporte'), {
