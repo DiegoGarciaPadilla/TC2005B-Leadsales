@@ -40,16 +40,73 @@
     <%- include('partials/sidebar.ejs') %> 
 
     <div id="main-content" class="w-full ml-14 mt-12 pl-20 display:flex">
-        <h1 class="mb-8 text-4xl text-gray-900">Hi</h1>
+        <h1 class="mb-8 text-4xl text-gray-900">Hi <%= correo %></h1>
+        <canvas id="chartOne" width="400" height="200" ></canvas>
+    </div>
 
-        <canvas id="chartOne" width="400" height="200"></canvas>
+    <%
+    const graphData = data['graph1Data'];
+    
+    const leadsPorDia = {};
+    let diasTotales = 0;
+    let leadsTotales = 0;
 
+    graphData.forEach((item) => {
+        const fecha = item.Fecha;
+        const leads = item.Leads;
+        console.log(fecha, leads);
+        if (!leadsPorDia[fecha]) {
+            leadsPorDia[fecha] = leads;
+            diasTotales+= 1;
+        } else {
+            leadsPorDia[fecha] += leads;
+        }
+        leadsTotales += leads;
+    });
+
+    const averageLeadsPerDay = leadsTotales / diasTotales;
+
+    // Datos para Chart.js
+    const fechas = Object.keys(leadsPorDia);
+    const leads = Object.values(leadsPorDia);
+
+    const ctx1 = document
+        .getElementById("chartOne")
+        .getContext("2d");
+    const graficaUno = new Chart(ctx1, {
+        type: "bar",
+        data: {
+            labels: fechas,
+            datasets: [
+                {
+                    label: "Promedio de Leads Manejados al Día",
+                    data: leads,
+                    backgroundColor: "rgba(54, 162, 235, 0.2)",
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderWidth: 1,
+                },
+            ],
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+        },
+    });
+    %>
+
+<<<<<<< Updated upstream
 
     </div>
+=======
+>>>>>>> Stashed changes
 </body>
 
 <script defer>
 
+<<<<<<< Updated upstream
   graficas_asincronas = () => {
 
     console.log('GRAFICAS PERRAS ASINCRONAS');
@@ -153,6 +210,9 @@ addEventListener('load', (event) => {
 
 });
 
+=======
+>>>>>>> Stashed changes
 </script>
+
 
 </html>
