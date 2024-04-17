@@ -23,13 +23,13 @@ router.post('/reporte', isAuth, reporteController.postReporte);
 
 router.get('/reporte', isAuth, (request, response) => {
     response.render('reporte'), {
-        csrfToken: req.csrfToken(),
-        privilegios: req.session.Privilegios,
-        correo: req.session.Correo,
-        rol: req.session.Rol,
-        nombre: req.session.Nombre,
-        apellidoPaterno: req.session.ApellidoPaterno,
-        apellidoMaterno: req.session.apellidoMaterno,
+        csrfToken: request.csrfToken(),
+        privilegios: request.session.Privilegios,
+        correo: request.session.Correo,
+        rol: request.session.Rol,
+        nombre: request.session.Nombre,
+        apellidoPaterno: request.session.ApellidoPaterno,
+        apellidoMaterno: request.session.apellidoMaterno,
     }
 });
 

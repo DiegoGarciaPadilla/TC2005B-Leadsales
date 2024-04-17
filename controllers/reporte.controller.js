@@ -53,6 +53,23 @@ exports.postReporte = (request, response, next) => {
 
         graphPromises.push(promesaGraphFive);
         
+        // Gráfica 6
+        const g6 = Lead.fetchAllForGraphs(start, end);
+        const promesaGraphSix = Lead.graphSix(g6);
+
+        graphPromises.push(promesaGraphSix);
+
+        // Gráfica 7
+        const g7 = Lead.fetchAllForGraphs(start, end);
+        const promesaGraphSeven = Lead.graphSeven(g7);
+
+        graphPromises.push(promesaGraphSeven);
+        
+        // Gráfica 8
+        const g8 = Lead.fetchAllForGraphs(start, end);
+        const promesaGraphEight = Lead.graphEight(g8);
+
+        graphPromises.push(promesaGraphEight);
 
         // Datos de todas las gráficas pendientes a resolver
         Promise.all(graphPromises)
@@ -64,6 +81,9 @@ exports.postReporte = (request, response, next) => {
                     graph3Data: results[2][0],     // Datos gráficas
                     graph4Data: results[3][0],
                     graph5Data: results[4][0],
+                    graph6Data: results[5][0],
+                    graph7Data: results[6][0],
+                    graph8Data: results[7][0],
                 };
 
                 // Respuesta de JSON con datos para todas las gráficas
@@ -87,7 +107,7 @@ exports.postReporte = (request, response, next) => {
         
         // Gráfica 2
         const g2 = Lead.fetchSomeForGraphs(NombreCompleto, start, end);
-        const promesaGraphTwo = Lead.graphOne(g2);
+        const promesaGraphTwo = Lead.graphTwo(g2);
 
         graphPromises.push(promesaGraphTwo);
 
@@ -108,7 +128,24 @@ exports.postReporte = (request, response, next) => {
         const promesaGraphFive = Lead.graphFive(g5);
 
         graphPromises.push(promesaGraphFive);
+
+        // Gráfica 6
+        const g6 = Lead.fetchSomeForGraphs(start, end);
+        const promesaGraphSix = Lead.graphSix(g6);
+
+        graphPromises.push(promesaGraphSix);
         
+        // Gráfica 7
+        const g7 = Lead.fetchSomeForGraphs(start, end);
+        const promesaGraphSeven = Lead.graphSeven(g7);
+
+        graphPromises.push(promesaGraphSeven);
+
+        // Gráfica 8
+        const g8 = Lead.fetchSomeForGraphs(start, end);
+        const promesaGraphEight = Lead.graphEight(g8);
+
+        graphPromises.push(promesaGraphEight);
 
         // Datos de todas las gráficas pendientes a resolver
         Promise.all(graphPromises)
@@ -120,11 +157,14 @@ exports.postReporte = (request, response, next) => {
                     graph3Data: results[2][0],     // Datos gráficas
                     graph4Data: results[3][0],
                     graph5Data: results[4][0],
+                    graph6Data: results[5][0],
+                    graph7Data: results[6][0],
+                    graph8Data: results[7][0],
                 };
 
                 // Respuesta de JSON con datos para todas las gráficas
-                response.status(200).json(responseData);
-                // response.redirect('/reportes');
+                //response.status(200).json(responseData);
+                response.render('reporte', { data: responseData });
             })
             .catch((error) => {
                 console.log("Error recogiendo datos de leads:", error);

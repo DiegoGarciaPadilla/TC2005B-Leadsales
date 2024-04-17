@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -34,42 +34,21 @@
 
   </style>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/TC2005B-Leadsales/util/reporte.js"></script>
 </head>
 <body>
     <%- include('partials/sidebar.ejs') %> 
 
     <div id="main-content" class="w-full ml-14 mt-12 pl-20 display:flex">
         <h1 class="mb-8 text-4xl text-gray-900">Hi</h1>
+
+        <canvas id="chartOne" width="400" height="200"></canvas>
+
     </div>
 </body>
 
 <script defer>
-
-    const graficas_asincronas = () => {
-
-        fetch(`/reporte`, {
-        method: 'POST', 
-        headers: {
-          'Content-Type': 'application/json',
-        }
-    }).then((result) => {
-        if (!result.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return result.json();
-    })
-    .then((data) => {
-        // console.log(data);
-        const graph1Data = data.graph1Data;
-        // console.log(graph1Data);
-        window.location.href = '/reportes';
-    }).catch((error) => {
-        console.log(error);
-    })
-
-
-    }
-
 </script>
 
 </html>

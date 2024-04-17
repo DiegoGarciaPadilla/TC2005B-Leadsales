@@ -13,6 +13,7 @@
     }
     
     </style>
+    <script src="/TC2005B-Leadsales/util/reporte.js"></script>
 </head>
 <body class="bg-[#E4E8EE]">
   <%- include('partials/sidebar.ejs') %>
@@ -47,7 +48,7 @@
                 <input type="checkbox" id="check_instagram" name="instagram" value="instagram" class="ml-5">
               </div>
       
-              <button class="ml-auto mr-8 mt-5 inline-block px-2 py-1 text-xs font-medium text-center text-purple-700 border border-purple-700 transition bg-white rounded shadow ripple hover:shadow-lg hover:bg-purple-700 hover:text-white focus:outline-none" type="submit">Generar Reporte</button>
+              <button id="generarReporteBtn" class="ml-auto mr-8 mt-5 inline-block px-2 py-1 text-xs font-medium text-center text-purple-700 border border-purple-700 transition bg-white rounded shadow ripple hover:shadow-lg hover:bg-purple-700 hover:text-white focus:outline-none" type="submit">Generar Reporte</button>
             </div>
       
               <div date-rangepicker class="flex items-center ml-auto -mt-10 pl-8">
@@ -100,6 +101,11 @@
       document.getElementById('uploadText').addEventListener('click', function() {
       document.getElementById('file').click();
       });     
+
+      document.getElementById('generarReporteBtn').addEventListener('click', function() {
+        console.log('SI HICE PERRO CLICK');
+        graficas_asincronas();
+      })
 
   </script>
 </body>

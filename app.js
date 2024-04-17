@@ -57,6 +57,13 @@ app.use(csrfProtection);
 
 // app.use(express.static(path.join(__dirname, "public")));
 
+// Tipo correcto de MIME
+app.use('/TC2005B-Leadsales/util', express.static('util', { 
+    extensions: ['js'], 
+    type: 'application/javascript' 
+}));
+
+
 // Rutas
 
 // Usar rutas

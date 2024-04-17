@@ -96,6 +96,30 @@ module.exports = class Lead {
     
     return db.execute(query);
   }
+  
+  static async graphSix(filter) {
+    
+    let query = "SELECT YEAR(Creado) AS Anio, COUNT(DISTINCT Compania) AS `Companias Atendidas` FROM (";
+    query += filter + ") AS Leads GROUP BY YEAR(Creado) ORDER BY Anio"
+    
+    return db.execute(query);
+  }
+  
+  static async graphSeven(filter) {
+    
+    let query = "SELECT Archivado, COUNT(*) AS `Cantidad` FROM (";
+    query += filter + ") AS Leads GROUP BY Archivado";
+    
+    return db.execute(query);
+  }
+  
+  static async graphEight(filter) {
+    
+    let query = "SELECT CreadoManualmente, COUNT(*) AS `Cantidad` FROM (";
+    query += filter + ") AS Leads GROUP BY CreadoManualmente";
+    
+    return db.execute(query);
+  }
 
   static fetchOne(IDLead) {
       return db.execute("SELECT * FROM `lead` WHERE IDLead = ?", [IDLead]);
