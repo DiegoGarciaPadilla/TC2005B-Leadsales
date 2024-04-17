@@ -104,4 +104,8 @@ module.exports = class Lead {
   static createLead(lead) {
     return db.execute("INSERT INTO `Lead` (Nombre, Telefono, Embudo, Asignadoa, Creado, Horadecreacion, Archivado, CreadoManualmente) VALUES (?, ?, ?, ?, CURDATE(), CURTIME(), 'No', 'TRUE')", [lead.Nombre, lead.Telefono, lead.Embudo, lead.Asignadoa]);
   }
+
+  static deleteLead(IDLead) {
+    return db.exe
+  }
 }
