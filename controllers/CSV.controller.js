@@ -1,5 +1,7 @@
 const CSV = require("../model/CSV.model");
 
+const Usuario = require("../model/Usuario.model");
+
 /* ========== CU. 26 IMPORTA DATOS DE LEADS | Sebas Colin =============== */
 
 exports.post_CSV = (req, res) => {
@@ -13,16 +15,23 @@ exports.post_CSV = (req, res) => {
     // PROMISE
     csv.save();
 
-    res.render("inicio", {
-        msg: "File uploaded successfully!",
-        file: `/uploads/${req.file.filename}`,
-        csrfToken: req.csrfToken(),
-        correo: req.session.Correo,
-        nombre: req.session.Nombre,
-        apellidoPaterno: req.session.ApellidoPaterno,
-        apellidoMaterno: req.session.ApellidoMaterno,
-        rol: req.session.Rol,   
-    });
+    Usuario.fetchAllUsers()
+        .then(([usuariosFetched]) => {
+            res.render("inicio", {
+                msg: "File uploaded successfully!",
+                file: `/uploads/${req.file.filename}`,
+                csrfToken: req.csrfToken(),
+                correo: req.session.Correo,
+                nombre: req.session.Nombre,
+                apellidoPaterno: req.session.ApellidoPaterno,
+                apellidoMaterno: req.session.ApellidoMaterno,
+                rol: req.session.Rol,   
+                usuarios: usuariosFetched,
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 
     return null; // Add a return statement at the end of the function
 };

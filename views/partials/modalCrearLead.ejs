@@ -3,7 +3,7 @@
 
       <p class="mt-2 mb-2 font-bold text-red-700 text-left" style="font-size: 12px;"> * Obligatorio </p>
       <div id="div-error" class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert" style="display: none;">
-        <span class="font-bold"> ¡Cuidado!</span> 
+        <span class="font-bold"> Cuidado: </span> 
         <span id="error-message"> </span>
       </div>
 
@@ -34,10 +34,10 @@
             Asignado a
             <span class="font-bold text-red-700"> * </span>
           </label>
-          <select id="asignadoa" name="asignadoa" class="bg-gray-50 border border-gray-300 text-gray-700 leading-tight rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+          <select id="asignado" name="asignadoa" class="bg-gray-50 border border-gray-300 text-gray-700 leading-tight rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
             <option selected> Elige un usuario </option>
             <% for (let i = 0; i < usuarios.length; i++) { %> 
-              <option value="<%= usuarios[i].Nombre + usuarios[i].ApellidoPaterno %>"> <%= usuarios[i].Nombre + ' ' + usuarios[i].ApellidoPaterno %> </option>
+              <option value="<%= usuarios[i].Nombre + ' ' + usuarios[i].ApellidoPaterno %>"> <%= usuarios[i].Nombre + ' ' + usuarios[i].ApellidoPaterno %> </option>
             <% } %>
           </select>
         </div>
