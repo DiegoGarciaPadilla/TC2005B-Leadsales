@@ -1,5 +1,4 @@
 const Graph = require('../model/graph.model');
-const Graph = require('../model/leads.model');
 
 /* ========== CU. 02 GENERA REPORTE | Sebas Colín - Andrea Medina =============== */
 
@@ -85,7 +84,9 @@ exports.getReporte = (request, response, next) => {
                 };
 
                 // Respuesta de JSON con datos para todas las gráficas
-                response.status(200).json(responseData);
+                response.status(200).json(responseData, {
+                    graphs: [1,2,3,4,5,6,7],
+                });
                 //response.render('reporte');
             })
             .catch((error) => {
@@ -162,7 +163,9 @@ exports.getReporte = (request, response, next) => {
                 };
 
                 // Respuesta de JSON con datos para todas las gráficas
-                response.status(200).json(responseData);
+                response.status(200).json(responseData, {
+                    Graph1: Graph1.idGraph,
+                });
                 // response.redirect('/reportes');
             })
             .catch((error) => {
