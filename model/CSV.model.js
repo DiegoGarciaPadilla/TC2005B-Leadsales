@@ -68,7 +68,7 @@ module.exports = class CSV {
     }
 
     static fetchAll() {
-        return db.execute("Select * from csv");
+        return db.execute("SELECT * FROM csv");
     }
 
     static fetch(id) {
@@ -79,6 +79,6 @@ module.exports = class CSV {
     }
 
     static fetchOne(id) {
-        return db.execute("Select * from csv WHERE idCSV = ?", [id]);
+        return db.execute("SELECT * FROM csv WHERE idCSV = ?", [id]);
     }
 };

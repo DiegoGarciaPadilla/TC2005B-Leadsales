@@ -10,13 +10,13 @@ module.exports = class Lead {
 
     static fetchAll() {
         return db.execute(
-            "SELECT * FROM `Lead` WHERE FechaHoraEliminado IS NULL"
+            "SELECT * FROM `lead` WHERE FechaHoraEliminado IS NULL"
         );
     }
 
   static async fetchLeadsByUser(correo) {
     // Primera consulta: obtener el nombre y apellido paterno basado en el correo
-    const [rows] = await db.execute("SELECT CONCAT(Nombre, ' ', ApellidoPaterno) AS NombreCompleto FROM `Usuario` WHERE Correo = ?", [correo]);
+    const [rows] = await db.execute("SELECT CONCAT(Nombre, ' ', ApellidoPaterno) AS NombreCompleto FROM `usuario` WHERE Correo = ?", [correo]);
     console.log(rows[0].NombreCompleto);
     
     if (rows.length === 0) {
@@ -26,17 +26,17 @@ module.exports = class Lead {
     
     // Segunda consulta: obtener los leads donde Asignadoa es igual al nombre completo obtenido
     const nombreCompleto = rows[0].NombreCompleto;
-    return db.execute("SELECT * FROM `Lead` WHERE Asignadoa = ? AND FechaHoraEliminado IS NULL", [nombreCompleto]);
+    return db.execute("SELECT * FROM `lead` WHERE Asignadoa = ? AND FechaHoraEliminado IS NULL", [nombreCompleto]);
   }
 
   static fetchAllForGraphs(start, end) {
 
     if (start && end) {
-      let query = "SELECT * FROM `Lead` WHERE FechaHoraEliminado IS NULL AND Creado BETWEEN ";
+      let query = "SELECT * FROM `lead` WHERE FechaHoraEliminado IS NULL AND Creado BETWEEN ";
       query += "'" + start + "' AND '" + end + "'";
       return query;
     } else {
-      let query = "SELECT * FROM `Lead` WHERE FechaHoraEliminado IS NULL";
+      let query = "SELECT * FROM `lead` WHERE FechaHoraEliminado IS NULL";
       return query;
     }
 
@@ -44,7 +44,7 @@ module.exports = class Lead {
 
   static fetchSomeForGraphs(NombreCompleto, start, end) {
 
-      let query = "SELECT * FROM `Lead` WHERE Asignadoa = "
+      let query = "SELECT * FROM `lead` WHERE Asignadoa = "
       query += "'" + NombreCompleto + "'" + " AND FechaHoraEliminado IS NULL";
       if (start && end) {
         query += " AND Creado BETWEEN ";
@@ -126,6 +126,10 @@ module.exports = class Lead {
   }
 
   static createLead(lead) {
-    return db.execute("INSERT INTO `Lead` (Nombre, Telefono, Embudo, Asignadoa, Creado, Horadecreacion, Archivado, CreadoManualmente) VALUES (?, ?, ?, ?, CURDATE(), CURTIME(), 'No', 'TRUE')", [lead.Nombre, lead.Telefono, lead.Embudo, lead.Asignadoa]);
+    return db.execute("INSERT INTO `lead` (Nombre, Telefono, Embudo, Asignadoa, Creado, Horadecreacion, Archivado, CreadoManualmente) VALUES (?, ?, ?, ?, CURDATE(), CURTIME(), 'No', 'TRUE')", [lead.Nombre, lead.Telefono, lead.Embudo, lead.Asignadoa]);
   }
-}
+
+  static deleteLeadById(id) {
+    return db.execute("UPDATE `lead` SET FechaHoraEliminado = CURRENT_TIMESTAMP WHERE IDLead = ?", [id]);
+  }
+};

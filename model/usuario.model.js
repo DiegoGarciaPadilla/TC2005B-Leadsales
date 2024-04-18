@@ -67,7 +67,7 @@ module.exports = class Usuario {
 
     static fetchRoles() {
         return db.execute(
-            "SELECT R.Nombre FROM rol AS r JOIN usuario_rol AS ur ON ur.IDRol = r.IDRol"
+            "SELECT R.Nombre FROM rol AS R JOIN usuario_rol AS UR ON UR.IDRol = R.IDRol"
         );
     }
 
@@ -84,12 +84,12 @@ module.exports = class Usuario {
     static getPrivilegios(Correo) {
         return db.execute(
             `
-            SELECT pr.IDPrivilegio, pr.Descripcion FROM privilegios AS pr
-            JOIN privilegio_rol AS prir 	ON prir.IDPrivilegio = pr.IDPrivilegio
-            JOIN rol AS r 					ON r.IDRol = prir.IDRol
-            JOIN usuario_rol AS ur			ON ur.IDRol = r.IDRol
-            JOIN usuario AS u 				ON u.IDUsuario = ur.IDUsuario
-            WHERE u.Correo = ?
+            SELECT PR.IDPrivilegio, PR.Descripcion FROM privilegios AS PR
+            JOIN privilegio_rol AS PRIR 	ON PRIR.IDPrivilegio = PR.IDPrivilegio
+            JOIN rol AS R 					ON R.IDRol = PRIR.IDRol
+            JOIN usuario_rol AS UR			ON UR.IDRol = R.IDRol
+            JOIN usuario AS U 				ON U.IDUsuario = UR.IDUsuario
+            WHERE U.Correo = ?
         `,
             [Correo]
         );
