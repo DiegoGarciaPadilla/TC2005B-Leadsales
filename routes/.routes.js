@@ -21,7 +21,7 @@ router.get("/FAQ", isAuth, (req, res) => {
     res.render("FAQ");
 });
 
-router.post('/reporte', isAuth, reporteController.postReporte);
+router.get('/reporte/:idGraph', isAuth, graphController.getReporte);
 
 router.get('/reporte', isAuth, (request, response) => {
     response.render('reporte'), {
@@ -40,20 +40,20 @@ router.post("/", isAuth, post_CSV); // ANTES de router,use("/")
 router.get("/", isAuth,  (req, res) => {
     Usuario.fetchAllUsers()
         .then(([usuariosFetched]) => {
-            res.render("inicio", {
-                csrfToken: req.csrfToken(),
-                privilegios: req.session.Privilegios,
-                correo: req.session.Correo,
-                rol: req.session.Rol,
-                nombre: req.session.Nombre,
-                apellidoPaterno: req.session.ApellidoPaterno,
-                apellidoMaterno: req.session.apellidoMaterno,
+    res.render("inicio", {
+        csrfToken: req.csrfToken(),
+        privilegios: req.session.Privilegios,
+        correo: req.session.Correo,
+        rol: req.session.Rol,
+        nombre: req.session.Nombre,
+        apellidoPaterno: req.session.ApellidoPaterno,
+        apellidoMaterno: req.session.apellidoMaterno,
                 usuarios: usuariosFetched,
             });
         })
         .catch((error) => {
             console.log(error);
-        });
+    });
 });
 
 // Exportamos el router

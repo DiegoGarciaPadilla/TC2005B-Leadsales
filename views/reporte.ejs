@@ -34,6 +34,8 @@
 
   </style>
 
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <%- include('partials/sidebar.ejs') %> 
@@ -41,14 +43,21 @@
     <div id="main-content" class="w-full ml-14 mt-12 pl-20 display:flex">
         <h1 class="mb-8 text-4xl text-gray-900">Hi</h1>
     </div>
+
+    <button onclick="graficas_asincronas('<%=Graph.idGraph%>')">Generar Gráficas</button>
+
+    <canvas id="graphOne" width="400" height="200" ></canvas>
+    
+   
+
 </body>
 
 <script defer>
 
-    const graficas_asincronas = () => {
+const graficas_asincronas = (idGraph) => {
 
-        fetch(`/reporte`, {
-        method: 'POST', 
+        fetch(`/reporte/${idGraph}`, {
+        method: 'GET', 
         headers: {
           'Content-Type': 'application/json',
         }
@@ -59,16 +68,69 @@
         return result.json();
     })
     .then((data) => {
-        // console.log(data);
-        const graph1Data = data.graph1Data;
-        // console.log(graph1Data);
-        window.location.href = '/reportes';
-    }).catch((error) => {
-        console.log(error);
-    })
+      
+      Object.keys(data).forEach((key) => {
 
+        const graphData = data[key];
 
-    }
+        if (key === 'graph1Data') {
+
+          const leadsPorDia = {};
+          let diasTot = 0;
+          let leadsTot = 0;
+
+          graphData.forEach((item) => {
+            
+            const fecha = item.Fecha;
+            const leads = item.Leads;
+            if (!leadsPorDia[fecha]) {
+              leadsPorDia[fecha] = leads;
+              diasTot++;              
+            } else {
+              leadsPorDia[fecha] += leads;
+            }
+            leadsTot += leads;
+
+          });
+
+          const promLeadsPorDia = leadsTot / diasTot;
+
+          // Chart JS
+          const fechas = Object.keys(leadsPorDia);
+          const leads = Object.keys(leadsPorDia);
+
+          const canvas_1 = document
+            .getElementById('graphOne')
+            .getContext('2D');
+
+          const graficaUno = new Chart(canvas_1, {
+            type: 'bar',
+            data: {
+              labels: fechas,
+
+              datasets: [
+                {
+                  label: 'Promedio de Leads manejados al dia',
+                  data: leads,
+                  backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                  borderColor: 'rgba(54, 162, 235, 1)',
+                  borderWidth: 1,
+                },
+              ],
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                },
+              },
+            },
+          });
+        }
+      });
+    });
+
+}
 
 </script>
 
