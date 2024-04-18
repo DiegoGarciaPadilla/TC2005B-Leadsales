@@ -8,6 +8,19 @@ const Lead = require("../model/leads.model");
 
 /* ========== CU. 02 CONSULTA HISTORIAL | Sebas Colín - Andrea Medina =============== */
 
+exports.getReporte = (req, res, ) => { 
+    res.render('reporte', {
+        data: null,
+        csrfToken: req.csrfToken(),
+        privilegios: req.session.Privilegios,
+        correo: req.session.Correo,
+        rol: req.session.Rol,
+        nombre: req.session.Nombre,
+        apellidoPaterno: req.session.ApellidoPaterno,
+        apellidoMaterno: req.session.apellidoMaterno,
+    });
+};
+
 exports.postReporte = (req, res, next) => {
     // Obtiene los datos de la sesión
     const { IDUsuario, Correo, Privilegios, Nombre, ApellidoPaterno } =
