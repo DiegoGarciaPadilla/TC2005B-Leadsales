@@ -26,8 +26,11 @@ exports.postReporte = (req, res, next) => {
     const { IDUsuario, Correo, Privilegios, Nombre, ApellidoPaterno } =
         req.session;
 
+    
+
     // Obtiene el valor del token CSRF
-    const CSRF = req.body._csrf;
+    const CSRF = req.csrfToken();
+    
     console.log("Hola?");
     console.log("Hola soy el csrf pipipi", CSRF);
     console.log("Hola soy el body pipipi", req.body);

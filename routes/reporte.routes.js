@@ -16,7 +16,7 @@ const { getReporte, postReporte } = require('../controllers/reporte.controller')
 
 router.get('/', isAuth, getReporte);
 
-router.post('/:graficaId', isAuth, postReporte);
+router.post('/', isAuth, postReporte);
 
 // Exportamos el router
 

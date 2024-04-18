@@ -38,8 +38,15 @@
         <%- include('partials/sidebar.ejs') %>
 
         <div id="main-content" class="w-full ml-14 mt-12 pl-20 display:flex">
-            <h1 class="mb-8 text-4xl text-gray-900">Hi</h1>
+            <h1 class="mb-8 text-4xl text-gray-900">Reportes</h1>
             <canvas id="chartOne" width="400" height="200"></canvas>
+
+            <form action="/reporte" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Generar reporte</button>
+
+            </form>
         </div>
+
     </body>
 </html>
