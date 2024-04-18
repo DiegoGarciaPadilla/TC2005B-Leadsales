@@ -77,6 +77,8 @@
             body: JSON.stringify({ IDRol: IDRol })
         })
         .then((result) => {
+            console.log("SOy el result", result);
+            console.log("SOy el result json de roles", result.json());
             return result.json();
         })
         .then((data) => {

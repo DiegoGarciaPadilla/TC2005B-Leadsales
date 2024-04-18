@@ -15,6 +15,11 @@ exports.postReporte = (req, res, next) => {
 
     // Obtiene el valor del token CSRF
     const CSRF = req.body._csrf;
+    console.log("Hola?");
+    console.log("Hola soy el csrf pipipi", CSRF);
+    console.log("Hola soy el body pipipi", req.body);
+
+    console.log(req.csrfToken());
 
     // Obtiene el nombre completo del usuario
     const NombreCompleto = String(Nombre, " ", ApellidoPaterno);
@@ -98,8 +103,8 @@ exports.postReporte = (req, res, next) => {
                 };
 
                 res.render("reporte", {
-                    data: resData,
-                    csrfToken: CSRF,
+                    data: res.json(resData),
+                    csrfToken: req.csrfToken()
                 });
             })
             .catch((error) => {
