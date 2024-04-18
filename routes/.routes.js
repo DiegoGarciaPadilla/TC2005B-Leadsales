@@ -25,6 +25,7 @@ router.post('/reporte/:graficaId', isAuth, reporteController.postReporte);
 
 router.get('/reporte', isAuth, (request, response) => {
     response.render('reporte'), {
+        data: null,
         csrfToken: request.csrfToken(),
         privilegios: request.session.Privilegios,
         correo: request.session.Correo,

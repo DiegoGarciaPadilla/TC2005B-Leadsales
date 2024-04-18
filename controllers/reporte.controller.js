@@ -104,7 +104,7 @@ exports.postReporte = (req, res, next) => {
 
                 res.render("reporte", {
                     data: res.json(resData),
-                    csrfToken: req.csrfToken()
+                    csrfToken: req.csrfToken(),
                 });
             })
             .catch((error) => {
@@ -196,9 +196,11 @@ exports.postReporte = (req, res, next) => {
 
 /* ========== CU. 24 CONSULTA HISTORIAL | Chimali Nava =============== */
 
-exports.getReportes = (req, res) => {
-    const { NombreCompleto, Privilegios } = req.session;
-    console.log(NombreCompleto, Privilegios);
+exports.getHistorial = (req, res) => {
+    const { IDUsuario, Privilegios } = req.session;
+
+    console.log("getHistorial -> IDUsuario: ", IDUsuario);
+
     if (
         Privilegios.some(
             (priv) => priv.Descripcion === "Consulta historial todos."
@@ -206,6 +208,7 @@ exports.getReportes = (req, res) => {
     ) {
         Reporte.fetchAll()
             .then(([reportesFetched]) => {
+                console.log("getHistorial -> reportesFetched: ", reportesFetched);
                 res.render("historial", {
                     reportes: reportesFetched,
                     csrfToken: req.csrfToken(),
@@ -224,11 +227,12 @@ exports.getReportes = (req, res) => {
             (priv) => priv.Descripcion === "Consulta historial propios."
         )
     ) {
-        Reporte.fetchReportesByUser(NombreCompleto)
+        Reporte.fetchReportesByUser(IDUsuario)
             .then(([reportesFetched]) => {
+                console.log("getHistorial -> reportesFetched: ", reportesFetched);
                 res.render("historial", {
                     reportes: reportesFetched,
-                    csrfToken: CSRF,
+                    csrfToken: req.csrfToken(),
                 });
             })
             .catch((error) => {

@@ -1,164 +1,45 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Directorio</title>
-  <link rel="stylesheet" href="/css/output.css"/>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Directorio</title>
+        <link rel="stylesheet" href="/css/output.css" />
 
-  <style> 
+        <style>
+            body {
+                background-color: #e4e8ee;
+            }
 
-    body {
-      background-color: #E4E8EE;
-    }
+            #container {
+                position: relative;
+                height: 500px;
+                box-shadow: 1px 4px 8px rgba(36, 37, 42, 0.2);
+            }
+            #containerElements {
+                overflow-y: auto;
+                height: 100%;
+            }
+            #element {
+                position: relative;
+            }
+            #main-content {
+                transition: padding-left 0.3s ease;
+                padding-left: 3.5rem;
+            }
+            .side:hover ~ #main-content {
+                padding-left: 10rem;
+            }
+        </style>
 
-    #container {
-      position: relative;
-      height:500px;
-      box-shadow: 1px 4px 8px rgba(36, 37, 42, 0.2);
-    }
-    #containerElements {
-      overflow-y: auto; 
-      height:100%;
-    }
-    #element {
-      position: relative;
-    }
-    #main-content {
-      transition: padding-left 0.3s ease;
-      padding-left: 3.5rem;
-    } 
-    .side:hover ~ #main-content {
-      padding-left: 10rem;
-    }
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+        <%- include('partials/sidebar.ejs') %>
 
-  </style>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <%- include('partials/sidebar.ejs') %> 
-
-    <div id="main-content" class="w-full ml-14 mt-12 pl-20 display:flex">
-
-        <h1 class="mb-8 text-4xl text-gray-900">Hi</h1>
-        <canvas id="chartOne" width="400" height="200" ></canvas>
-    </div>
-
-</body>
-
-<script defer>
-
-  graficas_asincronas = () => {
-
-    console.log('GRAFICAS PERRAS ASINCRONAS');
-
-      fetch(`/reporte`, {
-      method: 'POST', 
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    }).then((result) => {
-        if (!result.ok) {
-            throw new Error('Network response was not ok');
-        }
-        // return result.json();
-    }).then((data) => {
-
-      Object.keys(data).forEach(key => {
-
-        //const graphData = data[key];
-        const graphData = JSON.parse('<%- JSON.stringify(data) %>');
-        
-        if (key === 'graph1Data') {
-            console.log(key);
-            // Procesado de datos de gráfica uno
-            const leadsPorDia = {};
-            let diasTotales = 0;
-            let leadsTotales = 0;
-
-            graphData.forEach(item => {
-                const fecha = item.Fecha;
-                const leads = item.Leads;
-                if (!leadsPorDia[fecha]) {
-                    leadsPorDia[fecha] = leads;
-                    diasTotales++;
-                } else {
-                    leadsPorDia[fecha] += leads;
-                }
-                leadsTotales += leads;
-            });
-
-            const averageLeadsPerDay = leadsTotales / diasTotales;
-
-            // Datos para Chart.js
-            const fechas = Object.keys(leadsPorDia);
-            const leads = Object.values(leadsPorDia);
-
-          
-            const ctx1 = document.getElementById('chartOne').getContext('2d');
-            const graficaUno = new Chart(ctx1, {
-                type: 'bar',
-                data: {
-                    labels: fechas,
-                    datasets: [{
-                        label: 'Promedio de Leads Manejados al Día',
-                        data: leads,
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-
-    });
-
-  // console.log(data);
-  // console.log(graph1Data);
-  // window.location.href = '/reporte';
-
-  }).catch((error) => {
-      console.log(error);
-  })
-
-
-
-  }
-
-  var csrfToken = '<%= csrfToken %>';
-  console.log("Aqui si llego jiji");
-
-addEventListener('load', (event) => {
-    console.log("TRaka????");
-    fetch(`/reporte/:graficaId`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'csrf-token': csrfToken,
-      }
-    
-    }).then((result) => {
-      console.log("Traka");
-      console.log("Hola, soy el resultado", result);
-      console.log("Soy el result.json", result.json());
-      return result.json();
-
-    }).then((resData) => {
-      console.log('SI LLEGUE');
-      alert('PERRO');
-    })
-
-});
-
-</script>
-
-
+        <div id="main-content" class="w-full ml-14 mt-12 pl-20 display:flex">
+            <h1 class="mb-8 text-4xl text-gray-900">Hi</h1>
+            <canvas id="chartOne" width="400" height="200"></canvas>
+        </div>
+    </body>
 </html>

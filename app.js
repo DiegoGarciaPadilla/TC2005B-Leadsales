@@ -8,7 +8,7 @@ const routes = require("./routes/.routes");
 const usuariosRoutes = require("./routes/usuarios.routes");
 const ajustesRoutes = require("./routes/ajustes.routes");
 const leadsRoutes = require("./routes/leads.routes");
-const reportesRoutes = require("./routes/reportes.routes");
+const historialRoutes = require("./routes/historial.routes");
 
 const app = express();
 
@@ -70,7 +70,7 @@ app.use('/TC2005B-Leadsales/util', express.static('util', {
 app.use("/usuarios", usuariosRoutes);
 app.use("/ajustes", ajustesRoutes);
 app.use("/directorio", leadsRoutes);
-app.use("/historial", reportesRoutes);
+app.use("/historial", historialRoutes);
 app.use("/", csrfProtection, routes);
 
 // Levantar el servidor
