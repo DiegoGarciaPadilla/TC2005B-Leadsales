@@ -24,7 +24,7 @@ router.get("/FAQ", isAuth, (req, res) => {
 
 router.get('/reporte/:idGraph', isAuth, graphController.getReporte);
 
-router.get('/reporte', isAuth, (request, response) => {
+router.get('/reporte', isAuth, (req, response) => {
     response.render('reporte'), {
         csrfToken: req.csrfToken(),
         privilegios: req.session.Privilegios,
