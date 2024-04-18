@@ -13,19 +13,27 @@
     }
     
     </style>
+    <!-- <script src="/TC2005B-Leadsales/util/reporte.js"></script> -->
 </head>
 <body class="bg-[#E4E8EE]">
   <%- include('partials/sidebar.ejs') %>
-  <%- include('partials/aside.ejs') %>  
-    <div id="main-content" class="w-full ml-14 mt-14 pl-20 display:flex">
-      <h1 class="mb-16 text-4xl text-gray-900">Hi xxxxxx@xxxx</h1>
+  <%- include('partials/aside.ejs', {
+  correo: correo,
+  nombre: nombre, 
+  apellidoPaterno: apellidoPaterno,
+  apellidoMaterno: apellidoMaterno,
+  rol: rol
+  }) %>  
+    <div id="main-content" class="w-full ml-14 mt-12 pl-20 display:flex">
+      <h1 class="mb-8 text-4xl text-gray-900">Hi <i><%= correo %></i></h1>
 
       <div id="redes_calendar" class="flex">
-        <div id="reporteSelect" class="w-full sm:w-64 bg-[#C4CCD8] mr-4 rounded-md p-4">
+        <div id="reporteSelect" class="bg-[#C4CCD8] w-2/5 mr-4 rounded-md p-4">
           <h2 class="mb-4 font-bold">Reporte</h2>
   
-          <form id="reporteForm" class="max-w-lg mx-auto flex items-center" method="POST" action="/">
-            <div id="división_redes" class="ml-10 mt-5 w-full">
+          <form id="reporteForm" class="max-w-lg mx-auto flex items-center" method="POST" action="/reporte/:graficaId" enctype="multipart/form-data">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div id="división_redes" class="ml-2 mt-5 w-full">
               <div class="flex justify-start items-center mb-2">
                 <label for="whatsapp" class="ml-2">Whatsapp</label>
                 <input type="checkbox" id="check_whatsapp" name="whatsapp" value="whatsapp" class="ml-5">
@@ -41,10 +49,10 @@
                 <input type="checkbox" id="check_instagram" name="instagram" value="instagram" class="ml-5">
               </div>
       
-              <button class="ml-auto mr-8 mt-5 inline-block px-2 py-1 text-xs font-medium leading-6 text-center text-purple-700 border border-purple-700 transition bg-white rounded shadow ripple hover:shadow-lg hover:bg-purple-700 hover:text-white focus:outline-none" type="submit">Generar Reporte</button>
+              <button id="generarReporteBtn" class="ml-auto mr-8 mt-5 inline-block px-2 py-1 text-xs font-medium text-center text-purple-700 border border-purple-700 transition bg-white rounded shadow ripple hover:shadow-lg hover:bg-purple-700 hover:text-white focus:outline-none" type="submit">Generar Reporte</button>
             </div>
       
-              <div date-rangepicker class="flex items-center ml-auto -mt-10">
+              <div date-rangepicker class="flex items-center ml-auto -mt-10 pl-8">
                 <div class="relative">
                   <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                       <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -63,17 +71,18 @@
                       </svg>
                   </div>
                   <input name="end" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 placeholder="Select date end">
+                  
                 </div>
               </div>
-      
-            </div>
-      </div>
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
-        </form>
+          </form>
+        </div>
+      </div>  
   
-      <div class=" h-52 sm:w-64 border-dashed border-2 border-purple-400 rounded-md p-4 flex items-center justify-center mt-4" style="width: 16rem">
+      <div class="h-52 sm:w-64 border-dashed border-2 border-purple-400 rounded-md p-4 flex items-center justify-center mt-8" style="width: 20rem">
         <!-- Hidden file input -->
         <form class="max-w-lg mx-auto flex flex-col items-center" id="uploadForm" action="/" method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
+
           <input class="block w-full text-sm text-gray-900 border 
           border-gray-300 rounded-lg cursor-pointer bg-gray-50 
           dark:text-gray-400 focus:outline-none dark:bg-gray-700 
@@ -86,7 +95,6 @@
           dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" 
           type="submit" value="Guardar">Subir archivo</button>
 
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
         </form> 
       </div>  
     </div>
@@ -94,6 +102,18 @@
       document.getElementById('uploadText').addEventListener('click', function() {
       document.getElementById('file').click();
       });     
+
+      document.getElementById('generarReporteBtn').addEventListener('click', function() {
+        console.log('SI HICE PERRO CLICK');
+        graficas_asincronas();
+      })
+
+      document.getElementById('reporteForm').addEventListener('submit', function(x) {
+        x.preventDefault();
+
+        let datosForma = new FormData(this);
+        let valorInput = datosForma.get('_csrf');
+      })
 
   </script>
 </body>

@@ -18,7 +18,7 @@ const {
 
 // Importamos el middleware de privilegios
 
-const { consultaDirectorio } = require("../util/privilegios/privilegios");
+const { consultaDirectorio, creaLead } = require("../util/privilegios/privilegios");
 
 // Rutas
 
@@ -26,7 +26,7 @@ router.get("/:leadId", getLeadDetails);
 
 router.get("/", isAuth, consultaDirectorio, getLeads);
 
-router.post("/crearLead", isAuth, postCrearLead);
+router.post("/crearLead", isAuth, creaLead, postCrearLead);
 
 // Exportamos el router
 

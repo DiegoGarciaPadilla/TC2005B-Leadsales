@@ -14,13 +14,26 @@ const {
     getRoles,
     getEditarRol,
     postEditarRol,
+    postEliminarRol
 } = require("../controllers/rol.controller");
 
 // Importamos el controlador de usuario
 
-const { getUsuarios } = require("../controllers/usuario.controller");
+const { 
+    getUsuarios, 
+    getRegistrarUsuario, 
+    postRegistrarUsuario,
+    postEliminarUsuario,
+} = require("../controllers/usuario.controller");
 
-const { consultaRol, modificaRol } = require("../util/privilegios/privilegios");
+const { 
+    consultaRol, 
+    modificaRol,
+    eliminaRol,
+    consultaUsuarios,
+    registraCuenta,
+    eliminaUsuario, 
+} = require("../util/privilegios/privilegios");
 
 // Rutas
 
@@ -30,7 +43,15 @@ router.get("/roles/editarRol/:IDRol", isAuth, modificaRol, getEditarRol);
 
 router.post("/roles/editarRol/:IDRol", isAuth, modificaRol, postEditarRol);
 
-router.get("/usuarios", isAuth, getUsuarios);
+router.post("/roles/eliminarRol", isAuth, eliminaRol, postEliminarRol);
+
+router.get("/usuarios", isAuth, consultaUsuarios, getUsuarios);
+
+router.get("/usuarios/agregarUsuario", isAuth, registraCuenta, getRegistrarUsuario);
+
+router.post("/usuarios/agregarUsuario", isAuth, registraCuenta, postRegistrarUsuario);
+
+router.post("/usuarios/eliminar", isAuth, eliminaUsuario, postEliminarUsuario);
 
 // Exportamos el router
 

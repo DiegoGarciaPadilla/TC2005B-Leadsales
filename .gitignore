@@ -6,4 +6,6 @@
 
 # Ignore keys
 keys.json
-public/css/output.css
+
+# Ignore vscode settings
+.vscode/settings.json
