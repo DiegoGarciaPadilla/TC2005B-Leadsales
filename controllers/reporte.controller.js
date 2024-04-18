@@ -8,8 +8,8 @@ const Lead = require("../model/leads.model");
 
 /* ========== CU. 02 CONSULTA HISTORIAL | Sebas Colín - Andrea Medina =============== */
 
-exports.getReporte = (req, res, ) => { 
-    res.render('reporte', {
+exports.getReporte = (req, res) => {
+    res.render("reporte", {
         data: null,
         csrfToken: req.csrfToken(),
         privilegios: req.session.Privilegios,
@@ -26,24 +26,14 @@ exports.postReporte = (req, res, next) => {
     const { IDUsuario, Correo, Privilegios, Nombre, ApellidoPaterno } =
         req.session;
 
-    
-
     // Obtiene el valor del token CSRF
     const CSRF = req.csrfToken();
-    
-    console.log("Hola?");
-    console.log("Hola soy el csrf pipipi", CSRF);
-    console.log("Hola soy el body pipipi", req.body);
-
-    console.log(req.csrfToken());
 
     // Obtiene el nombre completo del usuario
     const NombreCompleto = String(Nombre, " ", ApellidoPaterno);
 
     // Recibe las fechas de inicio y fin para la consulta
     const { start, end } = req.body;
-
-    console.log(start, end);
 
     // Caso cuando se pueden consultar los leads de todos
 
@@ -119,7 +109,7 @@ exports.postReporte = (req, res, next) => {
                 };
 
                 res.render("reporte", {
-                    data: res.json(resData),
+                    data: resData,
                     csrfToken: req.csrfToken(),
                 });
             })
@@ -224,7 +214,10 @@ exports.getHistorial = (req, res) => {
     ) {
         Reporte.fetchAll()
             .then(([reportesFetched]) => {
-                console.log("getHistorial -> reportesFetched: ", reportesFetched);
+                console.log(
+                    "getHistorial -> reportesFetched: ",
+                    reportesFetched
+                );
                 res.render("historial", {
                     reportes: reportesFetched,
                     csrfToken: req.csrfToken(),
@@ -245,7 +238,10 @@ exports.getHistorial = (req, res) => {
     ) {
         Reporte.fetchReportesByUser(IDUsuario)
             .then(([reportesFetched]) => {
-                console.log("getHistorial -> reportesFetched: ", reportesFetched);
+                console.log(
+                    "getHistorial -> reportesFetched: ",
+                    reportesFetched
+                );
                 res.render("historial", {
                     reportes: reportesFetched,
                     csrfToken: req.csrfToken(),
