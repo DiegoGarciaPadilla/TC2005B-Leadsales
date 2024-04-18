@@ -35,29 +35,35 @@ exports.postLogin = (req, res) => {
                 console.log(usuario);
 
                 // Comparar la contraseña
-                if (password === usuario.Password) {
-                    // Registrar sesión
-                    Usuario.login(usuario.IDUsuario)
-                        .then(() => {
-                            // Guardar los privilegios en la sesion
-                            Usuario.getPrivilegios(usuario.Correo)
-                                .then(([privilegios]) => {
-                                    Usuario.fetchRol(usuario.IDUsuario)
-                                        .then(([rolFetched]) => {
-                                            const rol = rolFetched[0].IDRol;
-                                            console.log(privilegios);
-                                            req.session.Privilegios =
-                                                privilegios;
-                                            req.session.Correo = usuario.Correo;
-                                            req.session.Nombre = usuario.Nombre;
-                                            req.session.ApellidoPaterno = usuario.ApellidoPaterno;
-                                            req.session.ApellidoMaterno = usuario.ApellidoMaterno;
-                                            req.session.IDUsuario =
-                                                usuario.IDUsuario;
-                                            req.session.Rol = rol;
-                                            req.session.isLoggedIn = true;
-                                            console.log(req.session);
-                                            res.redirect("/");
+                bcrypt.compare(password, usuario.Password)
+                    .then((doMatch) => {
+                        if (doMatch) {
+                            // Registrar sesión
+                            Usuario.login(usuario.IDUsuario)
+                                .then(() => {
+                                    // Guardar los privilegios en la sesion
+                                    Usuario.getPrivilegios(usuario.Correo)
+                                        .then(([privilegios]) => {
+                                            Usuario.fetchRol(usuario.IDUsuario)
+                                                .then(([rolFetched]) => {
+                                                    const rol = rolFetched[0].IDRol;
+                                                    console.log(privilegios);
+                                                    req.session.Privilegios =
+                                                        privilegios;
+                                                    req.session.Correo = usuario.Correo;
+                                                    req.session.Nombre = usuario.Nombre;
+                                                    req.session.ApellidoPaterno = usuario.ApellidoPaterno;
+                                                    req.session.ApellidoMaterno = usuario.ApellidoMaterno;
+                                                    req.session.IDUsuario =
+                                                        usuario.IDUsuario;
+                                                    req.session.Rol = rol;
+                                                    req.session.isLoggedIn = true;
+                                                    console.log(req.session);
+                                                    res.redirect("/");
+                                                })
+                                                .catch((error) => {
+                                                    console.log(error);
+                                                });
                                         })
                                         .catch((error) => {
                                             console.log(error);
@@ -66,13 +72,12 @@ exports.postLogin = (req, res) => {
                                 .catch((error) => {
                                     console.log(error);
                                 });
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                        });
-                } else {
-                    console.log("Contraseña incorrecta");
-                }
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        console.log("Contraseña incorrecta");
+                    });
             } else {
                 req.session.error = "Correo o contraseña incorrectos";
                 res.redirect("/usuarios/login");
@@ -163,6 +168,24 @@ exports.postRegistrarUsuario = (req, res) => {
 };
 
 /* ========================== FIN CU. 11 ==============================  */
+
+/* ====== CU. 12 ELIMINA USUARIO | Andrea Medina - Diego Lira  ======= */
+exports.postEliminarUsuario = (req, res) => {
+
+    const { IDUsuario } = req.body;
+    console.log("IDUsuario controller: ",   IDUsuario);
+
+    Usuario.eliminar(IDUsuario)
+        .then(() => {
+            res.status(200).json({ success: true });
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(500).json({ error: "Error al eliminar el usuario" });
+        });
+}
+
+/* ========================== FIN CU. 12 ==============================  */
 
 /* ========== CU. 29 CERRAR SESIÓN | Andrea Medina  =============== */
 exports.getLogout = (req, res) => {

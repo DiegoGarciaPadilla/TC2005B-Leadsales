@@ -14,11 +14,12 @@ const {
     getLeadDetails,
     getLeads,
     postCrearLead,
+    postEliminarLead
 } = require("../controllers/leads.controller");
 
 // Importamos el middleware de privilegios
 
-const { consultaDirectorio } = require("../util/privilegios/privilegios");
+const { consultaDirectorio, creaLead , eliminaLead } = require("../util/privilegios/privilegios");
 
 // Rutas
 
@@ -26,7 +27,9 @@ router.get("/:leadId", getLeadDetails);
 
 router.get("/", isAuth, consultaDirectorio, getLeads);
 
-router.post("/crearLead", isAuth, postCrearLead);
+router.post("/crearLead", isAuth, creaLead, postCrearLead);
+
+router.post("/eliminarLeads", isAuth, eliminaLead, postEliminarLead);
 
 // Exportamos el router
 

@@ -1,5 +1,7 @@
 const Lead = require("../model/leads.model");
 
+const Usuario = require("../model/usuario.model");
+
 /* ========== CU. 25 CONSULTA REPORTE EN HISTORIAL | Diego García =============== */
 
 /* ========================== FIN CU. 25 ==============================  */
@@ -16,15 +18,22 @@ exports.getLeads = (req, res) => {
     ) {
         Lead.fetchAll()
             .then(([leadsFetched]) => {
-                res.render("directorio", {
-                    leads: leadsFetched,
-                    csrfToken: req.csrfToken(),
-                    correo: req.session.Correo,
-                    rol: req.session.Rol,
-                    nombre: req.session.Nombre,
-                    apellidoPaterno: req.session.ApellidoPaterno,
-                    apellidoMaterno: req.session.apellidoMaterno,
-                });
+                Usuario.fetchAllUsers()
+                    .then(([usuariosFetched]) => {
+                        res.render("directorio", {
+                            leads: leadsFetched,
+                            csrfToken: req.csrfToken(),
+                            correo: req.session.Correo,
+                            rol: req.session.Rol,
+                            nombre: req.session.Nombre,
+                            apellidoPaterno: req.session.ApellidoPaterno,
+                            apellidoMaterno: req.session.apellidoMaterno,
+                            usuarios: usuariosFetched,
+                        });
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
             })
             .catch((error) => {
                 console.log(error);
@@ -105,5 +114,25 @@ exports.postCrearLead = (req, res) => {
 };
 
 /* ========================== FIN CU. 5 ==============================  */
+
+/* ========== CU. 8 ELIMINA LEAD | Chimali Nava =============== */
+
+exports.postEliminarLead = async (req, res, next) => {
+    console.log("entra al controler");
+    const selectedLeads = req.body.selectedLeads;
+    console.log(selectedLeads);
+  
+    try {
+      for (const id of selectedLeads) {
+        await Lead.deleteLeadById(id);
+      }
+      res.status(200).json({ success: true });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error eliminando leads' });
+    }
+  };
+
+/* ========================== FIN CU. 8 ==============================  */
 
 module.exports = exports;

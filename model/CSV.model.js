@@ -2,6 +2,8 @@ const fs = require("fs");
 
 const csvParser = require("csv-parser");
 
+const moment = require("moment");
+
 const db = require("../util/db/db");
 
 module.exports = class CSV {
@@ -25,7 +27,26 @@ module.exports = class CSV {
                             .replace(/[\u0300-\u036f]/g, "")
                             .replace(/\s/g, "")
                             .replace(/\$/g, "");
-                        acc[normalizedKey] = row[key];
+                        
+                        // Date format
+                        if (moment(row[key], 'DD/MM/YYYY', true).isValid()) {
+                            acc[normalizedKey] = moment(row[key], 'DD/MM/YYYY').format('YYYY-MM-DD');
+
+                        } else if (moment(row[key], 'DD/M/YYYY', true).isValid()) {
+                            acc[normalizedKey] = moment(row[key], 'DD/M/YYYY').format('YYYY-MM-DD');
+
+                        } else if(moment(row[key], 'D/M/YYYY', true).isValid()) {
+                            acc[normalizedKey] = moment(row[key], 'D/M/YYYY').format('YYYY-MM-DD');
+
+                        } else if (moment(row[key], 'D/MM/YYYY', true).isValid()) {
+                            acc[normalizedKey] = moment(row[key], 'D/MM/YYYY').format('YYYY-MM-DD');
+                        }
+                        else {
+                            // acc[normalizedKey] = row[key];
+                            // Replace emojis with empty string and assign to acc[normalizedKey]
+                            acc[normalizedKey] = row[key].replace(/[^\x00-\x7F]/g, "");
+                        }
+                        
                         return acc;
                     }, {});
 
@@ -47,7 +68,7 @@ module.exports = class CSV {
     }
 
     static fetchAll() {
-        return db.execute("Select * from csv");
+        return db.execute("SELECT * FROM csv");
     }
 
     static fetch(id) {
@@ -58,6 +79,6 @@ module.exports = class CSV {
     }
 
     static fetchOne(id) {
-        return db.execute("Select * from csv WHERE idCSV = ?", [id]);
+        return db.execute("SELECT * FROM csv WHERE idCSV = ?", [id]);
     }
 };
