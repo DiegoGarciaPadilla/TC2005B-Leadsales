@@ -1,17 +1,58 @@
-const express = require('express');
+// Importamos express y creamos un router
+
+const express = require("express");
 
 const router = express.Router();
 
-const isAuth = require('../util/privilegios/is-auth');
+// Importamos el middleware isAuth (para verificar si el usuario está autenticado)
 
-const rolController = require('../controllers/rol.controller');
-const usuarioController = require('../controllers/usuario.controller');
-const privilegios = require('../util/privilegios/privilegios');
+const { isAuth } = require("../util/privilegios/is-auth");
 
-router.get('/roles', isAuth, privilegios.ver_roles, rolController.getRoles);
-router.get('/roles/editarRol/:IDRol', isAuth, privilegios.modifica_rol, rolController.getEditarRol);
-router.post('/roles/editarRol/:IDRol', isAuth, privilegios.modifica_rol, rolController.postEditarRol);
+// Importamos el controlador de rol
 
-router.get('/usuarios', isAuth, usuarioController.getUsuarios);
+const {
+    getRoles,
+    getEditarRol,
+    postEditarRol,
+    postEliminarRol
+} = require("../controllers/rol.controller");
+
+// Importamos el controlador de usuario
+
+const { 
+    getUsuarios, 
+    getRegistrarUsuario, 
+    postRegistrarUsuario,
+    postEliminarUsuario,
+} = require("../controllers/usuario.controller");
+
+const { 
+    consultaRol, 
+    modificaRol,
+    eliminaRol,
+    consultaUsuarios,
+    registraCuenta,
+    eliminaUsuario, 
+} = require("../util/privilegios/privilegios");
+
+// Rutas
+
+router.get("/roles", isAuth, consultaRol, getRoles);
+
+router.get("/roles/editarRol/:IDRol", isAuth, modificaRol, getEditarRol);
+
+router.post("/roles/editarRol/:IDRol", isAuth, modificaRol, postEditarRol);
+
+router.post("/roles/eliminarRol", isAuth, eliminaRol, postEliminarRol);
+
+router.get("/usuarios", isAuth, consultaUsuarios, getUsuarios);
+
+router.get("/usuarios/agregarUsuario", isAuth, registraCuenta, getRegistrarUsuario);
+
+router.post("/usuarios/agregarUsuario", isAuth, registraCuenta, postRegistrarUsuario);
+
+router.post("/usuarios/eliminar", isAuth, eliminaUsuario, postEliminarUsuario);
+
+// Exportamos el router
 
 module.exports = router;

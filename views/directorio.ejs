@@ -36,9 +36,16 @@
 
 </head>
 <body>
-  <%- include('partials/sidebar.ejs') %> <%- include('partials/aside.ejs') %> 
+  <%- include('partials/sidebar.ejs') %> 
+  <%- include('partials/aside.ejs', {
+    correo: correo,
+    nombre: nombre, 
+    apellidoPaterno: apellidoPaterno,
+    apellidoMaterno: apellidoMaterno,
+    rol: rol,
+    })  %> 
   <div id="main-content" class="ml-14 mt-14 pl-8">
-    <h1 class="mb-16 text-4xl text-gray-900">Hi xxxxxx@xxxx</h1>
+    <h1 class="mb-16 text-4xl text-gray-900">Hi <i><%= correo %></i></h1>
         <div id="container" class="relative overflow-auto sm:rounded-lg w-3/4">
           <table class="text-sm text-left rtl:text-right text-gray-500 border-collapse rounded-lg w-full">
             <thead id="tableHead" class="text-xs text-white bg-gray-50">
@@ -71,7 +78,7 @@
                           onmouseover="document.getElementById('popover_<%= lead.IDLead %>').classList.remove('hidden')"
                           onmouseout="document.getElementById('popover_<%= lead.IDLead %>').classList.add('hidden')"
                     >
-                      <%= lead.Ultimomensaje.substr(0, 20) + (lead.Ultimomensaje.length > 20 ? '...' : '') %>
+                      <%= lead.Ultimomensaje ? lead.Ultimomensaje.substr(0, 20) + (lead.Ultimomensaje.length > 20 ? '...' : '') : '' %>
                       <div id="popover_<%= lead.IDLead %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
                         <%= lead.Ultimomensaje %>
                       </div>
@@ -83,7 +90,7 @@
                           onmouseover="document.getElementById('popover2_<%= lead.IDLead %>').classList.remove('hidden')"
                           onmouseout="document.getElementById('popover2_<%= lead.IDLead %>').classList.add('hidden')"
                     >
-                      <%= lead.Primermensaje.substr(0, 20) + (lead.Primermensaje.length > 20 ? '...' : '') %>
+                    <%= lead.Primermensaje ? lead.Primermensaje.substr(0, 20) + (lead.Primermensaje.length > 20 ? '...' : '') : '' %>
                       <div id="popover2_<%= lead.IDLead %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
                         <%= lead.Primermensaje %>
                       </div>
@@ -164,11 +171,9 @@
         console.log(data);
         let dialog = document.getElementById('dialog');
         let leadDetails = data; // Assuming the response contains all lead details
-        console.log('caca');
+        console.log('datos cargados');
         let leadInfo = '';
         leadInfo += `<table><thead id="tableHead" class="text-xs text-white bg-gray-50"><tr>`;
-
-        // Populate the dialog with lead details  
 
         // <thead> loop
         let leadHead;
@@ -179,24 +184,35 @@
         leadInfo += `</tr></thead><tbody><tr id="element" class="bg-white border-b hover:bg-gray-50">`;
 
         // <td> loop
-        for (let key in leadDetails) {
-          console.log(`${key}:`);
-          console.log(`${key}: ${leadDetails[key]}`);
+          let cont = 0;
+          for (let key in leadDetails) {
+              let str = leadDetails[key];
 
-          const str = leadDetails[key];
-          console.log(str, 'string');
+              if (typeof str === 'string' && !isNaN(Date.parse(str))) {
+                  let date = new Date(str);
+                  str = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+              }
 
-          if (str != null) {
-            if (str.length > 20) {
-              str.substr(0, 20) + '...';
-            } else {
-              leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3">${leadDetails[key]}</td>`; 
-            }
-          } else {
-            leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3"></td>`; 
+              if (str != null) {
+                  let strShort = str;
+                  if (typeof str === 'string' && str.length > 20) {
+                      strShort = str.substr(0, 20) + '...';
+                  }
+                  leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3">${str}
+                                  <span class="cursor-pointer relative" 
+                                        onmouseover="document.getElementById('popover${cont}').classList.remove('hidden')"
+                                        onmouseout="document.getElementById('popover${cont}').classList.add('hidden')"
+                                  >
+                                    ${strShort} 
+                                    <div id="popover${cont}" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
+                                      ${str} 
+                                    </div>
+                              </td>`; 
+              } else {
+                  leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3"></td>`; 
+              }
+              cont++;
           }
-
-        }
 
         leadInfo += `</tr></tbody></table>`;
         console.log(leadInfo);

@@ -1,29 +1,45 @@
 const Lead = require("../model/leads.model");
 
+const Usuario = require("../model/usuario.model");
+
 /* ========== CU. 25 CONSULTA REPORTE EN HISTORIAL | Diego García =============== */
 
 /* ========================== FIN CU. 25 ==============================  */
 
-/* ========== CU. 10 CONSULTA DIRECTORIO | Diego Lira - Diego García (Puro Peer Programing) =============== */
+/* ========== CU. 10 CONSULTA DIRECTORIO | Diego Lira - Diego García - Chimali (Puro Peer Programing) =============== */
 
 exports.getLeads = (req, res) => {
-    const {
-        correo = "pednobr@gmail.com",
-        privilegios = ["Ver todos los leads"],
-    } = req.session; // Test user
+    const { Correo, Privilegios } = req.session; // Test user
 
-    if (!privilegios.includes("Ver todos los leads")) {
-        Lead.fetchLeadsByUser(correo)
+    if (
+        Privilegios.some(
+            (priv) => priv.Descripcion === "Consulta directorio todos."
+        )
+    ) {
+        Lead.fetchAll()
             .then(([leadsFetched]) => {
-                res.render("directorio", {
-                    leads: leadsFetched,
-                });
+                Usuario.fetchAllUsers()
+                    .then(([usuariosFetched]) => {
+                        res.render("directorio", {
+                            leads: leadsFetched,
+                            csrfToken: req.csrfToken(),
+                            correo: req.session.Correo,
+                            rol: req.session.Rol,
+                            nombre: req.session.Nombre,
+                            apellidoPaterno: req.session.ApellidoPaterno,
+                            apellidoMaterno: req.session.apellidoMaterno,
+                            usuarios: usuariosFetched,
+                        });
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
             })
             .catch((error) => {
                 console.log(error);
             });
     } else {
-        Lead.fetchAll()
+        Lead.fetchLeadsByUser(Correo)
             .then(([leadsFetched]) => {
                 res.render("directorio", {
                     leads: leadsFetched,
@@ -76,16 +92,27 @@ exports.getLeadDetails = (req, res) => {
 /* ========== CU. 5 CREA LEAD | Diego Lira =============== */
 
 exports.postCrearLead = (req, res) => {
-    const { privilegios = ["Crea lead"] } = req.session;
+    const { Privilegios } = req.session;
     const { nombre, telefono, embudo, asignadoa } = req.body;
-    if (privilegios.includes("Crea lead")) {
-        console.log(nombre);
-        console.log(telefono);
-        console.log(embudo);
-        console.log(asignadoa);
+    if (Privilegios.some((Privilegios => Privilegios.Descripcion === 'Crea lead todos.'))) {
+
+        Lead.createLead({
+                Nombre: nombre,
+                Telefono: telefono,
+                Embudo: embudo,
+                Asignadoa: asignadoa,
+            })
+            .then(() => {
+                res.redirect("/directorio");
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     } else {
         res.redirect("/directorio");
     }
 };
 
 /* ========================== FIN CU. 5 ==============================  */
+
+module.exports = exports;
