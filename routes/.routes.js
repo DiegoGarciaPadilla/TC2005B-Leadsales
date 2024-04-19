@@ -50,6 +50,7 @@ router.get("/", isAuth,  (req, res) => {
         apellidoPaterno: req.session.ApellidoPaterno,
         apellidoMaterno: req.session.apellidoMaterno,
         usuarios: usuariosFetched,
+        msg: null,
     });
         
     }).catch((error) => {
