@@ -27,12 +27,12 @@ exports.getReporte = (request, response, next) => {
 
         graphPromises.push(promesaGraphOne);
         
-        // // Gráfica 2
-        // const Graph2 = new Graph(2);
-        // const g2 = Graph.fetchAllForGraphs(start, end);
-        // const promesaGraphTwo = Graph.graphTwo(g2);
+        // Gráfica 2
+        const Graph2 = new Graph(2);
+        const g2 = Graph.fetchAllForGraphs(start, end);
+        const promesaGraphTwo = Graph.graphTwo(g2);
 
-        // graphPromises.push(promesaGraphTwo);
+        graphPromises.push(promesaGraphTwo);
 
         // // Gráfica 3
         // const Graph3 = new Graph(3);
@@ -75,6 +75,7 @@ exports.getReporte = (request, response, next) => {
                 const responseData = {
                     // Datos a JSON de cada gráfica
                     graph1Data: results[0][0], 
+                    graph2Data: results[1][0],
                 };
 
                 // Respuesta de JSON con datos para todas las gráficas
@@ -97,12 +98,12 @@ exports.getReporte = (request, response, next) => {
 
         graphPromises.push(promesaGraphOne);
         
-        // // Gráfica 2
-        // const Graph2 = new Graph(2);
-        // const g2 = Graph.fetchSomeForGraphs(NombreCompleto, start, end);
-        // const promesaGraphTwo = Graph.graphOne(g2);
+        // Gráfica 2
+        const Graph2 = new Graph(2);
+        const g2 = Graph.fetchSomeForGraphs(NombreCompleto, start, end);
+        const promesaGraphTwo = Graph.graphTwo(g2);
 
-        // graphPromises.push(promesaGraphTwo);
+        graphPromises.push(promesaGraphTwo);
 
         // // Gráfica 3
         // const Graph3 = new Graph(3);
@@ -147,17 +148,10 @@ exports.getReporte = (request, response, next) => {
                     // Datos a JSON de cada gráfica
                     graph1Data: results[0][0], 
                     graph2Data: results[1][0],
-                    graph3Data: results[2][0],     // Datos gráficas
-                    graph4Data: results[3][0],
-                    graph5Data: results[4][0],
-                    graph6Data: results[5][0],
-                    graph7Data: results[6][0],
                 };
 
                 // Respuesta de JSON con datos para todas las gráficas
-                response.status(200).json(responseData, {
-                    Graph1: Graph1.idGraph,
-                });
+                response.status(200).json(responseData);
                 // response.redirect('/reportes');
             })
             .catch((error) => {

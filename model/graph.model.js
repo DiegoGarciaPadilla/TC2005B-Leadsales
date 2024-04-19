@@ -43,59 +43,59 @@ module.exports = class Graph {
     }
     
     
-    // static async graphTwo(filter) {
+    static async graphTwo(filter) {
         
-    //     let query = "SELECT YEAR(Creado) AS `Anio`, MONTH(Creado) AS `Mes`, COUNT(*) AS `NoLeads` FROM (";
-    //     query += filter + ") AS `Leads` GROUP BY Anio, Mes";
+        let query = "SELECT YEAR(Creado) AS `Anio`, MONTH(Creado) AS `Mes`, COUNT(*) AS `NoLeads` FROM (";
+        query += filter + ") AS `Leads` GROUP BY Anio, Mes";
         
-    //     return db.execute(query);
+        return db.execute(query);
 
-    // }
+    }
       
-    // static async graphThree(filter) {
+    static async graphThree(filter) {
     
-    //     let query = "SELECT Asignadoa, COUNT(*) as `Leads por usuario` FROM (";
-    //     query += filter + ") AS Leads GROUP BY Asignadoa HAVING COUNT(*) > 1";
+        let query = "SELECT Asignadoa, COUNT(*) as `Leads por usuario` FROM (";
+        query += filter + ") AS Leads GROUP BY Asignadoa HAVING COUNT(*) > 1";
         
-    //     return db.execute(query);
+        return db.execute(query);
         
-    // }
+    }
       
-    // static async graphFour(filter) {
+    static async graphFour(filter) {
         
-    //     let query = "SELECT Status, COUNT(*) AS `Cantidad` FROM (";
-    //     query += filter + ") AS Leads GROUP BY Status";
+        let query = "SELECT Status, COUNT(*) AS `Cantidad` FROM (";
+        query += filter + ") AS Leads GROUP BY Status";
         
-    //     return db.execute(query);
+        return db.execute(query);
 
-    // }
+    }
       
-    // static async graphFive(filter) {
+    static async graphFive(filter) {
         
-    //     let query = "SELECT Embudo, COUNT(*) AS `Cantidad` FROM (";
-    //     query += filter + ") AS Leads GROUP BY Embudo";
+        let query = "SELECT Embudo, COUNT(*) AS `Cantidad` FROM (";
+        query += filter + ") AS Leads GROUP BY Embudo";
         
-    //     return db.execute(query);
+        return db.execute(query);
 
-    // }
+    }
 
-    // static async graphSix(filter) {
+    static async graphSix(filter) {
     
-    //     let query = "SELECT YEAR(Creado) AS Anio, COUNT(DISTINCT Compania) AS Companias Atendidas FROM (";
-    //     query += filter + ") AS Leads GROUP BY YEAR(Creado) ORDER BY Anio"
+        let query = "SELECT YEAR(Creado) AS Anio, COUNT(DISTINCT Compania) AS Companias Atendidas FROM (";
+        query += filter + ") AS Leads GROUP BY YEAR(Creado) ORDER BY Anio"
         
-    //     return db.execute(query);
+        return db.execute(query);
 
-    // }
+    }
       
-    // static async graphSeven(filter) {
+    static async graphSeven(filter) {
         
-    //     let query = "SELECT Archivado, COUNT(*) AS Cantidad FROM (";
-    //     query += filter + ") AS Leads GROUP BY Archivado";
+        let query = "SELECT Archivado, COUNT(*) AS Cantidad FROM (";
+        query += filter + ") AS Leads GROUP BY Archivado";
         
-    //     return db.execute(query);
+        return db.execute(query);
 
-    // }
+    }
 
 
 }
