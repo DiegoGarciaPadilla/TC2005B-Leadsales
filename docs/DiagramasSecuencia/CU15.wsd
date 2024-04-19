@@ -1,4 +1,4 @@
-@startuml
+@startuml CU15
 
 actor Owner
 boundary routes
@@ -7,6 +7,8 @@ control rol.controller.js
 entity rol.model.js
 database leadtics
 
+== GET /roles/editarRol/:id ==
+
 Owner -> routes : GET /roles/editarRol/:id
 activate routes
 
@@ -14,48 +16,49 @@ routes -> rol.controller.js : getEditarRol
 deactivate routes
 activate rol.controller.js
 
-rol.controller.js -> rol.model.js : fetchById()
-deactivate rol.controller.js
+rol.controller.js ->> rol.model.js : fetchById()
 activate rol.model.js
 
 rol.model.js -> leadtics : db.execute("SELECT * FROM roles WHERE id = ? AND FechaHoraEliminado IS NULL")
-deactivate rol.model.js
 activate leadtics
 
 leadtics --> rol.model.js : rol
 deactivate leadtics
-activate rol.model.js
 
 rol.model.js --> rol.controller.js :rol
 deactivate rol.model.js
-activate rol.controller.js
 
-rol.controller.js -> view.roles.ejs : response.render('roles/editarRol', {IDRol})
+rol.controller.js -> view.roles.ejs : response.render('roles/editarRol', {rol.IDRol})
 deactivate rol.controller.js
+activate view.roles.ejs
 
 view.roles.ejs -> Owner : HTML
 deactivate view.roles.ejs
+
+== POST /roles/editarRol/:id ==
 
 Owner -> routes : POST /roles/editarRol/:id
 activate routes
 
 routes -> rol.controller.js : postEditarRol
 deactivate routes
+activate rol.controller.js
 
-rol.controller.js -> rol.model.js : updateRolById()
+rol.controller.js ->> rol.model.js : updateRolById()
 activate rol.model.js
 
 rol.model.js -> leadtics : db.execute("UPDATE roles SET nombre = ?, DescripcionRol = ? WHERE id = ?")
-deactivate rol.model.js
+activate leadtics
 
 leadtics --> rol.model.js : result
-activate rol.model.js
+deactivate leadtics
 
 rol.model.js --> rol.controller.js : result
 deactivate rol.model.js
 
 rol.controller.js -> routes : redirect /roles
 deactivate rol.controller.js
+activate routes
 
 routes -> Owner : HTML
 deactivate routes
