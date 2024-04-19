@@ -28,7 +28,7 @@ deactivate leadtics
 rol.model.js --> rol.controller.js :rol
 deactivate rol.model.js
 
-rol.controller.js -> view.roles.ejs : response.render('roles/editarRol', {rol.IDRol})
+rol.controller.js -> view.roles.ejs : res.render('editarRol', {rol.IDRol})
 deactivate rol.controller.js
 activate view.roles.ejs
 
