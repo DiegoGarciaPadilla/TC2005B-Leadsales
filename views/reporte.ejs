@@ -75,64 +75,48 @@ const graficas_asincronas = (idGraph) => {
       Object.keys(data).forEach((key) => {
 
         const graphData = data[key];
+        console.log(graphData);
 
         if (key === 'graph1Data') {
 
           const leadsPorDia = {};
-          let diasTot = 0;
-          let leadsTot = 0;
-
+      
           graphData.forEach((item) => {
             
-            const fecha = item.Fecha;
-            const leads = item.Leads;
+            let fecha = item.Fecha;
+            let leads = item.Leads;
             if (!leadsPorDia[fecha]) {
-              leadsPorDia[fecha] = leads;
-              diasTot++;              
-            } else {
-              leadsPorDia[fecha] += leads;
-            }
-            leadsTot += leads;
+              leadsPorDia[fecha] = [];            
+            } 
+
+            leadsPorDia[fecha].push(leads);
 
           });
 
-          const promLeadsPorDia = leadsTot / diasTot;
+          let promLeads = {};
+          Object.keys(leadsPorDia).forEach(function(fecha) {
+            let totalLeads = leadsPorDia[fecha].reduce(function(acc, val) {
+                return acc + val;
+            }, 0);
+            let promedio = totalLeads / leadsPorDia[fecha].length;
+            promLeads[fecha] = promedio;
+        });
 
           // Chart JS
-          const fechas = Object.keys(leadsPorDia);
-          const leads = Object.keys(leadsPorDia);
+          let fechas = Object.keys(promLeads);
+          let leads = fechas.map((fecha) => {
+            return promLeads[fecha];
+          });
 
-          const canvas_1 = document
-            .getElementById('graphOne')
-            .getContext('2D');
+          let canvas_1 = document.getElementById('graphOne').getContext('2d');
 
-          const graficaUno = new Chart(canvas_1, {
-            type: 'bar',
-            data: {
-              labels: fechas,
+          let graficaUno = new Chart(canvas_1, {
 
-              datasets: [
-                {
-                  label: 'Promedio de Leads manejados al dia',
-                  data: leads,
-                  backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                  borderColor: 'rgba(54, 162, 235, 1)',
-                  borderWidth: 1,
-                },
-              ],
-            },
-            options: {
-              scales: {
-                y: {
-                  beginAtZero: true,
-                },
-              },
-            },
+    
           });
         }
-      });
-    });
-
+});
+  
 }
 
 </script>
