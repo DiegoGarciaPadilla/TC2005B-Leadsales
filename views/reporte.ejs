@@ -41,20 +41,23 @@
     <%- include('partials/sidebar.ejs') %> 
 
     <div id="main-content" class="w-full ml-14 mt-12 pl-20 display:flex">
+
         <h1 class="mb-8 text-4xl text-gray-900">Hi</h1>
+        
+        <button type="button" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800" onclick="graficas_asincronas('<%= 1 %>')">Generar Gráficas</button>
+        
+        <div id="chart-container" class="w-3/4 px-4 py-8 ml-32">
+          <canvas id="graphOne" width="400" height="200" ></canvas>
+        </div>
+        
     </div>
-
-    <button onclick="graficas_asincronas('<%= 1 %>')">Generar Gráficas</button>
-
-    <canvas id="graphOne" width="400" height="200" ></canvas>
-    
    
 
 </body>
 
 <script defer>
 
-const graficas_asincronas = (idGraph) => {
+  const graficas_asincronas = (idGraph) => {
 
         fetch(`/reporte/${idGraph}`, {
         method: 'GET', 
@@ -80,44 +83,69 @@ const graficas_asincronas = (idGraph) => {
         if (key === 'graph1Data') {
 
           const leadsPorDia = {};
-      
+
           graphData.forEach((item) => {
-            
+
             let fecha = item.Fecha;
             let leads = item.Leads;
-            if (!leadsPorDia[fecha]) {
-              leadsPorDia[fecha] = [];            
-            } 
 
+            if (!leadsPorDia[fecha]) {
+                leadsPorDia[fecha] = [];
+            }
             leadsPorDia[fecha].push(leads);
 
           });
 
-          let promLeads = {};
-          Object.keys(leadsPorDia).forEach(function(fecha) {
-            let totalLeads = leadsPorDia[fecha].reduce(function(acc, val) {
-                return acc + val;
-            }, 0);
-            let promedio = totalLeads / leadsPorDia[fecha].length;
-            promLeads[fecha] = promedio;
-        });
+          let promedioLeadsPorDia = {};
+          Object.keys(leadsPorDia).forEach((fecha) => {
 
-          // Chart JS
-          let fechas = Object.keys(promLeads);
-          let leads = fechas.map((fecha) => {
-            return promLeads[fecha];
+            let totalLeads = leadsPorDia[fecha].reduce((acc, val) => {
+              return acc + val;
+            }, 0);
+
+            let promedioLeads = totalLeads / leadsPorDia[fecha].length;
+            promedioLeadsPorDia[fecha] = promedioLeads;
+
           });
 
-          let canvas_1 = document.getElementById('graphOne').getContext('2d');
+          // Datos para Chart JS
+          let fechas = Object.keys(promedioLeadsPorDia);
+          let leads = fechas.map((fecha) => {
+            return promedioLeadsPorDia[fecha];
+          });
 
-          let graficaUno = new Chart(canvas_1, {
-
-    
+          // Instancia de Chart JS
+          let ctx1 = document.getElementById('graphOne').getContext('2d');
+          let chart_1 = new Chart(ctx1, {
+            type: 'line',
+            data: {
+              labels: fechas,
+              datasets: [{
+                label: 'Leads por día',
+                data: leads,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    beginAtZero: true
+                  }
+                }], 
+                xAxes: [{
+                    display: false
+                    }]
+              }
+            }
           });
         }
-});
-  
-}
+      });
+    });
+  } 
+    
 
 </script>
 
