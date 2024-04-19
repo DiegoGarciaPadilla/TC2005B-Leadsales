@@ -1,10 +1,25 @@
-const express = require('express');
+// Importamos express y creamos un router
+
+const express = require("express");
 
 const router = express.Router();
 
-const usuariosController = require('../controllers/usuario.controller');
+// Importamos el controlador de usuarios
 
-router.get('/login', usuariosController.getLogin);
-router.post('/login', usuariosController.postLogin);
+const {
+    getLogin,
+    postLogin,
+    getLogout,
+} = require("../controllers/usuario.controller");
+
+// Rutas
+
+router.get("/login", getLogin);
+
+router.post("/login", postLogin);
+
+router.get("/logout", getLogout);
+
+// Exportamos el router
 
 module.exports = router;

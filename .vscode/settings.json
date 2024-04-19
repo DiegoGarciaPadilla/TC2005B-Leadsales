@@ -1,4 +1,5 @@
 {
     "files.autoSave": "afterDelay",
-    "sqltools.connections": []
+    "sqltools.connections": [],
+    "prettier.tabWidth": 4
 }

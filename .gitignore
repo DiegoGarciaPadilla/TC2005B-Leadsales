@@ -6,3 +6,6 @@
 
 # Ignore keys
 keys.json
+
+# Ignore vscode settings
+.vscode/settings.json

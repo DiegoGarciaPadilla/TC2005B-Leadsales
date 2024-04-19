@@ -1,34 +1,61 @@
+// Importamos express y creamos un router
+
 const express = require("express");
-const bodyParser = require("body-parser");
+
 const router = express.Router();
 
-const CSVController = require('../controllers/CSV.controller');
+// Importamos el controlador de CSV
+
+const { post_CSV } = require("../controllers/CSV.controller");
+const graphController = require("../controllers/graph.controller");
+
+// Importamos el middleware isAuth (para verificar si el usuario está autenticado)
+const reporteController = require('../controllers/reporte.controller');
+
+const Usuario = require("../model/usuario.model");
+
+const { isAuth } = require("../util/privilegios/is-auth");
 
 // Rutas
-router.get("/usuario", (req, res) => {
-    res.render("user");
-});
 
-router.get("/historial", (req, res) => {
-    res.render("history");
-});
-
-router.get("/ayuda", (req, res) => {
-    res.render("help");
-});
-
-router.get("/ajustes", (req, res) => {
-    res.render("settings");
-});
-
-router.get("/FAQ", (req, res) => {
+router.get("/FAQ", isAuth, (req, res) => {
     res.render("FAQ");
 });
 
-router.post("/", CSVController.post_CSV);   // ANTES de router,use("/")
+router.get('/reporte/:idGraph', isAuth, graphController.getReporte);
 
-router.use("/", (req, res) => {
-    res.render("home");
+router.get('/reporte', isAuth, (req, response) => {
+    response.render('reporte'), {
+        csrfToken: req.csrfToken(),
+        privilegios: req.session.Privilegios,
+        correo: req.session.Correo,
+        rol: req.session.Rol,
+        nombre: req.session.Nombre,
+        apellidoPaterno: req.session.ApellidoPaterno,
+        apellidoMaterno: req.session.apellidoMaterno,
+    }
 });
 
+router.post("/", isAuth, post_CSV); // ANTES de router,use("/")
+
+router.get("/", isAuth,  (req, res) => {
+    Usuario.fetchAllUsers()
+        .then(([usuariosFetched]) => {
+    res.render("inicio", {
+        csrfToken: req.csrfToken(),
+        privilegios: req.session.Privilegios,
+        correo: req.session.Correo,
+        rol: req.session.Rol,
+        nombre: req.session.Nombre,
+        apellidoPaterno: req.session.ApellidoPaterno,
+        apellidoMaterno: req.session.apellidoMaterno,
+        usuarios: usuariosFetched,
+    });
+        
+    }).catch((error) => {
+        console.log(error);
+    });
+});
+
+// Exportamos el router
 module.exports = router;
