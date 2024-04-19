@@ -1,4 +1,4 @@
-@startuml
+@startuml CU14
 
 actor Owner
 boundary routes
@@ -14,23 +14,19 @@ routes -> rol.controller.js : getRoles
 deactivate routes
 activate rol.controller.js
 
-rol.controller.js -> rol.model.js : fetchAll()
-deactivate rol.controller.js
+rol.controller.js ->> rol.model.js : fetchAll()
 activate rol.model.js
 
 rol.model.js -> leadtics : db.execute("SELECT * FROM roles WHERE FechaHoraEliminado IS NULL")
-deactivate rol.model.js
 activate leadtics
 
 leadtics --> rol.model.js : roles
 deactivate leadtics
-activate rol.model.js
 
 rol.model.js --> rol.controller.js : roles
 deactivate rol.model.js
-activate rol.controller.js
 
-rol.controller.js -> view.roles.ejs : response.render('roles', { roles })
+rol.controller.js -> view.roles.ejs : response.render('roles', {roles})
 deactivate rol.controller.js
 activate view.roles.ejs
 
