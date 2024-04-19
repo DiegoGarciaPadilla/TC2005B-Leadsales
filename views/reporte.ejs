@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Directorio</title>
+  <link rel="stylesheet" href="/css/output.css"/>
+
+  <style> 
+
+    body {
+      background-color: #E4E8EE;
+    }
+
+    #container {
+      position: relative;
+      height:500px;
+      box-shadow: 1px 4px 8px rgba(36, 37, 42, 0.2);
+    }
+    #containerElements {
+      overflow-y: auto; 
+      height:100%;
+    }
+    #element {
+      position: relative;
+    }
+    #main-content {
+      transition: padding-left 0.3s ease;
+      padding-left: 3.5rem;
+    } 
+    .side:hover ~ #main-content {
+      padding-left: 10rem;
+    }
+
+  </style>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <%- include('partials/sidebar.ejs') %> 
+
+    <div id="main-content" class="w-full ml-14 mt-12 pl-20 display:flex">
+
+        <h1 class="mb-8 text-4xl text-gray-900">Hi</h1>
+        
+        <button type="button" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800" onclick="graficas_asincronas('<%= 1 %>')">Generar Gráficas</button>
+        
+        <div id="chart-container" class="w-3/4 px-4 py-8 ml-32">
+          <canvas id="graphOne" width="400" height="200" ></canvas>
+        </div>
+        
+    </div>
+   
+
+</body>
+
+<script defer>
+
+  const graficas_asincronas = (idGraph) => {
+
+        fetch(`/reporte/${idGraph}`, {
+        method: 'GET', 
+        headers: {
+          'Content-Type': 'application/json',
+        }
+    }).then((result) => {
+        console.log('llegue a primer then');
+        if (!result.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return result.json();
+    })
+    .then((data) => {
+      
+      console.log('llegue a segundo then');
+      console.log(data);
+      Object.keys(data).forEach((key) => {
+
+        const graphData = data[key];
+        console.log(graphData);
+
+        if (key === 'graph1Data') {
+
+          const leadsPorDia = {};
+
+          graphData.forEach((item) => {
+
+            let fecha = item.Fecha;
+            let leads = item.Leads;
+
+            if (!leadsPorDia[fecha]) {
+                leadsPorDia[fecha] = [];
+            }
+            leadsPorDia[fecha].push(leads);
+
+          });
+
+          let promedioLeadsPorDia = {};
+          Object.keys(leadsPorDia).forEach((fecha) => {
+
+            let totalLeads = leadsPorDia[fecha].reduce((acc, val) => {
+              return acc + val;
+            }, 0);
+
+            let promedioLeads = totalLeads / leadsPorDia[fecha].length;
+            promedioLeadsPorDia[fecha] = promedioLeads;
+
+          });
+
+          // Datos para Chart JS
+          let fechas = Object.keys(promedioLeadsPorDia);
+          let leads = fechas.map((fecha) => {
+            return promedioLeadsPorDia[fecha];
+          });
+
+          // Instancia de Chart JS
+          let ctx1 = document.getElementById('graphOne').getContext('2d');
+          let chart_1 = new Chart(ctx1, {
+            type: 'line',
+            data: {
+              labels: fechas,
+              datasets: [{
+                label: 'Leads por día',
+                data: leads,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    beginAtZero: true
+                  }
+                }], 
+                xAxes: [{
+                    display: false
+                    }]
+              }
+            }
+          });
+        }
+      });
+    });
+  } 
+    
+
+</script>
+
+</html>
