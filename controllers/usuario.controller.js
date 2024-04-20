@@ -307,6 +307,13 @@ exports.postCambiarContrasenia = (req, res) => {
                         .catch((error) => {
                             console.log(error);
                         });
+                } else {
+                    res.render("cambiarContrasenia", {
+                        correo: req.session.Correo,
+                        csrfToken: req.csrfToken(),
+                        error: "Contraseña actual incorrecta",
+                        success: "",
+                    });
                 }
             })
             .catch((error) => {
