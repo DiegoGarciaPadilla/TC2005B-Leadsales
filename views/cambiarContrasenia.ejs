@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<head>
+  <title>Cambiar Contraseña</title>
+  <link rel="stylesheet" href="/css/output.css" />
+</head>
+<body>
+  <nav><%- include('partials/sidebar.ejs') %></nav>
+  <div class="p-4 sm:ml-32">
+    <header class="text-left">
+        <div class="mb-4">
+            <%- include('partials/rutaActual', {path: ['ajustes', 'cambiarContrasenia']}) %>
+        </div>
+        <h1 class="mb-4 text-4xl font-bold text-gray-900">Cambiar Contraseña</h1>
+    </header>
+    <%- include('partials/error', {error: error}) %>
+    <%- include('partials/success', {success: success}) %>
+    <form action="/ajustes/cambiarContrasenia" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
+        <input type="hidden" name="Correo" value="<%= correo %>" >
+        <div class="mb-4">
+            <label for="ContraseniaActual" class="block text-gray-700 text-sm font-bold mb-2">Contraseña Actual</label>
+            <input type="password" id="ContraseniaActual" name="ContraseniaActual" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+        <div class="mb-4">
+            <label for="NuevaContrasenia" class="block text-gray-700 text-sm font-bold mb-2">Nueva Contraseña</label>
+            <input type="password" id="NuevaContrasenia" name="NuevaContrasenia" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+        <div class="mb-4">
+            <label for="ConfirmarNuevaContrasenia" class="block text-gray-700 text-sm font-bold mb-2">Confirmar Nueva Contraseña</label>
+            <input type="password" id="ConfirmarNuevaContrasenia" name="ConfirmarNuevaContrasenia" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Cambiar Contraseña</button>
+    </form>
+  </div>
+</body>
+
+<script>
+    
+</script>

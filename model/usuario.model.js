@@ -1,6 +1,6 @@
-const db = require("../util/db/db");
+const bcrypt = require("bcryptjs");
 
-const bcrypt = require('bcryptjs');
+const db = require("../util/db/db");
 
 module.exports = class Usuario {
     constructor(
@@ -22,9 +22,10 @@ module.exports = class Usuario {
     }
 
     save(IDRol) {
-        return bcrypt.hash(this.Password, 12)
-            .then((hashedPassword) => {
-                return db.execute(
+        return bcrypt
+            .hash(this.Password, 12)
+            .then((hashedPassword) =>
+                db.execute(
                     `
                     INSERT INTO usuario (Nombre, ApellidoPaterno, ApellidoMaterno, Correo, Password, Telefono, Domicilio)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -38,13 +39,15 @@ module.exports = class Usuario {
                         this.Telefono,
                         this.Domicilio,
                     ]
-                );
-            })
+                )
+            )
             .then((result) => {
                 const IDUsuario = result[0].insertId;
-    
-                return db.execute("INSERT INTO usuario_rol (IDUsuario, IDRol, FechaHoraInicio) VALUES (?, ?, ?)", 
-                [IDUsuario, IDRol, new Date()])
+
+                return db.execute(
+                    "INSERT INTO usuario_rol (IDUsuario, IDRol, FechaHoraInicio) VALUES (?, ?, ?)",
+                    [IDUsuario, IDRol, new Date()]
+                );
             })
             .catch((error) => {
                 console.log(error);
@@ -56,7 +59,9 @@ module.exports = class Usuario {
     }
 
     static fetchAllUsers() {
-        return db.execute("SELECT * FROM usuario WHERE FechaHoraEliminado IS NULL");
+        return db.execute(
+            "SELECT * FROM usuario WHERE FechaHoraEliminado IS NULL"
+        );
     }
 
     static fetchRol(IDUsuario) {
@@ -96,12 +101,12 @@ module.exports = class Usuario {
     }
 
     static eliminar(IDUsuario) {
-        let query1 = db.execute(
-            'UPDATE usuario SET FechaHoraEliminado = CURRENT_TIMESTAMP() WHERE IDUsuario = ?', 
+        const query1 = db.execute(
+            "UPDATE usuario SET FechaHoraEliminado = CURRENT_TIMESTAMP() WHERE IDUsuario = ?",
             [IDUsuario]
         );
-        let query2 = db.execute(
-            'UPDATE usuario_rol SET FechaHoraFin = CURRENT_TIMESTAMP() WHERE IDUsuario = ?', 
+        const query2 = db.execute(
+            "UPDATE usuario_rol SET FechaHoraFin = CURRENT_TIMESTAMP() WHERE IDUsuario = ?",
             [IDUsuario]
         );
 
@@ -118,5 +123,16 @@ module.exports = class Usuario {
         `,
             [IDUsuario]
         );
+    }
+
+    static cambiarContrasenia(Correo, nuevaContrasena) {
+        return bcrypt
+            .hash(nuevaContrasena, 12)
+            .then((hashedPassword) =>
+                db.execute(
+                    "UPDATE usuario SET Password = ? WHERE Correo = ?",
+                    [hashedPassword, Correo]
+                )
+            );
     }
 };
