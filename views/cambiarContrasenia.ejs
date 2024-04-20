@@ -1,39 +1,245 @@
 <!DOCTYPE html>
 <head>
-  <title>Cambiar Contraseña</title>
-  <link rel="stylesheet" href="/css/output.css" />
+    <title>Cambiar Contraseña</title>
+    <link rel="stylesheet" href="/css/output.css" />
 </head>
 <body>
-  <nav><%- include('partials/sidebar.ejs') %></nav>
-  <div class="p-4 sm:ml-32">
-    <header class="text-left">
-        <div class="mb-4">
-            <%- include('partials/rutaActual', {path: ['ajustes', 'cambiarContrasenia']}) %>
-        </div>
-        <h1 class="mb-4 text-4xl font-bold text-gray-900">Cambiar Contraseña</h1>
-    </header>
-    <%- include('partials/error', {error: error}) %>
-    <%- include('partials/success', {success: success}) %>
-    <form action="/ajustes/cambiarContrasenia" method="POST">
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
-        <input type="hidden" name="Correo" value="<%= correo %>" >
-        <div class="mb-4">
-            <label for="ContraseniaActual" class="block text-gray-700 text-sm font-bold mb-2">Contraseña Actual</label>
-            <input type="password" id="ContraseniaActual" name="ContraseniaActual" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
-        <div class="mb-4">
-            <label for="NuevaContrasenia" class="block text-gray-700 text-sm font-bold mb-2">Nueva Contraseña</label>
-            <input type="password" id="NuevaContrasenia" name="NuevaContrasenia" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
-        <div class="mb-4">
-            <label for="ConfirmarNuevaContrasenia" class="block text-gray-700 text-sm font-bold mb-2">Confirmar Nueva Contraseña</label>
-            <input type="password" id="ConfirmarNuevaContrasenia" name="ConfirmarNuevaContrasenia" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
-        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Cambiar Contraseña</button>
-    </form>
-  </div>
+    <nav><%- include('partials/sidebar.ejs') %></nav>
+    <div class="p-4 sm:ml-32">
+        <header class="text-left">
+            <div class="mb-4">
+                <%- include('partials/rutaActual', {path: ['ajustes',
+                'cambiarContrasenia']}) %>
+            </div>
+            <h1 class="mb-4 text-4xl font-bold text-gray-900">
+                Cambiar Contraseña
+            </h1>
+        </header>
+        <%- include('partials/error', {error: error}) %> <%-
+        include('partials/success', {success: success}) %>
+        <form action="/ajustes/cambiarContrasenia" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <input type="hidden" name="Correo" value="<%= correo %>" />
+            <div class="mb-4">
+                <label
+                    for="ContraseniaActual"
+                    class="block text-gray-700 text-sm font-bold mb-2"
+                    >Contraseña Actual</label
+                >
+                <input
+                    type="password"
+                    id="ContraseniaActual"
+                    name="ContraseniaActual"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+            </div>
+            <div class="mb-4">
+                <label
+                    for="NuevaContrasenia"
+                    class="block text-gray-700 text-sm font-bold mb-2"
+                    >Nueva Contraseña</label
+                >
+                <input
+                    type="password"
+                    id="NuevaContrasenia"
+                    name="NuevaContrasenia"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+                <div class="flex flex-col">
+                    <span
+                        id="passwordError"
+                        class="text-red-500 invisible colapse"
+                        >La contraseña debe tener:</span
+                    >
+                    <ul>
+                        <li
+                            id="passwordLengthError"
+                            class="text-red-500 ml-5"
+                        ></li>
+                        <li
+                            id="passwordUppercaseError"
+                            class="text-red-500 ml-5"
+                        ></li>
+                        <li
+                            id="passwordNumberError"
+                            class="text-red-500 ml-5"
+                        ></li>
+                        <li
+                            id="passwordSpecialCharError"
+                            class="text-red-500 ml-5"
+                        ></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label
+                    for="ConfirmarNuevaContrasenia"
+                    class="block text-gray-700 text-sm font-bold mb-2"
+                    >Confirmar Nueva Contraseña</label
+                >
+                <input
+                    type="password"
+                    id="ConfirmarNuevaContrasenia"
+                    name="ConfirmarNuevaContrasenia"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+            </div>
+            <button
+                id="cambiarContraseniaBtn"
+                type="submit"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                disabled
+            >
+                Cambiar Contraseña
+            </button>
+        </form>
+    </div>
 </body>
 
 <script>
-    
+    // AJAX para cambiar contraseña
+    document
+        .getElementById("NuevaContrasenia")
+        .addEventListener("input", function () {
+            var password = this.value;
+            var errorPassword = document.getElementById("passwordError");
+            var errorLenghtElement = document.getElementById(
+                "passwordLengthError"
+            );
+            var errorUppercaseElement = document.getElementById(
+                "passwordUppercaseError"
+            );
+            var errorNumberElement = document.getElementById(
+                "passwordNumberError"
+            );
+            var errorSpecialCharElement = document.getElementById(
+                "passwordSpecialCharError"
+            );
+
+            var cambiarContraseniaBtn = document.getElementById(
+                "cambiarContraseniaBtn"
+            );
+
+            // Validar longitud de contraseña
+            if (password.length < 8) {
+                errorLenghtElement.textContent = "Al menos 8 caracteres";
+                errorLenghtElement.classList.add("list-disc");
+                cambiarContraseniaBtn.disabled = true;
+                errorPassword.classList.remove("invisible", "colapse");
+                cambiarContraseniaBtn.classList.remove(
+                    "bg-blue-500",
+                    "hover:bg-blue-700",
+                    "text-white",
+                    "border-blue-500"
+                );
+                cambiarContraseniaBtn.classList.add(
+                    "text-blue-500",
+                    "border",
+                    "border-blue-500"
+                );
+            } else {
+                errorLenghtElement.textContent = "";
+                errorLenghtElement.classList.remove("list-disc");
+            }
+
+            // Validar mayúsculas
+            if (!password.match(/[A-Z]/)) {
+                errorUppercaseElement.textContent = "Una letra mayúscula";
+                errorUppercaseElement.classList.add("list-disc");
+                cambiarContraseniaBtn.disabled = true;
+                errorPassword.classList.remove("invisible", "colapse");
+                cambiarContraseniaBtn.classList.remove(
+                    "bg-blue-500",
+                    "hover:bg-blue-700",
+                    "text-white",
+                    "border-blue-500"
+                );
+                cambiarContraseniaBtn.classList.add(
+                    "text-blue-500",
+                    "border",
+                    "border-blue-500"
+                );
+            } else {
+                errorUppercaseElement.textContent = "";
+                errorUppercaseElement.classList.remove("list-disc");
+            }
+
+            // Validar números
+            if (!password.match(/[0-9]/)) {
+                errorNumberElement.textContent = "Un número";
+                errorNumberElement.classList.add("list-disc");
+                cambiarContraseniaBtn.disabled = true;
+                errorPassword.classList.remove("invisible", "colapse");
+                cambiarContraseniaBtn.classList.remove(
+                    "bg-blue-500",
+                    "hover:bg-blue-700",
+                    "text-white",
+                    "border-blue-500"
+                );
+                cambiarContraseniaBtn.classList.add(
+                    "text-blue-500",
+                    "border",
+                    "border-blue-500"
+                );
+            } else {
+                errorNumberElement.textContent = "";
+                errorNumberElement.classList.remove("list-disc");
+            }
+
+            // Validar caracteres especiales
+            if (!password.match(/[^A-Za-z0-9]/)) {
+                errorSpecialCharElement.textContent = "Un caracter especial";
+                errorSpecialCharElement.classList.add("list-disc");
+                cambiarContraseniaBtn.disabled = true;
+                errorPassword.classList.remove("invisible", "colapse");
+                cambiarContraseniaBtn.classList.remove(
+                    "bg-blue-500",
+                    "hover:bg-blue-700",
+                    "text-white",
+                    "border-blue-500"
+                );
+                cambiarContraseniaBtn.classList.add(
+                    "text-blue-500",
+                    "border",
+                    "border-blue-500"
+                );
+            } else {
+                errorSpecialCharElement.textContent = "";
+                errorSpecialCharElement.classList.remove("list-disc");
+            }
+
+            // Si la contraseña cumple con los requisitos se habilita el botón
+            if (
+                (password.length >= 8 &&
+                    password.match(/[A-Z]/) &&
+                    password.match(/[0-9]/) &&
+                    password.match(/[^A-Za-z0-9]/)) ||
+                password === ""
+            ) {
+                errorLenghtElement.textContent = "";
+                errorLenghtElement.classList.remove("list-disc");
+                errorUppercaseElement.textContent = "";
+                errorUppercaseElement.classList.remove("list-disc");
+                errorNumberElement.textContent = "";
+                errorNumberElement.classList.remove("list-disc");
+                errorSpecialCharElement.textContent = "";
+                errorSpecialCharElement.classList.remove("list-disc");
+
+                cambiarContraseniaBtn.disabled = false;
+                errorPassword.classList.add("invisible", "colapse");
+
+
+                cambiarContraseniaBtn.classList.remove(
+                    "text-blue-500",
+                    "border",
+                    "border-blue-500"
+                );
+                cambiarContraseniaBtn.classList.add(
+                    "bg-blue-500",
+                    "hover:bg-blue-700",
+                    "text-white",
+                    "border-blue-500"
+                );
+            }
+        });
 </script>
