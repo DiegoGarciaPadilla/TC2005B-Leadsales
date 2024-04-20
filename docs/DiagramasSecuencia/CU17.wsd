@@ -16,19 +16,7 @@ routes -> usuario.controller.js : getCambiarContrasenia
 deactivate routes
 activate usuario.controller.js
 
-usuario.controller.js ->> usuario.model.js : fetchOne()
-activate usuario.model.js
-
-usuario.model.js -> leadtics : db.execute("SELECT * FROM usuario WHERE Correo = ?")
-activate leadtics
-
-leadtics --> usuario.model.js : Usuario
-deactivate leadtics
-
-usuario.model.js --> usuario.controller.js : Usuario
-deactivate usuario.model.js
-
-usuario.controller.js -> view.cambiarContrasenia.ejs : res.render('cambiarContrasenia', {Usuario})
+usuario.controller.js -> view.cambiarContrasenia.ejs : res.render('cambiarContrasenia', { Correo })
 deactivate usuario.controller.js
 activate view.cambiarContrasenia.ejs
 
@@ -56,7 +44,7 @@ deactivate leadtics
 usuario.model.js --> usuario.controller.js : result
 deactivate usuario.model.js
 
-usuario.controller.js -> routes : res.render('cambiarContrasenia', {result})
+usuario.controller.js -> routes : res.render('cambiarContrasenia', { result })
 deactivate usuario.controller.js
 activate routes
 
