@@ -240,11 +240,11 @@ exports.postCambiarContrasenia = (req, res) => {
 
     // Verifica que la nueva contraseña sea válidq
     if (
-        (NuevaContrasenia.length >= 8 &&
-            NuevaContrasenia.match(/[A-Z]/) &&
-            NuevaContrasenia.match(/[0-9]/) &&
-            NuevaContrasenia.match(/[^A-Za-z0-9]/)) ||
-        NuevaContrasenia === ""
+        NuevaContrasenia.length < 8 ||
+        !/[a-z]/.test(NuevaContrasenia) ||
+        !/[A-Z]/.test(NuevaContrasenia) ||
+        !/[0-9]/.test(NuevaContrasenia) ||
+        !/[^a-zA-Z0-9]/.test(NuevaContrasenia)
     ) {
         res.render("cambiarContrasenia", {
             correo: req.session.Correo,
