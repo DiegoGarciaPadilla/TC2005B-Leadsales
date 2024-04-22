@@ -117,7 +117,7 @@ exports.postCrearLead = (req, res) => {
 
 /* ========== CU. 8 ELIMINA LEAD | Chimali Nava =============== */
 
-exports.postEliminarLead = async (req, res, next) => {
+exports.postEliminarLead = async (req, res) => {
     const selectedLeads = req.body.selectedLeads;
   
     try {
