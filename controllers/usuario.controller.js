@@ -1,8 +1,8 @@
+const bcrypt = require("bcryptjs");
+
 const Usuario = require("../model/usuario.model");
 
 const Rol = require("../model/rol.model");
-
-const bcrypt = require('bcryptjs');
 
 // const bcrypt = require('bcryptjs');
 
@@ -35,7 +35,8 @@ exports.postLogin = (req, res) => {
                 console.log(usuario);
 
                 // Comparar la contraseña
-                bcrypt.compare(password, usuario.Password)
+                bcrypt
+                    .compare(password, usuario.Password)
                     .then((doMatch) => {
                         if (doMatch) {
                             // Registrar sesión
@@ -46,14 +47,19 @@ exports.postLogin = (req, res) => {
                                         .then(([privilegios]) => {
                                             Usuario.fetchRol(usuario.IDUsuario)
                                                 .then(([rolFetched]) => {
-                                                    const rol = rolFetched[0].IDRol;
+                                                    const rol =
+                                                        rolFetched[0].IDRol;
                                                     console.log(privilegios);
                                                     req.session.Privilegios =
                                                         privilegios;
-                                                    req.session.Correo = usuario.Correo;
-                                                    req.session.Nombre = usuario.Nombre;
-                                                    req.session.ApellidoPaterno = usuario.ApellidoPaterno;
-                                                    req.session.ApellidoMaterno = usuario.ApellidoMaterno;
+                                                    req.session.Correo =
+                                                        usuario.Correo;
+                                                    req.session.Nombre =
+                                                        usuario.Nombre;
+                                                    req.session.ApellidoPaterno =
+                                                        usuario.ApellidoPaterno;
+                                                    req.session.ApellidoMaterno =
+                                                        usuario.ApellidoMaterno;
                                                     req.session.IDUsuario =
                                                         usuario.IDUsuario;
                                                     req.session.Rol = rol;
@@ -91,6 +97,7 @@ exports.postLogin = (req, res) => {
 /* ========================== FIN CU. 01 ==============================  */
 
 /* ========== CU. 28 CONSULTA USUARIOS | Andrea Medina  =============== */
+
 exports.getUsuarios = (req, res) => {
     const err = req.session.error || "";
     req.session.error = "";
@@ -118,13 +125,14 @@ exports.getUsuarios = (req, res) => {
 /* ========================== FIN CU. 28 ==============================  */
 
 /* ====== CU. 11 REGISTRA USUARIO | Andrea Medina - Sebastián Colín  ======= */
+
 exports.getRegistrarUsuario = (req, res) => {
     Rol.fetchAll()
-        .then(([rolesFetched, fieldData]) => {
+        .then(([rolesFetched]) => {
             res.render("registrarUsuario", {
-                 csrfToken: req.csrfToken(),
+                csrfToken: req.csrfToken(),
                 roles: rolesFetched,
-             });
+            });
         })
         .catch((error) => {
             console.log(error);
@@ -146,8 +154,8 @@ exports.postRegistrarUsuario = (req, res) => {
     console.log(nuevoUsuario);
 
     Usuario.fetchAllUsers()
-        .then(([usuariosFetched, fieldData]) => {
-            for (let i = 0; i < usuariosFetched.length; i++) {
+        .then(([usuariosFetched]) => {
+            for (let i = 0; i < usuariosFetched.length; i += 1) {
                 if (usuariosFetched[i].Correo === nuevoUsuario.Correo) {
                     if (usuariosFetched[i].FechaHoraEliminado === null) {
                         console.log("El correo ya está registrado");
@@ -156,7 +164,8 @@ exports.postRegistrarUsuario = (req, res) => {
                     }
                 }
             }
-            nuevoUsuario.save(req.body.rol)
+            nuevoUsuario
+                .save(req.body.rol)
                 .then(() => {
                     res.redirect("/ajustes/usuarios");
                 })
@@ -170,10 +179,10 @@ exports.postRegistrarUsuario = (req, res) => {
 /* ========================== FIN CU. 11 ==============================  */
 
 /* ====== CU. 12 ELIMINA USUARIO | Andrea Medina - Diego Lira  ======= */
-exports.postEliminarUsuario = (req, res) => {
 
+exports.postEliminarUsuario = (req, res) => {
     const { IDUsuario } = req.body;
-    console.log("IDUsuario controller: ",   IDUsuario);
+    console.log("IDUsuario controller: ", IDUsuario);
 
     Usuario.eliminar(IDUsuario)
         .then(() => {
@@ -183,11 +192,12 @@ exports.postEliminarUsuario = (req, res) => {
             console.log(error);
             res.status(500).json({ error: "Error al eliminar el usuario" });
         });
-}
+};
 
 /* ========================== FIN CU. 12 ==============================  */
 
 /* ========== CU. 29 CERRAR SESIÓN | Andrea Medina  =============== */
+
 exports.getLogout = (req, res) => {
     console.log(req.session);
     Usuario.logout(req.session.IDUsuario)
@@ -202,5 +212,116 @@ exports.getLogout = (req, res) => {
 };
 
 /* ========================== FIN CU. 29 ==============================  */
+
+/* ========== CU. 17 CAMBIAR CONTRASEÑA | Diego García  =============== */
+
+exports.getCambiarContrasenia = (req, res) => {
+    const err = req.session.error || "";
+    req.session.error = "";
+
+    const scs = req.session.success || "";
+    req.session.success = "";
+
+    res.render("cambiarContrasenia", {
+        correo: req.session.Correo,
+        csrfToken: req.csrfToken(),
+        error: err,
+        success: scs,
+    });
+};
+
+exports.postCambiarContrasenia = (req, res) => {
+    // Obtener correo del usuario
+    const { Correo } = req.session;
+
+    // Obtener los datos del formulario
+    const { ContraseniaActual, NuevaContrasenia, ConfirmarNuevaContrasenia } =
+        req.body;
+
+    // Verifica que la nueva contraseña sea válidq
+    if (
+        NuevaContrasenia.length < 8 ||
+        !/[a-z]/.test(NuevaContrasenia) ||
+        !/[A-Z]/.test(NuevaContrasenia) ||
+        !/[0-9]/.test(NuevaContrasenia) ||
+        !/[^a-zA-Z0-9]/.test(NuevaContrasenia)
+    ) {
+        res.render("cambiarContrasenia", {
+            correo: req.session.Correo,
+            csrfToken: req.csrfToken(),
+            error: "La contraseña no cumple con los requisitos",
+            success: "",
+        });
+        return;
+    }
+
+    // Verificar que la nueva contraseña y la confirmación sean iguales
+    if (NuevaContrasenia !== ConfirmarNuevaContrasenia) {
+        res.render("cambiarContrasenia", {
+            correo: req.session.Correo,
+            csrfToken: req.csrfToken(),
+            error: "Las contraseñas no coinciden",
+            success: "",
+        });
+        return;
+    }
+
+    // Verificar que la contraseña actual sea correcta
+    Usuario.fetchOne(Correo).then(([usuariosFetched]) => {
+        const usuario = usuariosFetched[0];
+        bcrypt
+            .compare(ContraseniaActual, usuario.Password)
+            .then((doMatch) => {
+                if (doMatch) {
+                    // Verificar que la nueva contraseña y la anterior no sean iguales
+                    bcrypt
+                        .compare(NuevaContrasenia, usuario.Password)
+                        .then((doMatch2) => {
+                            if (doMatch2) {
+                                res.render("cambiarContrasenia", {
+                                    correo: req.session.Correo,
+                                    csrfToken: req.csrfToken(),
+                                    error: "La nueva contraseña no puede ser igual a la anterior",
+                                    success: "",
+                                });
+                            } else {
+                                // Cambiar la contraseña
+                                Usuario.cambiarContrasenia(
+                                    Correo,
+                                    NuevaContrasenia
+                                )
+                                    .then(() => {
+                                        res.render("cambiarContrasenia", {
+                                            correo: req.session.Correo,
+                                            csrfToken: req.csrfToken(),
+                                            error: "",
+                                            success:
+                                                "Contraseña cambiada exitosamente",
+                                        });
+                                    })
+                                    .catch((error) => {
+                                        console.log(error);
+                                    });
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                } else {
+                    res.render("cambiarContrasenia", {
+                        correo: req.session.Correo,
+                        csrfToken: req.csrfToken(),
+                        error: "Contraseña actual incorrecta",
+                        success: "",
+                    });
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    });
+};
+
+/* ========================== FIN CU. 17 ==============================  */
 
 module.exports = exports;

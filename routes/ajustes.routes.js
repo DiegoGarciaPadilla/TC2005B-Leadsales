@@ -14,26 +14,31 @@ const {
     getRoles,
     getEditarRol,
     postEditarRol,
-    postEliminarRol
+    postEliminarRol,
 } = require("../controllers/rol.controller");
 
 // Importamos el controlador de usuario
 
-const { 
-    getUsuarios, 
-    getRegistrarUsuario, 
+const {
+    getUsuarios,
+    getRegistrarUsuario,
     postRegistrarUsuario,
     postEliminarUsuario,
 } = require("../controllers/usuario.controller");
 
-const { 
-    consultaRol, 
+const {
+    consultaRol,
     modificaRol,
     eliminaRol,
     consultaUsuarios,
     registraCuenta,
-    eliminaUsuario, 
+    eliminaUsuario,
 } = require("../util/privilegios/privilegios");
+
+const {
+    getCambiarContrasenia,
+    postCambiarContrasenia,
+} = require("../controllers/usuario.controller");
 
 // Rutas
 
@@ -47,11 +52,25 @@ router.post("/roles/eliminarRol", isAuth, eliminaRol, postEliminarRol);
 
 router.get("/usuarios", isAuth, consultaUsuarios, getUsuarios);
 
-router.get("/usuarios/agregarUsuario", isAuth, registraCuenta, getRegistrarUsuario);
+router.get(
+    "/usuarios/agregarUsuario",
+    isAuth,
+    registraCuenta,
+    getRegistrarUsuario
+);
 
-router.post("/usuarios/agregarUsuario", isAuth, registraCuenta, postRegistrarUsuario);
+router.post(
+    "/usuarios/agregarUsuario",
+    isAuth,
+    registraCuenta,
+    postRegistrarUsuario
+);
 
 router.post("/usuarios/eliminar", isAuth, eliminaUsuario, postEliminarUsuario);
+
+router.get("/cambiarContrasenia", isAuth, getCambiarContrasenia);
+
+router.post("/cambiarContrasenia", isAuth, postCambiarContrasenia);
 
 // Exportamos el router
 
