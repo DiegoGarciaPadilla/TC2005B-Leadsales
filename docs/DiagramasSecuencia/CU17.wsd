@@ -35,7 +35,7 @@ activate usuario.controller.js
 usuario.controller.js ->> usuario.model.js : updatePassword()
 activate usuario.model.js
 
-usuario.model.js -> leadtics : db.execute("UPDATE usuario SET Password = ? WHERE Correo = ?")
+usuario.model.js ->> leadtics : db.execute("UPDATE usuario SET Password = ? WHERE Correo = ?")
 activate leadtics
 
 leadtics --> usuario.model.js : result

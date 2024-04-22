@@ -19,7 +19,7 @@ activate rol.controller.js
 rol.controller.js ->> rol.model.js : fetchById()
 activate rol.model.js
 
-rol.model.js -> leadtics : db.execute("SELECT * FROM roles WHERE id = ? AND FechaHoraEliminado IS NULL")
+rol.model.js ->> leadtics : db.execute("SELECT * FROM roles WHERE id = ? AND FechaHoraEliminado IS NULL")
 activate leadtics
 
 leadtics --> rol.model.js : rol
@@ -47,7 +47,7 @@ activate rol.controller.js
 rol.controller.js ->> rol.model.js : updateRolById()
 activate rol.model.js
 
-rol.model.js -> leadtics : db.execute("UPDATE roles SET nombre = ?, DescripcionRol = ? WHERE id = ?")
+rol.model.js ->> leadtics : db.execute("UPDATE roles SET nombre = ?, DescripcionRol = ? WHERE id = ?")
 activate leadtics
 
 leadtics --> rol.model.js : result

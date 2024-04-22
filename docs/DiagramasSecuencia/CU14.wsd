@@ -17,7 +17,7 @@ activate rol.controller.js
 rol.controller.js ->> rol.model.js : fetchAll()
 activate rol.model.js
 
-rol.model.js -> leadtics : db.execute("SELECT * FROM roles WHERE FechaHoraEliminado IS NULL")
+rol.model.js ->> leadtics : db.execute("SELECT * FROM roles WHERE FechaHoraEliminado IS NULL")
 activate leadtics
 
 leadtics --> rol.model.js : roles
@@ -26,7 +26,7 @@ deactivate leadtics
 rol.model.js --> rol.controller.js : roles
 deactivate rol.model.js
 
-rol.controller.js -> view.roles.ejs : response.render('roles', {roles})
+rol.controller.js ->> view.roles.ejs : response.render('roles', {roles})
 deactivate rol.controller.js
 activate view.roles.ejs
 
