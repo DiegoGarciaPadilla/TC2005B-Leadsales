@@ -117,21 +117,32 @@ exports.postCrearLead = (req, res) => {
 
 /* ========== CU. 8 ELIMINA LEAD | Chimali Nava =============== */
 
-exports.postEliminarLead = async (req, res, next) => {
-    console.log("entra al controler");
+exports.postEliminarLead = async (req, res) => {
     const selectedLeads = req.body.selectedLeads;
+    const { Correo, Privilegios } = req.session;
     console.log(selectedLeads);
-  
+
     try {
-      for (const id of selectedLeads) {
-        await Lead.deleteLeadById(id);
-      }
-      res.status(200).json({ success: true });
+        for (const id of selectedLeads) {
+            await Lead.deleteLeadById(id);
+        }
+        
+        if (
+            Privilegios.some(
+                (priv) => priv.Descripcion === "Consulta directorio todos."
+            )
+        ) {
+            const leads = await Lead.fetchAll();
+            res.status(200).json({leads : leads});
+        } else if (Privilegios.some((priv) => priv.Descripcion === "Consulta directorio propio.")){
+            const leads = await Lead.fetchLeadsByUser(Correo);
+            res.status(200).json({leads : leads});
+        }
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Error eliminando leads' });
+        console.error(error);
+        res.status(500).json({ message: 'Error eliminando leads' });
     }
-  };
+};
 
 /* ========================== FIN CU. 8 ==============================  */
 
