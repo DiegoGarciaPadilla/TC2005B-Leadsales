@@ -14,16 +14,15 @@ module.exports = class CSV {
     save() {
         return new Promise((resolve, reject) => {
             const results = [];
-            const insertPromises = [];
     
             fs.createReadStream(`public/uploads/${this.name}`) // Read the CSV file
                 .pipe(csvParser())
                 .on("data", (data) => results.push(data))
-                .on("end", () => {
+                .on("end", async () => {
                     console.log(results);
                     const query = "INSERT INTO `lead` SET ?";
     
-                    results.forEach((row) => {
+                    const promises = results.map(async (row) => {
                         // Transform row object properties to match column names
                         const data = Object.keys(row).reduce((acc, key) => {
                             const normalizedKey = key
@@ -47,42 +46,37 @@ module.exports = class CSV {
                             
                             return acc;
                         }, {});
-                        
-                        let dataArray = Object.values(data);
-                        const promise = new Promise((resolve, reject) => {
-                            console.log("Dentro de promise");
-
-                            db.query(query, dataArray, (error, results, fields) => {
-                                if (error) {
-                                    console.log("Error: ");
-                                } else {
-                                    console.log("Row inserted");
-                                }
-                            });
-
-                            db.query(query, data, (error) => {
-                                console.log("Dentro de query");
-                                if (error) {
-                                    console.error("Error storing data in database:", error);
-                                    reject(error);
-                                } else {
-                                    resolve();
-                                }
-                            });
-                        });
     
-                        insertPromises.push(promise);
+                        try {
+                            console.log("Dentro de promise para fila:", data);
+                            const result = await new Promise((resolve, reject) => {
+                                db.query(query, data, (error, results, fields) => {
+                                    if (error) {
+                                        console.error("Error storing data in database:", error);
+                                        reject(error);
+                                    } else {
+                                        console.log("Query successful for data:", data);
+                                        resolve(results);
+                                    }
+                                });
+                            });
+                            return result;
+                        } catch (error) {
+                            console.error("Promise error:", error);
+                            throw error;
+                        }
                     });
     
-                    Promise.all(insertPromises)
-                        .then(() => {
-                            // Delete the CSV file after saving to the database
-                            fs.unlinkSync(`public/uploads/${this.name}`);
-                            resolve(results);  // Resuelve la promesa con los resultados del CSV
-                        })
-                        .catch((error) => {
-                            reject(error);
-                        });
+                    try {
+                        const allResults = await Promise.all(promises);
+                        // Delete the CSV file after saving to the database
+                        fs.unlinkSync(`public/uploads/${this.name}`);
+                        console.log("All promises resolved successfully");
+                        resolve(allResults);  // Resuelve la promesa con los resultados del CSV
+                    } catch (error) {
+                        console.error("Promise.all error:", error);
+                        reject(error);
+                    }
                 })
                 .on("error", (error) => {
                     console.error("CSV parsing error:", error);
@@ -90,6 +84,7 @@ module.exports = class CSV {
                 });
         });
     }
+    
     
     
 

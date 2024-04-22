@@ -12,8 +12,9 @@
       </div>
     
       <script>      
-        const error = '<%= error %>';
-        if (error) {
+        const error = JSON.stringify('<%= error %>');
+
+        if (error !== '') {
           document.getElementById('alert-error').style.display = 'block';
           document.getElementById('error-message').innerHTML = error;
         }

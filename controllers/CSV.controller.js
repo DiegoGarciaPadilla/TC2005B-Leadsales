@@ -44,6 +44,7 @@ exports.post_CSV = (req, res) => {
                     console.log("No se logro");
                     res.render("inicio", {
                         success: "",
+                        error: "Error al registrar los leads.",
                         file: `/uploads/${req.file.filename}`,
                         csrfToken: req.csrfToken(),
                         correo: req.session.Correo,
@@ -52,7 +53,6 @@ exports.post_CSV = (req, res) => {
                         apellidoMaterno: req.session.ApellidoMaterno,
                         rol: req.session.Rol,   
                         usuarios: usuariosFetched,
-                        error: "Error al registrar los leads.",
                     });
                 })
                 .catch((error) => {
