@@ -1,0 +1,54 @@
+@startuml CU17
+
+actor Owner
+boundary routes
+boundary view.cambiarContrasenia.ejs
+control usuario.controller.js
+entity usuario.model.js
+database leadtics
+
+== GET /cambiarContrasenia ==
+
+Owner -> routes : GET /cambiarContrasenia
+activate routes
+
+routes -> usuario.controller.js : getCambiarContrasenia
+deactivate routes
+activate usuario.controller.js
+
+usuario.controller.js -> view.cambiarContrasenia.ejs : res.render('cambiarContrasenia', { Correo })
+deactivate usuario.controller.js
+activate view.cambiarContrasenia.ejs
+
+view.cambiarContrasenia.ejs -> Owner : HTML
+deactivate view.cambiarContrasenia.ejs
+
+== POST /cambiarContrasenia ==
+
+Owner -> routes : POST /cambiarContrasenia
+activate routes
+
+routes -> usuario.controller.js : postCambiarContrasenia
+deactivate routes
+activate usuario.controller.js
+
+usuario.controller.js ->> usuario.model.js : updatePassword()
+activate usuario.model.js
+
+usuario.model.js ->> leadtics : db.execute("UPDATE usuario SET Password = ? WHERE Correo = ?")
+activate leadtics
+
+leadtics --> usuario.model.js : result
+deactivate leadtics
+
+usuario.model.js --> usuario.controller.js : result
+deactivate usuario.model.js
+
+usuario.controller.js -> routes : res.render('cambiarContrasenia', { result })
+deactivate usuario.controller.js
+activate routes
+
+routes -> Owner : HTML
+deactivate routes
+
+@enduml
