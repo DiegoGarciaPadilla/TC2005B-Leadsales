@@ -50,6 +50,8 @@
               <option value="graphOne">Graph One</option>
               <option value="graphTwo">Graph Two</option>
               <option value="graphThree">Graph Three</option>
+              <option value="graphFour">Graph Four</option>
+              <option value="graphFive">Graph Five</option>
               <!-- Add more options for other graphs -->
           </select>
         </div>
@@ -62,6 +64,12 @@
         </div>
         <div id="graphThreeContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none;">
           <canvas id="graphThree" width="400" height="200" ></canvas>
+        </div>
+        <div id="graphFourContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none;">
+          <canvas id="graphFour" width="400" height="200" ></canvas>
+        </div>
+        <div id="graphFiveContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none;">
+          <canvas id="graphFive" width="400" height="200" ></canvas>
         </div>
     </div>
    
@@ -319,6 +327,18 @@ const graficas_asincronas = (idGraph) => {
         }
       }
 
+      // Gráfica por status
+
+      if (key === 'graph4Data') {
+
+      }
+      
+      // Gráfica por embudo
+
+      if (key === 'graph5Data') {
+
+      }
+
     });
     
   });
@@ -339,6 +359,7 @@ const showGraph = () => {
   console.log('Contenedor seleccionado: ', contenedorSeleccionado.id);
 }
 
+/*
 const hideGraph = () => {
 
   const nums = ['Two', 'Three', 'Four', 'Five', 'Six', 'Seven'];
@@ -349,6 +370,7 @@ const hideGraph = () => {
   }
 
 }
+*/
 
 
 document.addEventListener('DOMContentLoaded', () => {
