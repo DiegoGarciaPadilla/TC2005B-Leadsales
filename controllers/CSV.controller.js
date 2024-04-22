@@ -12,7 +12,7 @@ exports.post_CSV = (req, res) => {
     console.log(req.file);
     const csv = new CSV(req.file.filename);
 
-    // PROMISE
+    // Parse CSV and store in database
     csv.save();
 
     Usuario.fetchAllUsers()
