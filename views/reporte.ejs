@@ -255,47 +255,42 @@ const graficas_asincronas = (idGraph) => {
 
       if (key === 'graph3Data') {
 
-        let usuarios = [];
         let leadsPorUsuario = {};
 
         graphData.forEach((item) => {
           let usuario = item.Asignadoa;
           let leads = item.LeadsPorUsuario;
 
-          if (!usuarios.includes(usuario)) {
-            usuarios.push(usuario);
-          }
-
           if (!leadsPorUsuario[usuario]) {
-            leadsPorUsuario[usuario] = [];
+            leadsPorUsuario[usuario] = 0;
           }
 
-          leadsPorUsuario[usuario].push(leads);
+          leadsPorUsuario[usuario] += leads;
 
         });
 
-        let datasets_graph3 = usuarios.map((usuario) => {
-        let numLeads = leadsPorUsuario[usuario];
-
-          return {
-            label: usuario,
-            data: numLeads,
-            backgroundColor: getRandomColor(),
-            stack: 'Stack 0'
-          };
-
-        });
+        // Ordenar por cantidad de leads
+        leadsPorUsuario = Object.keys(leadsPorUsuario).sort((a, b) => {
+          return leadsPorUsuario[b] - leadsPorUsuario[a];
+        }).reduce((acc, key) => {
+          acc[key] = leadsPorUsuario[key];
+          return acc;
+        }, {});
 
         // Instancia de Chart JS
         var ctx3 = document.getElementById('graphThree').getContext('2d');;
         var chart_3 = new Chart(ctx3, {
           type: 'bar',
           data: {
-            labels: ['Label1', 'Label2', 'Label3'],
+            labels: Object.keys(leadsPorUsuario).map((usuario) => {
+              return usuario;
+            }),
             datasets: [{
-              label: "New Dataset",
-              data: [12, 18, 19],
-              borderWidth: 1
+              label: 'Leads por usuario',
+              data: Object.values(leadsPorUsuario),
+              backgroundColor: Object.keys(leadsPorUsuario).map((usuario) => {
+                return getRandomColor();
+              }),
             }]
           },
           options: {
@@ -304,17 +299,8 @@ const graficas_asincronas = (idGraph) => {
             title: {
               text: "New Bar Chart",
               display: true,
-            },
-            scales: {},
-            events: [],
-            legend: {
-              display: true,
-            },
-            tooltips: {
-              mode: ''
-            },
-            layout: {},
-            animation: {}
+            }
+          
           }
         });
 
