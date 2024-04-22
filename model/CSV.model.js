@@ -12,58 +12,86 @@ module.exports = class CSV {
     }
 
     save() {
-        const results = [];
-        fs.createReadStream(`public/uploads/${this.name}`) // Read the CSV file, NOT CREATE
-            .pipe(csvParser())
-            .on("data", (data) => results.push(data))
-            .on("end", () => {
-                console.log(results);
-                const query = "INSERT INTO `lead` SET ?";
-                results.forEach((row) => {
-                    // Transform row object properties to match column names
-                    const data = Object.keys(row).reduce((acc, key) => {
-                        const normalizedKey = key
-                            .normalize("NFD")
-                            .replace(/[\u0300-\u036f]/g, "")
-                            .replace(/\s/g, "")
-                            .replace(/\$/g, "");
+        return new Promise((resolve, reject) => {
+            const results = [];
+            const insertPromises = [];
+    
+            fs.createReadStream(`public/uploads/${this.name}`) // Read the CSV file
+                .pipe(csvParser())
+                .on("data", (data) => results.push(data))
+                .on("end", () => {
+                    console.log(results);
+                    const query = "INSERT INTO `lead` SET ?";
+    
+                    results.forEach((row) => {
+                        // Transform row object properties to match column names
+                        const data = Object.keys(row).reduce((acc, key) => {
+                            const normalizedKey = key
+                                .normalize("NFD")
+                                .replace(/[\u0300-\u036f]/g, "")
+                                .replace(/\s/g, "")
+                                .replace(/\$/g, "");
+                            
+                            // Date format
+                            if (moment(row[key], 'DD/MM/YYYY', true).isValid()) {
+                                acc[normalizedKey] = moment(row[key], 'DD/MM/YYYY').format('YYYY-MM-DD');
+                            } else if (moment(row[key], 'DD/M/YYYY', true).isValid()) {
+                                acc[normalizedKey] = moment(row[key], 'DD/M/YYYY').format('YYYY-MM-DD');
+                            } else if(moment(row[key], 'D/M/YYYY', true).isValid()) {
+                                acc[normalizedKey] = moment(row[key], 'D/M/YYYY').format('YYYY-MM-DD');
+                            } else if (moment(row[key], 'D/MM/YYYY', true).isValid()) {
+                                acc[normalizedKey] = moment(row[key], 'D/MM/YYYY').format('YYYY-MM-DD');
+                            } else {
+                                acc[normalizedKey] = row[key].replace(/[^\x00-\x7F]/g, "");
+                            }
+                            
+                            return acc;
+                        }, {});
                         
-                        // Date format
-                        if (moment(row[key], 'DD/MM/YYYY', true).isValid()) {
-                            acc[normalizedKey] = moment(row[key], 'DD/MM/YYYY').format('YYYY-MM-DD');
+                        let dataArray = Object.values(data);
+                        const promise = new Promise((resolve, reject) => {
+                            console.log("Dentro de promise");
 
-                        } else if (moment(row[key], 'DD/M/YYYY', true).isValid()) {
-                            acc[normalizedKey] = moment(row[key], 'DD/M/YYYY').format('YYYY-MM-DD');
+                            db.query(query, dataArray, (error, results, fields) => {
+                                if (error) {
+                                    console.log("Error: ");
+                                } else {
+                                    console.log("Row inserted");
+                                }
+                            });
 
-                        } else if(moment(row[key], 'D/M/YYYY', true).isValid()) {
-                            acc[normalizedKey] = moment(row[key], 'D/M/YYYY').format('YYYY-MM-DD');
-
-                        } else if (moment(row[key], 'D/MM/YYYY', true).isValid()) {
-                            acc[normalizedKey] = moment(row[key], 'D/MM/YYYY').format('YYYY-MM-DD');
-                        }
-                        else {
-                            // acc[normalizedKey] = row[key];
-                            // Replace emojis with empty string and assign to acc[normalizedKey]
-                            acc[normalizedKey] = row[key].replace(/[^\x00-\x7F]/g, "");
-                        }
-                        
-                        return acc;
-                    }, {});
-
-                    db.query(query, data, (error) => {
-                        if (error) {
-                            console.error(
-                                "Error storing data in database:",
-                                error
-                            );
-                        }
+                            db.query(query, data, (error) => {
+                                console.log("Dentro de query");
+                                if (error) {
+                                    console.error("Error storing data in database:", error);
+                                    reject(error);
+                                } else {
+                                    resolve();
+                                }
+                            });
+                        });
+    
+                        insertPromises.push(promise);
                     });
+    
+                    Promise.all(insertPromises)
+                        .then(() => {
+                            // Delete the CSV file after saving to the database
+                            fs.unlinkSync(`public/uploads/${this.name}`);
+                            resolve(results);  // Resuelve la promesa con los resultados del CSV
+                        })
+                        .catch((error) => {
+                            reject(error);
+                        });
+                })
+                .on("error", (error) => {
+                    console.error("CSV parsing error:", error);
+                    reject(error);
                 });
-
-                // Delete the CSV file after saving to the database
-                fs.unlinkSync(`public/uploads/${this.name}`);
-            });
+        });
     }
+    
+    
 
     static fetchAll() {
         return db.execute("SELECT * FROM csv");
