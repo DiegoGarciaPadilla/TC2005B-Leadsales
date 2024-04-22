@@ -95,6 +95,8 @@ exports.getUsuarios = (req, res) => {
     const err = req.session.error || "";
     req.session.error = "";
 
+    const msg = req.flash("success") || "";
+
     Usuario.fetchAllUsers()
         .then(([usuariosFetched]) => {
             Usuario.fetchRoles()
@@ -104,6 +106,7 @@ exports.getUsuarios = (req, res) => {
                         roles: rolesFetched,
                         error: err,
                         csrfToken: req.csrfToken(),
+                        msg: msg,
                     });
                 })
                 .catch((error) => {
@@ -158,6 +161,7 @@ exports.postRegistrarUsuario = (req, res) => {
             }
             nuevoUsuario.save(req.body.rol)
                 .then(() => {
+                    req.flash("success", "El usuario se ha registrado exitosamente.");
                     res.redirect("/ajustes/usuarios");
                 })
                 .catch((error) => {
