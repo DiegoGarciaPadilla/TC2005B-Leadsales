@@ -111,9 +111,9 @@ exports.getUsuarios = (req, res) => {
                     res.render("usuarios", {
                         usuarios: usuariosFetched,
                         roles: rolesFetched,
-                        error: err,
+                        error: "",
                         csrfToken: req.csrfToken(),
-                        msg: msg,
+                        success: msg,
                     });
                 })
                 .catch((error) => {

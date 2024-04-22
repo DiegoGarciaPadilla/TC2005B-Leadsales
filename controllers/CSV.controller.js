@@ -18,7 +18,7 @@ exports.post_CSV = (req, res) => {
     Usuario.fetchAllUsers()
         .then(([usuariosFetched]) => {
             res.render("inicio", {
-                msg: "Los leads se han registrado exitosamente.",
+                success: "Los leads se han registrado exitosamente.",
                 file: `/uploads/${req.file.filename}`,
                 csrfToken: req.csrfToken(),
                 correo: req.session.Correo,
@@ -27,6 +27,7 @@ exports.post_CSV = (req, res) => {
                 apellidoMaterno: req.session.ApellidoMaterno,
                 rol: req.session.Rol,   
                 usuarios: usuariosFetched,
+                error: "",
             });
         })
         .catch((error) => {
