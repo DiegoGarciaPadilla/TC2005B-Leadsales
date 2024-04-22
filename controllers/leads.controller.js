@@ -67,26 +67,6 @@ exports.getLeadDetails = (req, res) => {
         });
 };
 
-// exports.getLeadDetails = async (req, res) => {
-//     console.log('controlador');
-//     res.send('Hello from getLeadDetails');
-// };
-
-exports.getLeadDetails = (req, res) => {
-    const { leadId } = req.params;
-    Lead.fetchOne(leadId)
-        .then(([testLead]) => res.status(200).json(testLead[0]))
-        .catch(() => {
-            console.log("Error fetching lead details:");
-            res.status(500).json({ error: "Internal server error" });
-        });
-};
-
-// exports.getLeadDetails = async (req, res) => {
-//     console.log('controlador');
-//     res.send('Hello from getLeadDetails');
-// };
-
 /* ========================== FIN CU. 6 ==============================  */
 
 /* ========== CU. 5 CREA LEAD | Diego Lira =============== */

@@ -37,6 +37,9 @@
 
     <div id="main-content" class="ml-14 mt-14 pl-8">
       <h1 class="mb-16 text-4xl text-gray-900"> Usuarios </h1>
+
+      <%- include('partials/success', {success: success}) %>
+
       <input type="hidden" id="_csrf" value="<%= csrfToken %>">
 
       <a href="/ajustes/usuarios/agregarUsuario %>" class="text-blue-600 hover:underline"> Agregar usuario </a>
@@ -123,6 +126,7 @@
                       <% }); %>
 
 <script>
+
   function confirmarEliminacion(IDUsuario, Nombre, ApellidoPaterno) {
       const modalHTML = `
           <div id="deleteModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
