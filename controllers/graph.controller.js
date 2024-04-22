@@ -34,12 +34,12 @@ exports.getReporte = (request, response, next) => {
 
         graphPromises.push(promesaGraphTwo);
 
-        // // Gráfica 3
-        // const Graph3 = new Graph(3);
-        // const g3 = Graph.fetchAllForGraphs(start, end);
-        // const promesaGraphThree = Graph.graphThree(g3);
+        // Gráfica 3
+        const Graph3 = new Graph(3);
+        const g3 = Graph.fetchAllForGraphs(start, end);
+        const promesaGraphThree = Graph.graphThree(g3);
 
-        // graphPromises.push(promesaGraphThree);
+        graphPromises.push(promesaGraphThree);
 
         // // Gráfica 4
         // const Graph4 = new Graph(4);
@@ -76,6 +76,7 @@ exports.getReporte = (request, response, next) => {
                     // Datos a JSON de cada gráfica
                     graph1Data: results[0][0], 
                     graph2Data: results[1][0],
+                    graph3Data: results[2][0],
                 };
 
                 // Respuesta de JSON con datos para todas las gráficas
@@ -105,12 +106,12 @@ exports.getReporte = (request, response, next) => {
 
         graphPromises.push(promesaGraphTwo);
 
-        // // Gráfica 3
-        // const Graph3 = new Graph(3);
-        // const g3 = Graph.fetchSomeForGraphs(NombreCompleto, start, end);
-        // const promesaGraphThree = Graph.graphThree(g3);
+        // Gráfica 3
+        const Graph3 = new Graph(3);
+        const g3 = Graph.fetchSomeForGraphs(NombreCompleto, start, end);
+        const promesaGraphThree = Graph.graphThree(g3);
 
-        // graphPromises.push(promesaGraphThree);
+        graphPromises.push(promesaGraphThree);
 
         // // Gráfica 4
         // const Graph4 = new Graph(4);
@@ -148,6 +149,7 @@ exports.getReporte = (request, response, next) => {
                     // Datos a JSON de cada gráfica
                     graph1Data: results[0][0], 
                     graph2Data: results[1][0],
+                    graph3Data: results[2][0],
                 };
 
                 // Respuesta de JSON con datos para todas las gráficas

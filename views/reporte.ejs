@@ -49,6 +49,7 @@
           <select id="graphSelector" class="px-2 py-1 border border-gray-300 rounded-md" onchange="showGraph()">
               <option value="graphOne">Graph One</option>
               <option value="graphTwo">Graph Two</option>
+              <option value="graphThree">Graph Three</option>
               <!-- Add more options for other graphs -->
           </select>
         </div>
@@ -59,7 +60,9 @@
         <div id="graphTwoContainer" class="graph-container w-3/4 px-4 py-8 ml-32">
           <canvas id="graphTwo" width="400" height="200" ></canvas>
         </div>
-        
+        <div id="graphThreeContainer" class="graph-container w-3/4 px-4 py-8 ml-32">
+          <canvas id="graphThree" width="400" height="200" ></canvas>
+        </div>
     </div>
    
 
@@ -90,6 +93,8 @@ const graficas_asincronas = (idGraph) => {
 
       const graphData = data[key];
       console.log(graphData);
+
+      // Leads promedio por día
 
       if (key === 'graph1Data') {
 
@@ -152,9 +157,13 @@ const graficas_asincronas = (idGraph) => {
             }
           }
         });
+
       }
 
+      // Leads promedio por mes y año
+
       if (key === 'graph2Data') {
+
         // Arreglos para variables
         let anios = [];
         let meses = [];
@@ -244,7 +253,90 @@ const graficas_asincronas = (idGraph) => {
 
       }
 
+      // Leads asignados por usuario
+
+      if (key === 'graph3Data') {
+
+        let usuarios = [];
+        let leadsPorUsuario = {};
+
+        graphData.forEach((item) => {
+          let usuario = item.Asignadoa;
+          let leads = item.LeadsPorUsuario;
+
+          if (!usuarios.includes(usuario)) {
+            usuarios.push(usuario);
+          }
+
+          if (!leadsPorUsuario[usuario]) {
+            leadsPorUsuario[usuario] = [];
+          }
+
+          leadsPorUsuario[usuario].push(leads);
+
+        });
+
+        let datasets_graph3 = usuarios.map((usuario) => {
+          let numLeads = leadsPorUsuario[usuario];
+
+          return {
+            label: usuario,
+            data: numLeads,
+            backgroundColor: getRandomColor(),
+            stack: 'Stack 0'
+          };
+
+        });
+
+        // Instancia de Chart JS
+        var ctx3 = document.getElementById('graphThree').getContext('2d');;
+        var chart_3 = new Chart(ctx3, {
+          type: 'bar',
+          data: {
+            labels: ['Label1', 'Label2', 'Label3'],
+            datasets: [{
+              label: "New Dataset",
+              data: [12, 18, 19],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            title: {
+              text: "New Bar Chart",
+              display: true,
+            },
+            scales: {},
+            events: [],
+            legend: {
+              display: true,
+            },
+            tooltips: {
+              mode: ''
+            },
+            layout: {},
+            animation: {}
+          }
+        });
+
+        function getRandomColor() {
+          // Rango de HUES
+          let blue = Math.floor(Math.random() * 256); 
+          let green = Math.floor(Math.random() * (blue + 1)); 
+
+          let blueHex = blue.toString(16).padStart(2, '0'); 
+          let greenHex = green.toString(16).padStart(2, '0'); 
+
+          // Construir HEX
+          let color = '#' + '00' + greenHex + blueHex;
+
+          return color;
+        }
+      }
+
     });
+    
   });
 } 
 
@@ -258,6 +350,9 @@ const showGraph = () => {
   
   const contenedorSeleccionado = document.getElementById(graficaSeleccionada + 'Container');
   contenedorSeleccionado.style.display = 'block'; // Show the selected graph container
+
+  console.log('Grafica seleccionada: ', graficaSeleccionada);
+  console.log('Contenedor seleccionado: ', contenedorSeleccionado.id);
 }
 
 const hideGraph = () => {

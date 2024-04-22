@@ -54,7 +54,7 @@ module.exports = class Graph {
       
     static async graphThree(filter) {
     
-        let query = "SELECT Asignadoa, COUNT(*) as `Leads por usuario` FROM (";
+        let query = "SELECT Asignadoa, COUNT(*) as `LeadsPorUsuario` FROM (";
         query += filter + ") AS Leads GROUP BY Asignadoa HAVING COUNT(*) > 1";
         
         return db.execute(query);
