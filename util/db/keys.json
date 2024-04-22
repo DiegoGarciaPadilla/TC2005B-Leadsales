@@ -1,7 +1,6 @@
 {
-    "host": "143.244.178.88",
+    "host": "127.0.0.1",
     "user": "root",
-    "password": "TrakaKhe",
-    "database": "leadtics",
-    "port": "3306"
+    "password": "12345678",
+    "database": "leadtics"
 }

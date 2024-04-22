@@ -1,6 +1,6 @@
 const CSV = require("../model/CSV.model");
 
-const Usuario = require("../model/Usuario.model");
+const Usuario = require("../model/usuario.model");
 
 /* ========== CU. 26 IMPORTA DATOS DE LEADS | Sebas Colin =============== */
 
