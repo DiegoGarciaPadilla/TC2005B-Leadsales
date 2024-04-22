@@ -1,365 +1,403 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Directorio</title>
-  <link rel="stylesheet" href="/css/output.css"/>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Directorio</title>
+        <link rel="stylesheet" href="/css/output.css" />
 
-  <style> 
-
-    body {
-      background-color: #E4E8EE;
-    }
-
-    #container {
-      position: relative;
-      height:500px;
-      box-shadow: 1px 4px 8px rgba(36, 37, 42, 0.2);
-    }
-    #containerElements {
-      overflow-y: auto; 
-      height:100%;
-    }
-    #element {
-      position: relative;
-    }
-    #main-content {
-      transition: padding-left 0.3s ease;
-      padding-left: 3.5rem;
-    } 
-    .side:hover ~ #main-content {
-      padding-left: 10rem;
-    }
-
-  </style>
-
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <%- include('partials/sidebar.ejs') %> 
-
-    <div id="main-content" class="w-full ml-14 mt-12 pl-20 display:flex">
-
-        <h1 class="mb-8 text-4xl text-gray-900">Hi</h1>
-        
-        <div class="mb-4">
-          <label for="graphSelector" class="mr-2">Select Graph:</label>
-          <select id="graphSelector" class="px-2 py-1 border border-gray-300 rounded-md" onchange="showGraph()">
-              <option value="graphOne">Graph One</option>
-              <option value="graphTwo">Graph Two</option>
-              <option value="graphThree">Graph Three</option>
-              <option value="graphFour">Graph Four</option>
-              <option value="graphFive">Graph Five</option>
-              <!-- Add more options for other graphs -->
-          </select>
-        </div>
-
-        <div id="graphOneContainer" class="graph-container w-3/4 px-4 py-8 ml-32">
-          <canvas id="graphOne" width="400" height="200" ></canvas>
-        </div>
-        <div id="graphTwoContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none;">
-          <canvas id="graphTwo" width="400" height="200" ></canvas>
-        </div>
-        <div id="graphThreeContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none;">
-          <canvas id="graphThree" width="400" height="200" ></canvas>
-        </div>
-        <div id="graphFourContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none;">
-          <canvas id="graphFour" width="400" height="200" ></canvas>
-        </div>
-        <div id="graphFiveContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none;">
-          <canvas id="graphFive" width="400" height="200" ></canvas>
-        </div>
-    </div>
-   
-
-</body>
-
-<script defer>
-
-  
-const graficas_asincronas = (idGraph) => {
-
-      fetch(`/reporte/${idGraph}`, {
-      method: 'GET', 
-      headers: {
-        'Content-Type': 'application/json',
-      }
-  }).then((result) => {
-      console.log('llegue a primer then');
-      if (!result.ok) {
-          throw new Error('Network response was not ok');
-      }
-      return result.json();
-  })
-  .then((data) => {
-    
-    console.log('llegue a segundo then');
-    console.log(data);
-    Object.keys(data).forEach((key) => {
-
-      const graphData = data[key];
-      console.log(graphData);
-
-      // Leads promedio por día
-
-      if (key === 'graph1Data') {
-
-        const leadsPorDia = {};
-
-        graphData.forEach((item) => {
-
-          let fecha = item.Fecha;
-          let leads = item.Leads;
-
-          if (!leadsPorDia[fecha]) {
-              leadsPorDia[fecha] = [];
-          }
-          leadsPorDia[fecha].push(leads);
-
-        });
-
-        let promedioLeadsPorDia = {};
-        Object.keys(leadsPorDia).forEach((fecha) => {
-
-          let totalLeads = leadsPorDia[fecha].reduce((acc, val) => {
-            return acc + val;
-          }, 0);
-
-          let promedioLeads = totalLeads / leadsPorDia[fecha].length;
-          promedioLeadsPorDia[fecha] = promedioLeads;
-
-        });
-
-        // Datos para Chart JS
-        let fechas = Object.keys(promedioLeadsPorDia);
-        let leads = fechas.map((fecha) => {
-          return promedioLeadsPorDia[fecha];
-        });
-
-        // Instancia de Chart JS
-        let ctx1 = document.getElementById('graphOne').getContext('2d');
-        let chart_1 = new Chart(ctx1, {
-          type: 'line',
-          data: {
-            labels: fechas,
-            datasets: [{
-              label: 'Leads por día',
-              data: leads,
-              backgroundColor: 'rgba(54, 162, 235, 0.2)',
-              borderColor: 'rgba(54, 162, 235, 1)',
-              borderWidth: 1
-            }]
-          },
-          options: {
-            scales: {
-              yAxes: {
-                ticks: {
-                  beginAtZero: true
-                }
-              }, 
-              xAxes: {
-                  display: false
-                  }
+        <style>
+            body {
+                background-color: #e4e8ee;
             }
-          }
-        });
 
-      }
-
-      // Leads promedio por mes y año
-
-      if (key === 'graph2Data') {
-
-        // Arreglos para variables
-        let anios = [];
-        let meses = [];
-        let leadPorAnioMes = [];
-
-        // Iterar JSON
-        graphData.forEach((item) => {
-          let anio = item.Anio;
-          let mes = item.Mes;
-          let leads = item.NoLeads;
-
-          if (!anios.includes(anio)) {
-            anios.push(anio);
-          }
-          if (!meses.includes(mes)) {
-            meses.push(mes);
-          }
-          if (!leadPorAnioMes[anio]) {
-            leadPorAnioMes[anio] = {};
-          }
-
-          leadPorAnioMes[anio][mes] = leads;
-
-        });
-
-        // Sort de meses y años
-        anios.sort();
-        meses.sort();
-
-        let datasets = anios.map((anio) => {
-          let data = meses.map((mes) => {
-            return leadPorAnioMes[anio][mes] || 0;  // Default 0 si no hay leads en un mes
-          });
-
-          return {
-            label: anio,
-            data: data,
-            backgroundColor: getRandomColor(),
-            stack: 'Stack 0'
-          };
-
-        });
-
-        // Instancia de Chart JS
-        var ctx2 = document.getElementById('graphTwo').getContext('2d');
-        var chart_2 = new Chart(ctx2, {
-          type: 'bar',
-          data: {
-            labels: meses.map((mes) => {
-              return mes.toString();
-            }),
-            datasets: datasets
-          },
-          options: {
-            scales: {
-              xAxes: {
-                stacked: true,
-                ticks: {
-                  beginAtZero: true
-                }
-              },
-              yAxes: {
-                stacked: true,
-                ticks: {
-                  beginAtZero: true
-                }
-              }
+            #container {
+                position: relative;
+                height: 500px;
+                box-shadow: 1px 4px 8px rgba(36, 37, 42, 0.2);
             }
-          }
-        });
-
-        function getRandomColor() {
-          // Rango de HUES
-          let blue = Math.floor(Math.random() * 256); 
-          let green = Math.floor(Math.random() * (blue + 1)); 
-
-          let blueHex = blue.toString(16).padStart(2, '0'); 
-          let greenHex = green.toString(16).padStart(2, '0'); 
-
-          // Construir HEX
-          let color = '#' + '00' + greenHex + blueHex;
-
-          return color;
-        }
-
-      }
-
-      // Leads asignados por usuario
-
-      if (key === 'graph3Data') {
-
-        let leadsPorUsuario = {};
-
-        graphData.forEach((item) => {
-          let usuario = item.Asignadoa;
-          let leads = item.LeadsPorUsuario;
-
-          if (!leadsPorUsuario[usuario]) {
-            leadsPorUsuario[usuario] = 0;
-          }
-
-          leadsPorUsuario[usuario] += leads;
-
-        });
-
-        // Ordenar por cantidad de leads
-        leadsPorUsuario = Object.keys(leadsPorUsuario).sort((a, b) => {
-          return leadsPorUsuario[b] - leadsPorUsuario[a];
-        }).reduce((acc, key) => {
-          acc[key] = leadsPorUsuario[key];
-          return acc;
-        }, {});
-
-        // Instancia de Chart JS
-        var ctx3 = document.getElementById('graphThree').getContext('2d');;
-        var chart_3 = new Chart(ctx3, {
-          type: 'bar',
-          data: {
-            labels: Object.keys(leadsPorUsuario).map((usuario) => {
-              return usuario;
-            }),
-            datasets: [{
-              label: 'Leads por usuario',
-              data: Object.values(leadsPorUsuario),
-              backgroundColor: Object.keys(leadsPorUsuario).map((usuario) => {
-                return getRandomColor();
-              }),
-            }]
-          },
-          options: {
-            indexAxis: 'y',
-            responsive: true,
-            title: {
-              text: "New Bar Chart",
-              display: true,
+            #containerElements {
+                overflow-y: auto;
+                height: 100%;
             }
-          
-          }
-        });
+            #element {
+                position: relative;
+            }
+            #main-content {
+                transition: padding-left 0.3s ease;
+                padding-left: 3.5rem;
+            }
+            .side:hover ~ #main-content {
+                padding-left: 10rem;
+            }
+        </style>
 
-        function getRandomColor() {
-          // Rango de HUES
-          let blue = Math.floor(Math.random() * 256); 
-          let green = Math.floor(Math.random() * (blue + 1)); 
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+        <%- include('partials/sidebar.ejs') %>
 
-          let blueHex = blue.toString(16).padStart(2, '0'); 
-          let greenHex = green.toString(16).padStart(2, '0'); 
+        <div id="main-content" class="w-full ml-14 mt-12 pl-20 display:flex">
+            <h1 class="mb-8 text-4xl text-gray-900">Hi</h1>
 
-          // Construir HEX
-          let color = '#' + '00' + greenHex + blueHex;
+            <div class="mb-4">
+                <label for="graphSelector" class="mr-2">Select Graph:</label>
+                <select
+                    id="graphSelector"
+                    class="px-2 py-1 border border-gray-300 rounded-md"
+                    onchange="showGraph()"
+                >
+                    <option value="graphOne">Graph One</option>
+                    <option value="graphTwo">Graph Two</option>
+                    <option value="graphThree">Graph Three</option>
+                    <option value="graphFour">Graph Four</option>
+                    <option value="graphFive">Graph Five</option>
+                    <!-- Add more options for other graphs -->
+                </select>
+            </div>
 
-          return color;
-        }
-      }
+            <div
+                id="graphOneContainer"
+                class="graph-container w-3/4 px-4 py-8 ml-32"
+            >
+                <canvas id="graphOne" width="400" height="200"></canvas>
+            </div>
+            <div
+                id="graphTwoContainer"
+                class="graph-container w-3/4 px-4 py-8 ml-32"
+                style="display: none"
+            >
+                <canvas id="graphTwo" width="400" height="200"></canvas>
+            </div>
+            <div
+                id="graphThreeContainer"
+                class="graph-container w-3/4 px-4 py-8 ml-32"
+                style="display: none"
+            >
+                <canvas id="graphThree" width="400" height="200"></canvas>
+            </div>
+            <div
+                id="graphFourContainer"
+                class="graph-container w-3/4 px-4 py-8 ml-32"
+                style="display: none"
+            >
+                <canvas id="graphFour" width="400" height="200"></canvas>
+            </div>
+            <div
+                id="graphFiveContainer"
+                class="graph-container w-3/4 px-4 py-8 ml-32"
+                style="display: none"
+            >
+                <canvas id="graphFive" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </body>
 
-      // Gráfica por status
+    <script defer>
+        const graficas_asincronas = (idGraph) => {
+            fetch(`/reporte/${idGraph}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+                .then((result) => {
+                    console.log("llegue a primer then");
+                    if (!result.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return result.json();
+                })
+                .then((data) => {
+                    console.log("llegue a segundo then");
+                    console.log(data);
+                    Object.keys(data).forEach((key) => {
+                        const graphData = data[key];
+                        console.log(graphData);
 
-      if (key === 'graph4Data') {
+                        // Leads promedio por día
 
-      }
-      
-      // Gráfica por embudo
+                        if (key === "graph1Data") {
+                            const leadsPorDia = {};
 
-      if (key === 'graph5Data') {
+                            graphData.forEach((item) => {
+                                let fecha = item.Fecha;
+                                let leads = item.Leads;
 
-      }
+                                if (!leadsPorDia[fecha]) {
+                                    leadsPorDia[fecha] = [];
+                                }
+                                leadsPorDia[fecha].push(leads);
+                            });
 
-    });
-    
-  });
-} 
+                            let promedioLeadsPorDia = {};
+                            Object.keys(leadsPorDia).forEach((fecha) => {
+                                let totalLeads = leadsPorDia[fecha].reduce(
+                                    (acc, val) => {
+                                        return acc + val;
+                                    },
+                                    0
+                                );
 
-const showGraph = () => {
-  const graficaSeleccionada = document.getElementById('graphSelector').value;
-  const contenedorGraficas = document.querySelectorAll('.graph-container');
-  
-  contenedorGraficas.forEach(container => {
-      container.style.display = 'none'; // Hide all graph containers
-  });
-  
-  const contenedorSeleccionado = document.getElementById(graficaSeleccionada + 'Container');
-  contenedorSeleccionado.style.display = 'block'; // Show the selected graph container
+                                let promedioLeads =
+                                    totalLeads / leadsPorDia[fecha].length;
+                                promedioLeadsPorDia[fecha] = promedioLeads;
+                            });
 
-  console.log('Grafica seleccionada: ', graficaSeleccionada);
-  console.log('Contenedor seleccionado: ', contenedorSeleccionado.id);
-}
+                            // Datos para Chart JS
+                            let fechas = Object.keys(promedioLeadsPorDia);
+                            let leads = fechas.map((fecha) => {
+                                return promedioLeadsPorDia[fecha];
+                            });
 
-/*
+                            // Instancia de Chart JS
+                            let ctx1 = document
+                                .getElementById("graphOne")
+                                .getContext("2d");
+                            let chart_1 = new Chart(ctx1, {
+                                type: "line",
+                                data: {
+                                    labels: fechas,
+                                    datasets: [
+                                        {
+                                            label: "Leads por día",
+                                            data: leads,
+                                            backgroundColor:
+                                                "rgba(54, 162, 235, 0.2)",
+                                            borderColor:
+                                                "rgba(54, 162, 235, 1)",
+                                            borderWidth: 1,
+                                        },
+                                    ],
+                                },
+                                options: {
+                                    scales: {
+                                        yAxes: {
+                                            ticks: {
+                                                beginAtZero: true,
+                                            },
+                                        },
+                                        xAxes: {
+                                            display: false,
+                                        },
+                                    },
+                                },
+                            });
+                        }
+
+                        // Leads promedio por mes y año
+
+                        if (key === "graph2Data") {
+                            // Arreglos para variables
+                            let anios = [];
+                            let meses = [];
+                            let leadPorAnioMes = [];
+
+                            // Iterar JSON
+                            graphData.forEach((item) => {
+                                let anio = item.Anio;
+                                let mes = item.Mes;
+                                let leads = item.NoLeads;
+
+                                if (!anios.includes(anio)) {
+                                    anios.push(anio);
+                                }
+                                if (!meses.includes(mes)) {
+                                    meses.push(mes);
+                                }
+                                if (!leadPorAnioMes[anio]) {
+                                    leadPorAnioMes[anio] = {};
+                                }
+
+                                leadPorAnioMes[anio][mes] = leads;
+                            });
+
+                            // Sort de meses y años
+                            anios.sort();
+                            meses.sort();
+
+                            let datasets = anios.map((anio) => {
+                                let data = meses.map((mes) => {
+                                    return leadPorAnioMes[anio][mes] || 0; // Default 0 si no hay leads en un mes
+                                });
+
+                                return {
+                                    label: anio,
+                                    data: data,
+                                    backgroundColor: getRandomColor(),
+                                    stack: "Stack 0",
+                                };
+                            });
+
+                            // Instancia de Chart JS
+                            var ctx2 = document
+                                .getElementById("graphTwo")
+                                .getContext("2d");
+                            var chart_2 = new Chart(ctx2, {
+                                type: "bar",
+                                data: {
+                                    labels: meses.map((mes) => {
+                                        return mes.toString();
+                                    }),
+                                    datasets: datasets,
+                                },
+                                options: {
+                                    scales: {
+                                        xAxes: {
+                                            stacked: true,
+                                            ticks: {
+                                                beginAtZero: true,
+                                            },
+                                        },
+                                        yAxes: {
+                                            stacked: true,
+                                            ticks: {
+                                                beginAtZero: true,
+                                            },
+                                        },
+                                    },
+                                },
+                            });
+
+                            function getRandomColor() {
+                                // Rango de HUES
+                                let blue = Math.floor(Math.random() * 256);
+                                let green = Math.floor(
+                                    Math.random() * (blue + 1)
+                                );
+
+                                let blueHex = blue
+                                    .toString(16)
+                                    .padStart(2, "0");
+                                let greenHex = green
+                                    .toString(16)
+                                    .padStart(2, "0");
+
+                                // Construir HEX
+                                let color = "#" + "00" + greenHex + blueHex;
+
+                                return color;
+                            }
+                        }
+
+                        // Leads asignados por usuario
+
+                        if (key === "graph3Data") {
+                            let leadsPorUsuario = {};
+
+                            graphData.forEach((item) => {
+                                let usuario = item.Asignadoa;
+                                let leads = item.LeadsPorUsuario;
+
+                                if (!leadsPorUsuario[usuario]) {
+                                    leadsPorUsuario[usuario] = 0;
+                                }
+
+                                leadsPorUsuario[usuario] += leads;
+                            });
+
+                            // Ordenar por cantidad de leads
+                            leadsPorUsuario = Object.keys(leadsPorUsuario)
+                                .sort((a, b) => {
+                                    return (
+                                        leadsPorUsuario[b] - leadsPorUsuario[a]
+                                    );
+                                })
+                                .reduce((acc, key) => {
+                                    acc[key] = leadsPorUsuario[key];
+                                    return acc;
+                                }, {});
+
+                            // Instancia de Chart JS
+                            var ctx3 = document
+                                .getElementById("graphThree")
+                                .getContext("2d");
+                            var chart_3 = new Chart(ctx3, {
+                                type: "bar",
+                                data: {
+                                    labels: Object.keys(leadsPorUsuario).map(
+                                        (usuario) => {
+                                            return usuario;
+                                        }
+                                    ),
+                                    datasets: [
+                                        {
+                                            label: "Leads por usuario",
+                                            data: Object.values(
+                                                leadsPorUsuario
+                                            ),
+                                            backgroundColor: Object.keys(
+                                                leadsPorUsuario
+                                            ).map((usuario) => {
+                                                return getRandomColor();
+                                            }),
+                                        },
+                                    ],
+                                },
+                                options: {
+                                    indexAxis: "y",
+                                    responsive: true,
+                                    title: {
+                                        text: "New Bar Chart",
+                                        display: true,
+                                    },
+                                },
+                            });
+
+                            function getRandomColor() {
+                                // Rango de HUES
+                                let blue = Math.floor(Math.random() * 256);
+                                let green = Math.floor(
+                                    Math.random() * (blue + 1)
+                                );
+
+                                let blueHex = blue
+                                    .toString(16)
+                                    .padStart(2, "0");
+                                let greenHex = green
+                                    .toString(16)
+                                    .padStart(2, "0");
+
+                                // Construir HEX
+                                let color = "#" + "00" + greenHex + blueHex;
+
+                                return color;
+                            }
+                        }
+
+                        // Gráfica por status
+
+                        if (key === "graph4Data") {
+                        }
+
+                        // Gráfica por embudo
+
+                        if (key === "graph5Data") {
+                        }
+                    });
+                });
+        };
+
+        const showGraph = () => {
+            const graficaSeleccionada =
+                document.getElementById("graphSelector").value;
+            const contenedorGraficas =
+                document.querySelectorAll(".graph-container");
+
+            contenedorGraficas.forEach((container) => {
+                container.style.display = "none"; // Hide all graph containers
+            });
+
+            const contenedorSeleccionado = document.getElementById(
+                graficaSeleccionada + "Container"
+            );
+            contenedorSeleccionado.style.display = "block"; // Show the selected graph container
+
+            console.log("Grafica seleccionada: ", graficaSeleccionada);
+            console.log("Contenedor seleccionado: ", contenedorSeleccionado.id);
+        };
+
+        /*
 const hideGraph = () => {
 
   const nums = ['Two', 'Three', 'Four', 'Five', 'Six', 'Seven'];
@@ -372,12 +410,8 @@ const hideGraph = () => {
 }
 */
 
-
-document.addEventListener('DOMContentLoaded', () => {
-  graficas_asincronas('1')
-});
-    
-
-</script>
-
+        document.addEventListener("DOMContentLoaded", () => {
+            graficas_asincronas("1");
+        });
+    </script>
 </html>
