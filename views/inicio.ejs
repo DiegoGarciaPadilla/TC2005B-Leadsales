@@ -2,10 +2,11 @@
 <head>
   <title>Inicio</title>
   <link rel="stylesheet" href="/css/output.css" />
+  <link rel="icon" href="../public/uploads/favicon.ico" type="image/x-icon"/>
   <style>
 
     #main-content {
-      transition: padding-left 0.3s ease;
+      transition: padding-left 0.3s ease,  max-width 0.3s ease;
       padding-left: 3.0rem;
       max-width: calc(100vw - 3.5rem); /* Adjust the padding-left value */
       overflow-x: hidden; /* Hide horizontal overflow */
@@ -14,7 +15,7 @@
       padding-left: 10rem;
       max-width: calc(100vw - 10rem); /* Adjust the padding-left value */
     }
-    
+
     </style>
 </head>
 <body class="bg-[#E4E8EE]">
@@ -29,36 +30,36 @@
   }) %>  
     <div id="main-content" class="w-full ml-14 mt-8 pl-20 display:flex">
 
-      <h1 class="mb-4 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">Bienvenidx <span class="text-blue-600 dark:text-blue-500"><%= correo %>!</span></h1>
-
+      <h1 class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">Bienvenidx <span class="text-blue-600 dark:text-blue-500"><%= correo %>!</span></h1>
       <%- include('partials/success', {success: success}) %>
 
-
-      <div id="redes_calendar" class="flex">
-        
-      </div>  
+      <div id="placeholder" class="bg-[#d2d9ea] w-[75%] rounded-2xl shadow-lg" style="height: 575px;">
   
-      <% if (privilegios.some((priv) => priv.Descripcion === "Importa datos de leads.")) { %>
-        <div class="h-52 sm:w-64 border-dashed border-2 border-purple-400 rounded-md p-4 flex items-center justify-center mt-8" style="width: 20rem">
-          <!-- Hidden file input -->
-          <form class="max-w-lg mx-auto flex flex-col items-center" id="uploadForm" action="/" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
-  
-            <input class="block w-full text-sm text-gray-900 border 
-            border-gray-300 rounded-lg cursor-pointer bg-gray-50 
-            dark:text-gray-400 focus:outline-none dark:bg-gray-700 
-            dark:border-gray-600 dark:placeholder-gray-400 mb-4" 
-            type="file" id="file" name="file" accept=".csv"/>
-            <br><br> 
-            <button class="text-white bg-blue-700 hover:bg-blue-800 
-            focus:ring-4 focus:ring-blue-300 font-medium rounded-lg 
-            text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 
-            dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" 
-            type="submit" value="Guardar">Subir archivo</button>
-  
-          </form> 
-        </div>  
-      <% } %>
+        <% if (privilegios.some((priv) => priv.Descripcion === "Importa datos de leads.")) { %>
+          <div class="pl-10 pt-64">
+            <h1 class="text-2xl font-semibold dark:text-blue-700">Importar<small class="ms-2 font-normal text-gray-500 dark:text-gray-800">datos de leads</small></h1>
+            <div class="h-52 sm:w-64 border-dashed border-2 border-blue-400 rounded-xl p-4 flex items-center justify-center mt-6" style="width: 20rem">
+              <!-- Hidden file input -->
+              <form class="max-w-lg mx-auto flex flex-col items-center" id="uploadForm" action="/" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
+      
+                <input class="block w-full text-sm text-gray-900 border 
+                border-gray-300 rounded-lg cursor-pointer bg-gray-50 
+                dark:text-gray-400 focus:outline-none dark:bg-gray-700 
+                dark:border-gray-600 dark:placeholder-gray-400 mb-4" 
+                type="file" id="file" name="file" accept=".csv"/>
+                <br><br> 
+                <button class="text-white bg-blue-700 hover:bg-blue-800 
+                focus:ring-4 focus:ring-blue-300 font-medium rounded-lg 
+                text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 
+                dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" 
+                type="submit" value="Guardar">Subir archivo</button>
+      
+              </form> 
+            </div>  
+          </div>
+        <% } %>
+    </div>
     </div>
 
 </body>
