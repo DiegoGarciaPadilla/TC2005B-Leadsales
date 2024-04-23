@@ -1,4 +1,5 @@
 const Rol = require("../model/rol.model");
+const Privilegio = require("../model/privilegios.model");
 
 /* ========== CU. 14 CONSULTA ROLES | Diego García =============== */
 
@@ -37,11 +38,28 @@ exports.getEditarRol = (req, res) => {
     // Obtiene el rol de la base de datos
     Rol.fetchRolById(IDRol)
         .then(([rolFetched]) => {
-            res.render("editarRol", {
-                rol: rolFetched[0],
-                error: err,
-                csrfToken: req.csrfToken(),
-            });
+            // Obtiene todos los privilegios de la base de datos
+            Privilegio.fetchAll()
+                .then(([privilegiosFetched]) => {
+                    // Obtiene los privilegios del rol
+                    Privilegio.fetchPrivilegioByIDRol(IDRol)
+                        .then(([privilegiosRolFetched]) => {
+                            console.log(privilegiosRolFetched);
+                            res.render("editarRol", {
+                                rol: rolFetched[0],
+                                privilegios: privilegiosFetched,
+                                privilegiosRol: privilegiosRolFetched,
+                                error: err,
+                                csrfToken: req.csrfToken(),
+                            });
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         })
         .catch((error) => {
             console.log(error);

@@ -45,12 +45,12 @@
     <%- include('partials/sidebar.ejs') %> 
 
     <div id="main-content" class="ml-14 mt-14 pl-8">
-      <div class="flex">
+      <nav class="flex">
         <a href="/ajustes">
           <h1 id="adj" class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-400 md:text-3xl lg:text-3xl">Ajustes</h1>
         </a>
         <h1 class="mb-6 pl-2 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">/ Usuarios</h1>
-      </div>
+      </nav>
 
       <div id="alertas">
         <%- include('partials/success', {success: success}) %>
