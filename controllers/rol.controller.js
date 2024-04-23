@@ -84,4 +84,6 @@ exports.postEliminarRol = (req, res, next) => {
         });
 };
 
+/* ========================== FIN CU. 16 ==============================  */
+
 module.exports = exports;

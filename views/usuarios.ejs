@@ -38,7 +38,9 @@
     <div id="main-content" class="ml-14 mt-14 pl-8">
       <h1 class="mb-16 text-4xl text-gray-900"> Usuarios </h1>
 
-      <%- include('partials/success', {success: success}) %>
+      <div id="alertas">
+        <%- include('partials/success', {success: success}) %>
+      </div>
 
       <input type="hidden" id="_csrf" value="<%= csrfToken %>">
 
@@ -60,7 +62,7 @@
               <tbody>
                 <% i = 0 %>
                 <% usuarios.forEach((usuario) => { %>
-                  <tr class="bg-white border-b hover:bg-gray-50">
+                  <tr id="usuario<%- usuario.IDUsuario %>" class="bg-white border-b hover:bg-gray-50">
                     <td class="px-4 py-2 sm:px-3 sm:py-3">
                       <span class="cursor-pointer relative" 
                             onmouseover="document.getElementById('popover0_<%= usuario.IDUsuario %>').classList.remove('hidden')"
@@ -165,9 +167,30 @@
       })
       .then((data) => {
           if (data.success) {
-              window.location.href = '/ajustes/usuarios';
+            const alertas = document.getElementById('alertas');
+
+            const alertHTML = `
+              <div id="alert-success" class="flex relative items-center p-4 mb-4 text-sm mr-24 text-green-800 border border-green-300 rounded-lg bg-green-50" role="alert">
+                <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarAlert()">
+                  <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                  </svg>
+                </button>
+                <div>
+                  <span class="font-bold"> ¡Acción exitosa! </span> 
+                  <span id="success-message">${data.success}</span>
+                </div>
+              </div>
+            `;
+            alertas.innerHTML = alertHTML;
+            
+            document.getElementById('alert-success').style.display = 'block';
+            document.getElementById('success-message').innerHTML = data.success;
+
+            document.getElementById(`usuario${IDUsuario}`).remove();
+            cerrarModal();
           } else {
-          console.error(data.error);
+            console.error(data.error);
           }
       })
       .catch((error) => {
@@ -179,6 +202,11 @@
       // Remueve el modal del DOM
       const deleteModal = document.getElementById('deleteModal');
       deleteModal.parentNode.removeChild(deleteModal);
+  }
+
+  function cerrarAlert() {
+      const successAlert = document.getElementById('alert-success');
+      successAlert.parentNode.removeChild(successAlert);
   }
 </script>
 
