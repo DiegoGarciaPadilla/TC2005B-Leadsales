@@ -10,6 +10,8 @@ const Rol = require("../model/rol.model");
 exports.getLogin = (req, res) => {
     const err = req.session.error || "";
     req.session.error = "";
+    const error = req.flash("error") || "";
+    
     res.render("login", {
         correo: req.session.correo || "",
         registro: false,
@@ -78,19 +80,27 @@ exports.postLogin = (req, res) => {
                                 .catch((error) => {
                                     console.log(error);
                                 });
+                        } else {
+                            req.session.error = "Correo o contraseña incorrectos";
+                            req.flash("falla", "Correo o contraseña incorrectos");
+                            res.redirect("/usuarios/login");
                         }
                     })
                     .catch((error) => {
                         console.log(error);
-                        console.log("Contraseña incorrecta");
+                        req.flash("falla", "Error de conexión. Intenta más tarde.");
+                        res.redirect("/usuarios/login");
                     });
             } else {
                 req.session.error = "Correo o contraseña incorrectos";
+                req.flash("falla", "Correo o contraseña incorrectos");
                 res.redirect("/usuarios/login");
             }
         })
         .catch((error) => {
             console.log(error);
+            req.flash("falla", "Error de conexión. Intenta más tarde.");
+            res.redirect("/usuarios/login");
         });
 };
 
