@@ -81,8 +81,8 @@ module.exports = class Graph {
 
     static async graphSix(filter) {
     
-        let query = "SELECT YEAR(Creado) AS Anio, COUNT(DISTINCT Compania) AS Companias Atendidas FROM (";
-        query += filter + ") AS Leads GROUP BY YEAR(Creado) ORDER BY Anio"
+            let query = "SELECT YEAR(Creado) AS Anio, COUNT(DISTINCT Compania) AS `Companias Atendidas` FROM (";
+            query += filter + ") AS Leads GROUP BY YEAR(Creado) ORDER BY Anio"
         
         return db.execute(query);
 
@@ -90,7 +90,7 @@ module.exports = class Graph {
       
     static async graphSeven(filter) {
         
-        let query = "SELECT Archivado, COUNT(*) AS Cantidad FROM (";
+        let query = "SELECT Archivado, COUNT(*) AS `Cantidad` FROM (";
         query += filter + ") AS Leads GROUP BY Archivado";
         
         return db.execute(query);

@@ -99,7 +99,7 @@ exports.getReporte = (req, res, next) => {
 
         graphPromises.push(promesaGraphOne);
 
-        // Gráfica 2
+        // Gráfica 2    
         const Graph2 = new Graph(2);
         const g2 = Graph.fetchSomeForGraphs(NombreCompleto, start, end);
         const promesaGraphTwo = Graph.graphTwo(g2);
