@@ -10,6 +10,7 @@ const Usuario = require("../model/usuario.model");
 
 exports.getLeads = (req, res) => {
     const { Correo, Privilegios } = req.session; // Test user
+    const error = req.flash("success") || "";
 
     if (
         Privilegios.some(
@@ -29,14 +30,17 @@ exports.getLeads = (req, res) => {
                             apellidoPaterno: req.session.ApellidoPaterno,
                             apellidoMaterno: req.session.apellidoMaterno,
                             usuarios: usuariosFetched,
+                            error: error,
                         });
                     })
                     .catch((error) => {
-                        console.log(error);
+                        req.flash("error", "Error al cargar usuarios.");
+                        res.redirect("/inicio");
                     });
             })
             .catch((error) => {
-                console.log(error);
+                req.flash("error", "Error al cargar leads.");
+                res.redirect("/inicio");
             });
     } else {
         Lead.fetchLeadsByUser(Correo)
@@ -48,6 +52,8 @@ exports.getLeads = (req, res) => {
             })
             .catch((error) => {
                 console.log(error);
+                req.flash("error", "Error al cargar leads.");
+                res.redirect("/inicio");
             });
     }
 };
@@ -62,8 +68,8 @@ exports.getLeadDetails = (req, res) => {
     Lead.fetchOne(leadId)
         .then(([testLead]) => res.status(200).json(testLead[0]))
         .catch(() => {
-            console.log("Error fetching lead details:");
-            res.status(500).json({ error: "Internal server error" });
+            req.flash("error", "El lead no ha podido ser consultado.");
+            redirect("/directorio");
         });
 };
 
