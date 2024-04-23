@@ -1,87 +1,157 @@
 <!DOCTYPE html>
 <head>
-  <title>Roles</title>
-  <link rel="stylesheet" href="/css/output.css" />
+    <title>Roles</title>
+    <link rel="stylesheet" href="/css/output.css" />
 
-  <style> 
+    <style>
+        body {
+            background-color: #e4e8ee;
+        }
 
-    body {
-      background-color: #E4E8EE;
-    }
+        #container {
+            position: relative;
+            height: 500px;
+            box-shadow: 1px 4px 8px rgba(36, 37, 42, 0.2);
+        }
+        #containerElements {
+            overflow-y: auto;
+            height: 100%;
+        }
+        #element {
+            position: relative;
+        }
+        #main-content {
+            transition: padding-left 0.3s ease;
+            padding-left: 3.5rem;
+        }
+        .side:hover ~ #main-content {
+            padding-left: 10rem;
+        }
 
-    #container {
-      position: relative;
-      height:500px;
-      box-shadow: 1px 4px 8px rgba(36, 37, 42, 0.2);
-    }
-    #containerElements {
-      overflow-y: auto; 
-      height:100%;
-    }
-    #element {
-      position: relative;
-    }
-    #main-content {
-      transition: padding-left 0.3s ease;
-      padding-left: 3.5rem;
-    } 
-    .side:hover ~ #main-content {
-      padding-left: 10rem;
-    }
+        #adj {
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
 
-  </style>
-
+        #adj:hover {
+            color: #2563eb;
+            transform: scale(1.05);
+        }
+    </style>
 </head>
 <body class="bg-[#E4E8EE]">
-  <nav><%- include('partials/sidebar.ejs') %></nav>
+    <nav><%- include('partials/sidebar.ejs') %></nav>
 
-  <div class="p-4 sm:ml-32">
-    <header class="text-left">
-        <input type="hidden" id="_csrf" value="<%= csrfToken %>">
-        <div class="mb-4">
-            <%- include('partials/rutaActual', {path: ['ajustes', 'roles']}) %>
-        </div>
-        <h1 class="mb-4 text-4xl font-bold text-gray-900">Roles</h1>
-    </header>
-    
+    <div id="main-content" class="ml-14 mt-14 pl-8">
+        <nav class="flex">
+            <a href="/ajustes">
+                <h1
+                    id="adj"
+                    class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-400 md:text-3xl lg:text-3xl"
+                >
+                    Ajustes
+                </h1>
+            </a>
+            <h1
+                class="mb-6 pl-2 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl"
+            >
+                / Roles
+            </h1>
+        </nav>
 
-    <div id="container" class="relative overflow-auto sm:rounded-lg w-3/4">
-            <table class="text-sm text-left rtl:text-right text-gray-500 border-collapse rounded-lg w-full">
-              <thead class="text-xs text-white bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3 bg-blue-700">Nombre</th>
-                    <th scope="col" class="px-6 py-3 bg-blue-700">Descripción</th>
-                    <th scope="col" class="px-6 py-3 bg-blue-700">Acciones</th>
-                </tr>
-            </thead>
-
-            <tbody id="containerElements">
-                <% for (let i = 0; i < roles.length; i++) { %>
-                    <tr id="rol_<%= roles[i].IDRol %>" class="bg-white border-b hover:bg-gray-50">
-                        <td class="px-4 py-2 sm:px-3 sm:py-3"><%= roles[i].Nombre %></td>
-                        <td class="px-4 py-2 sm:px-3 sm:py-3"><%= roles[i].DescripcionRol %></td>
+        <div id="container" class="relative overflow-auto sm:rounded-lg w-3/4">
+            <table
+                class="text-sm text-left rtl:text-right text-gray-500 border-collapse rounded-lg w-full"
+            >
+                <thead class="text-xs text-white bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 bg-blue-700">
+                            Nombre
+                        </th>
+                        <th scope="col" class="px-6 py-3 bg-blue-700">
+                            Descripción
+                        </th>
+                        <th scope="col" class="px-6 py-3 bg-blue-700">
+                            Acciones
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="containerElements">
+                    <% for (let i = 0; i < roles.length; i++) { %>
+                    <tr
+                        id="rol_<%= roles[i].IDRol %>"
+                        class="bg-white border-b hover:bg-gray-50"
+                    >
                         <td class="px-4 py-2 sm:px-3 sm:py-3">
-                                <a href="/ajustes/roles/editarRol/<%= roles[i].IDRol %>" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
-                                    <svg class="w-6 h-6 text-blue-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
-                                    </svg>                                                                   
-                                    <span class="sr-only">Modificar rol</span>
-                                </a>
+                            <%= roles[i].Nombre %>
+                        </td>
+                        <td class="px-4 py-2 sm:px-3 sm:py-3">
+                            <%= roles[i].DescripcionRol %>
+                        </td>
+                        <td class="px-4 py-2 sm:px-3 sm:py-3">
+                            <a
+                                href="/ajustes/roles/editarRol/<%= roles[i].IDRol %>"
+                                class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center"
+                            >
+                                <svg
+                                    class="w-6 h-6 text-blue-700"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke="currentColor"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"
+                                    />
+                                </svg>
+                                <span class="sr-only">Modificar rol</span>
+                            </a>
                             <% if (roles[i].Nombre != 'Owner') { %>
-                                <a href="/ajustes/roles/editarPrivilegios/<%= roles[i].IDRol %>" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center"></a>                            
-                            <% } %>
-                            <% if (roles[i].Nombre != 'Owner' && roles[i].Nombre != 'Administrador' && roles[i].Nombre != 'Seller') { %>
-                                <button onclick="confirmarEliminacion('<%=roles[i].IDRol%>', '<%=roles[i].Nombre%>')" type="button" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
-                                    <svg class="w-6 h-6 text-red-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-                                    </svg>                                  
-                                    <span class="sr-only">Eliminar rol</span>
-                                </button>
+                            <a
+                                href="/ajustes/roles/editarPrivilegios/<%= roles[i].IDRol %>"
+                                class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center"
+                            ></a>
+                            <% } %> <% if (roles[i].Nombre != 'Owner' &&
+                            roles[i].Nombre != 'Administrador' &&
+                            roles[i].Nombre != 'Seller') { %>
+                            <button
+                                onclick="confirmarEliminacion('<%=roles[i].IDRol%>', '<%=roles[i].Nombre%>')"
+                                type="button"
+                                class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center"
+                            >
+                                <svg
+                                    class="w-6 h-6 text-red-700"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke="currentColor"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
+                                    />
+                                </svg>
+                                <span class="sr-only">Eliminar rol</span>
+                            </button>
                             <% } %>
                         </td>
                     </tr>
-            <% } %>
-
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
 <script>
     function confirmarEliminacion(IDRol, nombreRol) {
         const modalHTML = `
@@ -102,44 +172,41 @@
             </div>
         `;
 
-        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        document.body.insertAdjacentHTML("beforeend", modalHTML);
     }
 
     function eliminar(IDRol) {
-        const csrf = document.getElementById('_csrf').value;
-        const filaEliminar = document.querySelector('tr[id="rol_' + IDRol + '"]');
+        const csrf = document.getElementById("_csrf").value;
+        const filaEliminar = document.querySelector(
+            'tr[id="rol_' + IDRol + '"]'
+        );
         filaEliminar.remove();
         fetch(`/ajustes/roles/eliminarRol`, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
-                'csrf-token': csrf,
+                "Content-Type": "application/json",
+                "csrf-token": csrf,
             },
-            body: JSON.stringify({ IDRol: IDRol })
+            body: JSON.stringify({ IDRol: IDRol }),
         })
             .then((result) => {
                 console.log(result);
                 return result.json();
             })
             .then((data) => {
-              if (data.success) {
-                cerrarModal();
-            } else {
-                console.error(data.error);
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+                if (data.success) {
+                    cerrarModal();
+                } else {
+                    console.error(data.error);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     function cerrarModal() {
-        const deleteModal = document.getElementById('deleteModal');
+        const deleteModal = document.getElementById("deleteModal");
         deleteModal.parentNode.removeChild(deleteModal);
     }
-</script>           
-
-        </tbody>
-    </table>
-  </div>
-</body>
+</script>
