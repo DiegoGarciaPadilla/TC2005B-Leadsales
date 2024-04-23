@@ -55,9 +55,9 @@
                 </tr>
             </thead>
 
-            <tbody>
+            <tbody id="containerElements">
                 <% for (let i = 0; i < roles.length; i++) { %>
-                    <tr class="bg-white border-b hover:bg-gray-50">
+                    <tr id="rol_<%= roles[i].IDRol %>" class="bg-white border-b hover:bg-gray-50">
                         <td class="px-4 py-2 sm:px-3 sm:py-3"><%= roles[i].Nombre %></td>
                         <td class="px-4 py-2 sm:px-3 sm:py-3"><%= roles[i].DescripcionRol %></td>
                         <td class="px-4 py-2 sm:px-3 sm:py-3">
@@ -107,6 +107,8 @@
 
     function eliminar(IDRol) {
         const csrf = document.getElementById('_csrf').value;
+        const filaEliminar = document.querySelector('tr[id="rol_' + IDRol + '"]');
+        filaEliminar.remove();
         fetch(`/ajustes/roles/eliminarRol`, {
             method: 'POST',
             headers: {
@@ -115,14 +117,15 @@
             },
             body: JSON.stringify({ IDRol: IDRol })
         })
-        .then((result) => {
-            return result.json();
-        })
-        .then((data) => {
-            if (data.success) {
-                window.location.href = '/ajustes/roles';
+            .then((result) => {
+                console.log(result);
+                return result.json();
+            })
+            .then((data) => {
+              if (data.success) {
+                cerrarModal();
             } else {
-            console.error(data.error);
+                console.error(data.error);
             }
         })
         .catch((error) => {
@@ -131,7 +134,6 @@
     }
 
     function cerrarModal() {
-        // Remueve el modal del DOM
         const deleteModal = document.getElementById('deleteModal');
         deleteModal.parentNode.removeChild(deleteModal);
     }

@@ -105,10 +105,8 @@ exports.postCrearLead = (req, res) => {
 
 /* ========== CU. 8 ELIMINA LEAD | Chimali Nava =============== */
 
-exports.postEliminarLead = async (req, res, next) => {
-    console.log("entra al controler");
+exports.postEliminarLead = async (req, res) => {
     const selectedLeads = req.body.selectedLeads;
-    console.log(selectedLeads);
   
     try {
       for (const id of selectedLeads) {
