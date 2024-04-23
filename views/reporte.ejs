@@ -172,13 +172,13 @@
                                 },
                                 options: {
                                     scales: {
-                                        yAxes: {
+                                        x: {
                                             ticks: {
                                                 beginAtZero: true,
                                             },
                                         },
-                                        xAxes: {
-                                            display: false,
+                                        y: {
+                                            display: true,
                                         },
                                     },
                                 },
@@ -188,12 +188,30 @@
                         // Leads promedio por mes y año
 
                         if (key === "graph2Data") {
+                            // Meses
+                            const mesesStrings = [
+                                "Enero",
+                                "Febrero",
+                                "Marzo",
+                                "Abril",
+                                "Mayo",
+                                "Junio",
+                                "Julio",
+                                "Agosto",
+                                "Septiembre",
+                                "Octubre",
+                                "Noviembre",
+                                "Diciembre",
+                            ];
+
                             // Arreglos para variables
+
                             let anios = [];
                             let meses = [];
                             let leadPorAnioMes = [];
 
                             // Iterar JSON
+
                             graphData.forEach((item) => {
                                 let anio = item.Anio;
                                 let mes = item.Mes;
@@ -213,8 +231,8 @@
                             });
 
                             // Sort de meses y años
-                            anios.sort();
-                            meses.sort();
+                            anios.sort((a, b) => parseInt(a) - parseInt(b));
+                            meses.sort((a, b) => parseInt(a) - parseInt(b));
 
                             let datasets = anios.map((anio) => {
                                 let data = meses.map((mes) => {
@@ -237,19 +255,19 @@
                                 type: "bar",
                                 data: {
                                     labels: meses.map((mes) => {
-                                        return mes.toString();
+                                        return mesesStrings[mes - 1];
                                     }),
                                     datasets: datasets,
                                 },
                                 options: {
                                     scales: {
-                                        xAxes: {
+                                        x: {
                                             stacked: true,
                                             ticks: {
                                                 beginAtZero: true,
                                             },
                                         },
-                                        yAxes: {
+                                        y: {
                                             stacked: true,
                                             ticks: {
                                                 beginAtZero: true,
