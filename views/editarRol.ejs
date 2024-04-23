@@ -2,17 +2,68 @@
 <head>
     <title>Roles</title>
     <link rel="stylesheet" href="/css/output.css" />
+    <style>
+        body {
+            background-color: #e4e8ee;
+        }
+
+        #container {
+            position: relative;
+            height: 500px;
+            box-shadow: 1px 4px 8px rgba(36, 37, 42, 0.2);
+        }
+        #containerElements {
+            overflow-y: auto;
+            height: 100%;
+        }
+        #element {
+            position: relative;
+        }
+        #main-content {
+            transition: padding-left 0.3s ease;
+            padding-left: 3.5rem;
+        }
+        .side:hover ~ #main-content {
+            padding-left: 10rem;
+        }
+
+        #adj {
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        #adj:hover {
+            color: #2563eb;
+            transform: scale(1.05);
+        }
+
+    </style>
 </head>
 <body>
     <nav><%- include('partials/sidebar.ejs') %></nav>
-    <div class="p-4 sm:ml-32">
-        <header class="text-left">
-            <div class="mb-4">
-                <%- include('partials/rutaActual', {path: ['Ajustes', 'Roles', "EditarRol"]})
-                %>
-            </div>
-            <h1 class="mb-4 text-4xl font-bold text-gray-900">Editar rol</h1>
-        </header>
+    <div id="main-content" class="ml-14 mt-14 pl-8">
+        <nav class="flex">
+            <a href="/ajustes">
+                <h1
+                    id="adj"
+                    class="mb-6 pr-2 text-2xl font-semibold leading-none tracking-tight text-blue-400 md:text-3xl lg:text-3xl"
+                >
+                    Ajustes
+                </h1>
+            </a>
+            <a href="/ajustes/roles">
+                <h1
+                    id="adj"
+                    class="mb-6 pr-2 text-2xl font-semibold leading-none tracking-tight text-blue-400 md:text-3xl lg:text-3xl"
+                >
+                    / Roles
+                </h1>
+            </a>
+            <h1
+                class="mb-6 pr-2 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl"
+            >
+                / Editar Rol
+            </h1>
+        </nav>
         <form action="/ajustes/roles/editarRol/<%= rol.IDRol %>" method="POST">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
             <div class="mb-4">

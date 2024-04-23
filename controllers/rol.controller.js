@@ -35,6 +35,11 @@ exports.getEditarRol = (req, res) => {
     // Obtiene el id del rol
     const { IDRol } = req.params;
 
+    // Si el rol es el Owner, no se puede editar
+    if (IDRol === "1") {
+        res.status(404).render("404");
+    }
+
     // Obtiene el rol de la base de datos
     Rol.fetchRolById(IDRol)
         .then(([rolFetched]) => {
