@@ -190,7 +190,7 @@ exports.postEliminarUsuario = (req, res) => {
 
     Usuario.eliminar(IDUsuario)
         .then(() => {
-            res.status(200).json({ success: true });
+            res.status(200).json({ success: "El usuario ha sido eliminado correctamente" });
         })
         .catch((error) => {
             console.log(error);
