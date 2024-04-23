@@ -46,7 +46,11 @@
     rol: rol,
     })  %> 
   <div id="main-content" class="ml-14 mt-14 pl-8">
-    <h1 class="mb-16 text-4xl text-gray-900">Hi <i><%= correo %></i></h1>
+    <h1 class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">Directorio de <span class="text-blue-600 dark:text-blue-500"><%= correo %>!</span></h1>
+      
+    <%- include('partials/success', {success: success}) %>
+    <%- include('partials/error', {error: error}) %>
+
       <div class="bg-white sm:rounded-lg w-1/4">
           <button onclick="confirmarEliminacion()" type="button" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
             <svg class="w-6 h-6 text-red-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -130,15 +134,16 @@
 
     <div id="dialog" class="fixed left-0 top-0 bg-black bg-opacity-50 w-screen h-screen z-50 items-center justify-center
     opacity-0 hidden transition-opacity duration-500">
-      <div class="bg-white rounded shadow-md w-2/3 flex gap-3 flex-col overflow-hidden">
-        <div class="text-gray-900 flex items-start justify-start pl-4 pt-2">
-          <strong>Lead</strong>
-        </div>
+      <div class="bg-white rounded shadow-md w-2/3 flex gap-3 flex-col overflow-hidden relative">
+
+
+        <h1 class="flex items-start justify-start pl-8 pt-6 text-3xl font-bold dark:text-blue-700">Lead<span class="bg-blue-100 text-blue-800 text-xs font-normal me-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-1">details</span></h1>
+
 
         <!-- Div for lead details -->
-        <div id="leadDetails" class="p-4 overflow-x-auto"> </div> 
+        <div id="leadDetails" class="p-4 pb-8 overflow-x-auto"> </div> 
 
-        <div class="w-5">
+        <div class="absolute top-0 right-0">
           <button onclick="hideDialog()" type="button" class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
             <span class="sr-only">Close menu</span>
             <!-- Heroicon name: outline/x -->
@@ -153,15 +158,6 @@
 
 <script defer>
 
-  // function showDialog() {
-  //   let dialog = document.getElementById('dialog');
-  //   dialog.classList.remove('hidden');
-  //   dialog.classList.add('flex');
-  //   setTimeout(() => {
-  //     dialog.classList.add('opacity-100');
-  //   }, 20);
-  // }
-
   function hideDialog() {
     
     let dialog = document.getElementById('dialog');
@@ -173,78 +169,67 @@
   }
   
   function showDialog(IDLead) {
-
-    console.log(`/directorio/${IDLead}`);
+    
     fetch(`/directorio/${IDLead}`, {
         method: 'GET', 
         headers: {
           'Content-Type': 'application/json',
         }
-    })
-      .then((result) => {
-        console.log(result);
-        return result.json(); //Regresa otra promesa
-      }).then((data) => {
-        console.log(data);
+    }).then((result) => {
+        return result.json(); // Return another promise
+    }).then((data) => {
         let dialog = document.getElementById('dialog');
-        let leadDetails = data; // Assuming the response contains all lead details
-        console.log('datos cargados');
-        let leadInfo = '';
-        leadInfo += `<table><thead id="tableHead" class="text-xs text-white bg-gray-50"><tr>`;
+        let leadDetails = data;
 
-        // <thead> loop
-        let leadHead;
+        let leadInfo = '<table class="rounded-lg bg-gray-300 w-full"><thead id="tableHead" class="text-xs text-white bg-gray-50"><tr>';
+
         for (let key in leadDetails) {
-          leadInfo += `<th scope="col" class="px-6 py-3 bg-blue-700">${key}</th>`;
+            if (leadDetails.hasOwnProperty(key) && leadDetails[key]) { // Check if value is not empty
+                leadInfo += `<th scope="col" class="px-6 py-3 bg-blue-700">${key}</th>`;
+            }
         }
 
-        leadInfo += `</tr></thead><tbody><tr id="element" class="bg-white border-b hover:bg-gray-50">`;
+        leadInfo += '</tr></thead><tbody><tr id="element" class="bg-gray-100 border-b hover:bg-gray-50">';
 
-        // <td> loop
-          let cont = 0;
-          for (let key in leadDetails) {
-              let str = leadDetails[key];
+        let cont = 0;
+        for (let key in leadDetails) {
+            if (leadDetails.hasOwnProperty(key) && leadDetails[key]) { // Check if value is not empty
+                let str = leadDetails[key];
 
-              if (typeof str === 'string' && !isNaN(Date.parse(str))) {
-                  let date = new Date(str);
-                  str = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-              }
+                if (typeof str === 'string' && !isNaN(Date.parse(str))) {
+                    let date = new Date(str);
+                    str = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+                }
 
-              if (str != null) {
-                  let strShort = str;
-                  if (typeof str === 'string' && str.length > 20) {
-                      strShort = str.substr(0, 20) + '...';
-                  }
-                  leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3">${str}
+                let strShort = str.length > 20 ? str.substr(0, 20) + '...' : str;
+
+                leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3">${strShort}
                                   <span class="cursor-pointer relative" 
                                         onmouseover="document.getElementById('popover${cont}').classList.remove('hidden')"
                                         onmouseout="document.getElementById('popover${cont}').classList.add('hidden')"
                                   >
-                                    ${strShort} 
                                     <div id="popover${cont}" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
                                       ${str} 
                                     </div>
                               </td>`; 
-              } else {
-                  leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3"></td>`; 
-              }
-              cont++;
-          }
+                cont++;
+            }
+        }
 
-        leadInfo += `</tr></tbody></table>`;
-        console.log(leadInfo);
+        leadInfo += '</tr></tbody></table>';
+
         document.getElementById('leadDetails').innerHTML = leadInfo;
 
         dialog.classList.remove('hidden');
         dialog.classList.add('flex');
         setTimeout(() => {
-          dialog.classList.add('opacity-100');
+            dialog.classList.add('opacity-100');
         }, 20);
-      })
-      .catch(error => {
+    }).catch(error => {
         console.error('Error fetching lead details:', error);
-      });
-  }
+    });
+}
+
 
 </script>
 
