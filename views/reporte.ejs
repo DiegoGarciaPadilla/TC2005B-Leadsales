@@ -79,7 +79,7 @@
             <div
                 id="graphFourContainer"
                 class="graph-container w-3/4 px-4 py-8 ml-32"
-                style="display: none"
+                style="display: none; width: 50%; height: 50%;"
             >
                 <canvas id="graphFour" width="400" height="200"></canvas>
             </div>
@@ -368,6 +368,76 @@
                         // Gráfica por status
 
                         if (key === "graph4Data") {
+                            let leadsPorStatus = {};
+
+                            graphData.forEach((item) => {
+                                let status = item.Status;
+                                let leads = item.Cantidad;
+
+                                if (!leadsPorStatus[status]) {
+                                    leadsPorStatus[status] = [];
+                                }
+                                leadsPorStatus[status].push(leads);
+                            });
+
+                            // Instancia de Chart JS
+                            var ctx4 = document
+                                .getElementById("graphFour")
+                                .getContext("2d");
+                            var chart_4 = new Chart(ctx4, {
+                                type: "doughnut",
+                                data: {
+                                    labels: Object.keys(
+                                        leadsPorStatus
+                                    ),
+                                    datasets: [
+                                        {
+                                            label: "Leads por status",
+                                            data: Object.values(
+                                                leadsPorStatus
+                                            ),
+                                            backgroundColor: Object.keys(
+                                                leadsPorStatus
+                                            ).map((status) => {
+                                                return getRandomColor();
+                                            }),
+                                        }
+                                    ],
+                                },
+                                options: {
+                                    responsive: true,
+                                    plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Leads por status'
+                                    }
+                                    }
+                                },
+                            });
+
+                            function getRandomColor() {
+                                // Rango de HUES
+                                let blue = Math.floor(Math.random() * 256);
+                                let green = Math.floor(
+                                    Math.random() * (blue + 1)
+                                );
+
+                                let blueHex = blue
+                                    .toString(16)
+                                    .padStart(2, "0");
+                                let greenHex = green
+                                    .toString(16)
+                                    .padStart(2, "0");
+
+                                // Construir HEX
+                                let color = "#" + "00" + greenHex + blueHex;
+
+                                return color;
+                            }
+                            
                         }
 
                         // Gráfica por embudo
