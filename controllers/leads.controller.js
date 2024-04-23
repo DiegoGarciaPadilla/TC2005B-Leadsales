@@ -10,7 +10,8 @@ const Usuario = require("../model/usuario.model");
 
 exports.getLeads = (req, res) => {
     const { Correo, Privilegios } = req.session; // Test user
-    const error = req.flash("success") || "";
+    const error = req.flash("error") || "";
+    const success = req.flash("success") || "";
 
     if (
         Privilegios.some(
@@ -31,6 +32,7 @@ exports.getLeads = (req, res) => {
                             apellidoMaterno: req.session.apellidoMaterno,
                             usuarios: usuariosFetched,
                             error: error,
+                            success: success,
                         });
                     })
                     .catch((error) => {
