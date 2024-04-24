@@ -8,7 +8,8 @@ const router = express.Router();
 
 const { post_CSV } = require("../controllers/CSV.controller");
 
-const { getReporte, getReporteJSON } = require("../controllers/graph.controller");
+const { getReporte, getReporteJSON, postPDF } = require("../controllers/graph.controller");
+
 
 // Importamos el middleware isAuth (para verificar si el usuario está autenticado)
 const reporteController = require('../controllers/reporte.controller');
@@ -37,7 +38,7 @@ router.get('/reporte', isAuth, (req, response) => {
     });
 });
 
-router.post('/reporte/save', isAuth, graphController.postPDF);
+router.post('/reporte/save', isAuth, postPDF);
 
 router.post("/", isAuth, post_CSV); // ANTES de router,use("/")
 
