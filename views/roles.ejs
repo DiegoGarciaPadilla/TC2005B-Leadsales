@@ -178,10 +178,6 @@
 
     function eliminar(IDRol) {
         const csrf = document.getElementById("_csrf").value;
-        const filaEliminar = document.querySelector(
-            'tr[id="rol_' + IDRol + '"]'
-        );
-        filaEliminar.remove();
         fetch(`/ajustes/roles/eliminarRol`, {
             method: "POST",
             headers: {
@@ -190,13 +186,17 @@
             },
             body: JSON.stringify({ IDRol: IDRol }),
         })
-            .then((result) => {
-                console.log(result);
-                return result.json();
-            })
-            .then((data) => {
-                if (data.success) {
-                    cerrarModal();
+        .then((result) => {
+            console.log(result);
+            return result.json();
+        })
+        .then((data) => {
+            if (data.success) {
+                const filaEliminar = document.querySelector(
+                    'tr[id="rol_' + IDRol + '"]'
+                );
+                filaEliminar.remove();
+                cerrarModal();
                 } else {
                     console.error(data.error);
                 }

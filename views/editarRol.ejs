@@ -104,8 +104,8 @@
                         <input
                             type="checkbox"
                             id="Privilegio<%= i %>"
-                            name="Privilegio<%= i %>"
-                            value="<%= privilegios[i].Descripcion %>"
+                            name="Privilegios"
+                            value="<%= privilegios[i].IDPrivilegio %>"
                             class="mr-2"
                             <% for (let j = 0; j < privilegiosRol.length; j++) { %>
                                 <% if (privilegios[i].IDPrivilegio == privilegiosRol[j].IDPrivilegio) { %>
