@@ -48,10 +48,25 @@ exports.getLeads = (req, res) => {
     } else {
         Lead.fetchLeadsByUser(Correo)
             .then(([leadsFetched]) => {
-                res.render("directorio", {
-                    leads: leadsFetched,
-                    csrfToken: req.csrfToken(),
-                });
+                Usuario.fetchAllUsers()
+                    .then(([usuariosFetched]) => {
+                        res.render("directorio", {
+                            leads: leadsFetched,
+                            csrfToken: req.csrfToken(),
+                            correo: req.session.Correo,
+                            rol: req.session.Rol,
+                            nombre: req.session.Nombre,
+                            apellidoPaterno: req.session.ApellidoPaterno,
+                            apellidoMaterno: req.session.apellidoMaterno,
+                            usuarios: usuariosFetched,
+                            error: error,
+                            success: success,
+                        });
+                    })
+                    .catch((error) => {
+                        req.flash("error", "Error al cargar usuarios.");
+                        res.redirect("/inicio");
+                    });
             })
             .catch((error) => {
                 console.log(error);
