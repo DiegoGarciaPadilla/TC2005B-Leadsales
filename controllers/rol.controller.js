@@ -1,4 +1,5 @@
 const Rol = require("../model/rol.model");
+const Privilegio = require("../model/privilegios.model");
 
 /* ========== CU. 14 CONSULTA ROLES | Diego García =============== */
 
@@ -34,37 +35,76 @@ exports.getEditarRol = (req, res) => {
     // Obtiene el id del rol
     const { IDRol } = req.params;
 
+    // Si el rol es el Owner, no se puede editar
+    if (IDRol === "1") {
+        res.status(404).render("404");
+    }
+
     // Obtiene el rol de la base de datos
     Rol.fetchRolById(IDRol)
         .then(([rolFetched]) => {
-            res.render("editarRol", {
-                rol: rolFetched[0],
-                error: err,
-                csrfToken: req.csrfToken(),
-            });
+            // Obtiene todos los privilegios de la base de datos
+            Privilegio.fetchAll()
+                .then(([privilegiosFetched]) => {
+                    // Obtiene los privilegios del rol
+                    Privilegio.fetchPrivilegioByIDRol(IDRol)
+                        .then(([privilegiosRolFetched]) => {
+                            console.log(privilegiosRolFetched);
+                            res.render("editarRol", {
+                                rol: rolFetched[0],
+                                privilegios: privilegiosFetched,
+                                privilegiosRol: privilegiosRolFetched,
+                                error: err,
+                                csrfToken: req.csrfToken(),
+                            });
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         })
         .catch((error) => {
             console.log(error);
         });
 };
 
-exports.postEditarRol = (req, res) => {
-    // Obtiene el id del rol
-    const { IDRol } = req.params;
-    console.log(IDRol);
+exports.postEditarRol = async (req, res) => {
+    try {
+        // Obtiene el id del rol
+        const { IDRol } = req.params;
+        console.log(IDRol);
 
-    // Obtiene los datos del formulario
-    const { Nombre, DescripcionRol } = req.body;
-    console.log(Nombre, DescripcionRol);
+        // Si el rol es el Owner, no se puede editar
+        if (IDRol === "1") {
+            res.status(404).render("404");
+        }
 
-    // Actualiza el rol en la base de datos
-    Rol.updateRolById(IDRol, Nombre, DescripcionRol)
-        .then(() => {
-            res.redirect("/ajustes/roles");
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+        // Obtiene los datos del formulario
+        const { Nombre, DescripcionRol, Privilegios } = req.body;
+
+        // Parsear los privilegios a un array
+        const PrivilegiosArray = Array.isArray(Privilegios)
+            ? Privilegios
+            : [Privilegios];
+
+        console.log(PrivilegiosArray);
+
+        // Elimina los privilegios del rol
+        await Rol.deletePrivilegiosRolById(IDRol);
+
+        // Actualiza los datos del rol
+        await Rol.updateRolById(IDRol, Nombre, DescripcionRol);
+
+        // Actualiza los privilegios del rol
+        await Rol.updatePrivilegiosRolById(IDRol, PrivilegiosArray);
+
+        res.redirect("/ajustes/roles");
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 /* ========================== FIN CU. 15 ==============================  */
