@@ -1,26 +1,14 @@
 const Graph = require("../model/graph.model");
 
-exports.getReporte = (req, res) => {
-    res.render('reporte', {
-        csrfToken: req.csrfToken(),
-        privilegios: req.session.Privilegios,
-        correo: req.session.Correo,
-        rol: req.session.Rol,
-        nombre: req.session.Nombre,
-        apellidoPaterno: req.session.ApellidoPaterno,
-        apellidoMaterno: req.session.apellidoMaterno,
-    });
-}
-
 /* ========== CU. 02 GENERA REPORTE | Sebas Colín - Andrea Medina =============== */
 
-exports.getReporteJSON = (req, res, next) => {
+exports.getReporte = (req, res, next) => {
     const { Privilegios, Nombre, ApellidoPaterno } = req.session;
     const NombreCompleto = `${Nombre} ${ApellidoPaterno}`;
 
-    // Obteniendo fechas de inicio y fin desde los parámetros de la petición
+    // Obteniendo fechas de inicio y fin
 
-    const { dateStart, dateEnd } = req.query;
+    const { start, end } = req.body;
 
     // Caso cuando se pueden consultar los leads de todos
     if (
@@ -33,49 +21,49 @@ exports.getReporteJSON = (req, res, next) => {
 
         // Gráfica 1
         const Graph1 = new Graph(1);
-        const g1 = Graph.fetchAllForGraphs(dateStart, dateEnd);
+        const g1 = Graph.fetchAllForGraphs(start, end);
         const promesaGraphOne = Graph.graphOne(g1);
 
         graphPromises.push(promesaGraphOne);
 
         // Gráfica 2
         const Graph2 = new Graph(2);
-        const g2 = Graph.fetchAllForGraphs(dateStart, dateEnd);
+        const g2 = Graph.fetchAllForGraphs(start, end);
         const promesaGraphTwo = Graph.graphTwo(g2);
 
         graphPromises.push(promesaGraphTwo);
 
         // Gráfica 3
         const Graph3 = new Graph(3);
-        const g3 = Graph.fetchAllForGraphs(dateStart, dateEnd);
+        const g3 = Graph.fetchAllForGraphs(start, end);
         const promesaGraphThree = Graph.graphThree(g3);
 
         graphPromises.push(promesaGraphThree);
 
         // Gráfica 4
         const Graph4 = new Graph(4);
-        const g4 = Graph.fetchAllForGraphs(dateStart, dateEnd);
+        const g4 = Graph.fetchAllForGraphs(start, end);
         const promesaGraphFour = Graph.graphFour(g4);
 
         graphPromises.push(promesaGraphFour);
 
         // Gráfica 5
         const Graph5 = new Graph(5);
-        const g5 = Graph.fetchAllForGraphs(dateStart, dateEnd);
+        const g5 = Graph.fetchAllForGraphs(start, end);
         const promesaGraphFive = Graph.graphFive(g5);
 
         graphPromises.push(promesaGraphFive);
 
         // // Gráfica 6
         // const Graph6 = new Graph(6);
-        // const g6 = Graph.fetchAllForGraphs(dateStart, dateEnd);
+        // const g6 = Graph.fetchAllForGraphs(start, end);
         // const promesaGraphSix = Graph.graphSix(g6);
 
         // graphPromises.push(promesaGraphSix);
 
         // // Gráfica 7
         // const Graph7 = new Graph(7);
-        // const g7 = Graph.fetchAllForGraphs(dateStart, dateEnd);
+        // const g7 = Graph.fetchAllForGraphs(start, end);
         // const promesaGraphSeven = Graph.graphSeven(g7);
 
         // graphPromises.push(promesaGraphSeven);
@@ -105,49 +93,50 @@ exports.getReporteJSON = (req, res, next) => {
 
         // Gráfica 1
         const Graph1 = new Graph(1);
-        const g1 = Graph.fetchSomeForGraphs(NombreCompleto, dateStart, dateEnd);
+        const g1 = Graph.fetchSomeForGraphs(NombreCompleto, start, end);
+        console.log(g1);
         const promesaGraphOne = Graph.graphOne(g1);
 
         graphPromises.push(promesaGraphOne);
 
-        // Gráfica 2    
+        // Gráfica 2
         const Graph2 = new Graph(2);
-        const g2 = Graph.fetchSomeForGraphs(NombreCompleto, dateStart, dateEnd);
+        const g2 = Graph.fetchSomeForGraphs(NombreCompleto, start, end);
         const promesaGraphTwo = Graph.graphTwo(g2);
 
         graphPromises.push(promesaGraphTwo);
 
         // Gráfica 3
         const Graph3 = new Graph(3);
-        const g3 = Graph.fetchSomeForGraphs(NombreCompleto, dateStart, dateEnd);
+        const g3 = Graph.fetchSomeForGraphs(NombreCompleto, start, end);
         const promesaGraphThree = Graph.graphThree(g3);
 
         graphPromises.push(promesaGraphThree);
 
         // Gráfica 4
         const Graph4 = new Graph(4);
-        const g4 = Graph.fetchSomeForGraphs(NombreCompleto, dateStart, dateEnd);
+        const g4 = Graph.fetchSomeForGraphs(NombreCompleto, start, end);
         const promesaGraphFour = Graph.graphFour(g4);
 
         graphPromises.push(promesaGraphFour);
 
         // Gráfica 5
         const Graph5 = new Graph(5);
-        const g5 = Graph.fetchSomeForGraphs(NombreCompleto, dateStart, dateEnd);
+        const g5 = Graph.fetchSomeForGraphs(NombreCompleto, start, end);
         const promesaGraphFive = Graph.graphFive(g5);
 
         graphPromises.push(promesaGraphFive);
 
         // Gráfica 6
         // const Graph6 = new Graph(6);
-        // const g6 = Graph.fetchSomeForGraphs(dateStart, dateEnd);
+        // const g6 = Graph.fetchSomeForGraphs(start, end);
         // const promesaGraphSix = Graph.graphSix(g6);
 
         // graphPromises.push(promesaGraphSix);
 
         // Gráfica 7
         // const Graph7 = new Graph(7);
-        // const g7 = Graph.fetchSomeForGraphs(dateStart, dateEnd);
+        // const g7 = Graph.fetchSomeForGraphs(start, end);
         // const promesaGraphSeven = Graph.graphSeven(g7);
 
         // graphPromises.push(promesaGraphSeven);
