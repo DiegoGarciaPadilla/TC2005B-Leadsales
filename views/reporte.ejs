@@ -124,13 +124,10 @@
                     </select>
                 </div>
                 <div class="ml-auto pr-20">
-                    <button
-                        onclick="descargarPDF()"
-                        type="button"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none"
-                    >
-                        Generar PDF
-                    </button>
+                    <form id="uploadForm" action="/reporte/save" method="POST" enctype="multipart/form-data">
+                        <button onclick="descargarPDF()" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Generar PDF</button>
+                        <input id="_csrf" type="hidden" name="_csrf" value="<%= csrfToken %>" >
+                    </form>
                 </div>
             </div>
 
@@ -586,8 +583,32 @@
             const imagenUno = canvas.toDataURL("image/jpeg", 1.0);
             const pdf = new jsPDF("landscape");
             pdf.setFontSize(20);
-            pdf.addImage(imagenUno, "JPEG", 15, 15, 280, 150);
-            pdf.save("reporte.pdf");
+            pdf.addImage(imagenUno, 'JPEG', 15, 15, 280, 150);
+            // pdf.save('reporte.pdf')
+
+            const pdfData = pdf.output('datauristring');
+
+            const csrf = document.getElementById('_csrf').value;
+            fetch('/reporte/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'csrf-token': csrf,
+                },
+                body: JSON.stringify({ pdfData }),
+            })
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error('Respuesta de red no está bien');
+                }
+                return res.json();
+            })
+            .then((data) => {
+                alert('PDF saved successfully!');
+            })
+            .catch((error) => {
+                console.log(error);
+            })
         }
 
         const colorFondo = {
@@ -597,35 +618,9 @@
                 ctx.fillStyle = "#e4e8ee";
                 ctx.fillRect(0, 0, width, height);
                 ctx.restore();
-            },
-        };
-
-        const validateDate = () => {
-            const startDate = document.getElementById("dateStart");
-            const endDate = document.getElementById("dateEnd");
-
-            if (startDate.value && !endDate.value) {
-                endDate.min = startDate.value;
-                startDate.max = "";
             }
 
-            if (!startDate.value && endDate.value) {
-                startDate.max = endDate.value;
-                endDate.min = "";
-            }
-
-            if (startDate.value && endDate.value) {
-                endDate.min = startDate.value;
-                startDate.max = endDate.value;
-            }
-
-            if (!startDate.value && !endDate.value) {
-                startDate.max = new Date().toISOString().split("T")[0];
-                endDate.max = new Date().toISOString().split("T")[0];
-            }
-        };
-
-        // Cargar gráficas por defecto
+        }
 
         document.addEventListener("DOMContentLoaded", () => {
             getData();

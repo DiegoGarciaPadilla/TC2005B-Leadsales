@@ -1,4 +1,5 @@
 const Graph = require("../model/graph.model");
+const Reporte = require("../model/reporte.model");
 
 exports.getReporte = (req, res) => {
     res.render('reporte', {
@@ -172,6 +173,22 @@ exports.getReporteJSON = (req, res, next) => {
                 res.status(500).json({ error: "Internal server error" });
             });
     }
+};
+
+
+exports.postPDF = (req, res, next) => {
+  const { IDUsuario } = req.session;
+  const { pdfData } = req.body;
+  const { csrfToken } = req.csrfToken();
+
+  Reporte.insertReport(IDUsuario, "Reporte", pdfData)
+    .then(() => {
+      console.log("PDF Almacenado");
+      res.redirect("/historial");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 };
 
 /* ========================== FIN CU. 02 ==============================  */
