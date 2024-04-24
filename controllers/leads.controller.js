@@ -126,31 +126,52 @@ exports.postEliminarLead = async (req, res) => {
 
 exports.postDescargarLeads = async (req, res) => {
     const selectedLeads = req.body.selectedLeads;
-    console.log('Leads por descargar:', selectedLeads);
 
     try {
         const leadsData = [];
         for (const IDLead of selectedLeads) {
-            const [lead] = await Lead.fetchOne(IDLead);
-            console.log('Lead descargado:', lead);
-            leadsData.push(lead);
+            const lead = await Lead.fetchOne(IDLead);
+            leadsData.push(lead[0]);
         }
-        console.log('Leads descargados:', leadsData);
-
-        const csvString = leadsData.map(item => Object.values(item).join(',')).join('\n');
-
-        const date = new Date();
-        const timestamp = date.getFullYear() + '-' + (date.getMonth() + 1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0') + '_' + date.getHours().toString().padStart(2, '0') + '-' + date.getMinutes().toString().padStart(2, '0') + '-' + date.getSeconds().toString().padStart(2, '0');
-        const fileName = 'descarga_leads_leadtics_' + timestamp + '.csv';
-        console.log('Descargando leads:', fileName);
+        //console.log('Leads descargados:', leadsData);
+        
+        const csvString = 'Nombre,Telefono,Correo,Compania,Asignadoa,Creado,Horadecreacion,Fechadeprimermensaje,Horadelprimermensaje,Primermensaje,Fechadeultimomensaje,Horadelultimomensaje,Ultimomensaje,Status,EstadodeLead,Embudo,Etapa,Archivado,CreadoManualmente,Valor,Ganado,Etiquetas\n' +
+        leadsData.map(lead => {
+            const values = [
+                lead[0].Nombre,
+                lead[0].Telefono,
+                lead[0].Correo,
+                lead[0].Compania,
+                lead[0].Asignadoa,
+                lead[0].Creado,
+                lead[0].Horadecreacion,
+                lead[0].Fechadeprimermensaje,
+                lead[0].Horadelprimermensaje,
+                lead[0].Primermensaje,
+                lead[0].Fechadeultimomensaje,
+                lead[0].Horadelultimomensaje,
+                lead[0].Ultimomensaje,
+                lead[0].Status,
+                lead[0].EstadodeLead,
+                lead[0].Embudo,
+                lead[0].Etapa,
+                lead[0].Archivado,
+                lead[0].CreadoManualmente,
+                lead[0].Valor,
+                lead[0].Ganado,
+                lead[0].Etiquetas
+            ].map(value => value === undefined ? '' : value);
+            return values.join(',');
+        }).join('\n');
 
         res.header('Content-Type', 'text/csv');
-        res.attachment(fileName);
         res.send(csvString);
     } catch (error) {
         console.error('Error al descargar leads:', error);
         res.status(500).send('Error al descargar leads');
     }
 };
+
+//const csvString = 'Nombre,Telefono,Correo,Compania,Asignadoa,Creado,Horadecreacion,Fechadeprimermensaje,Horadelprimermensaje,Primermensaje,Fechadeultimomensaje,Horadelultimomensaje,Ultimomensaje,Status,EstadodeLead,Embudo,Etapa,Archivado,CreadoManualmente,Valor,Ganado,Etiquetas\n' + leadsData.map(lead => `${lead.Nombre},${lead.Telefono},${lead.Correo},${lead.Compania},${lead.Asignadoa},${lead.Creado},${lead.Horadecreacion},${lead.Fechadeprimermensaje},${lead.Horadelprimermensaje},${lead.Primermensaje},${lead.Fechadeultimomensaje},${lead.Horadelultimomensaje},${lead.Ultimomensaje},${lead.Status},${lead.EstadodeLead},${lead.Embudo},${lead.Etapa},${lead.Archivado},${lead.CreadoManualmente},${lead.Valor},${lead.Ganado},${lead.Etiquetas}`).join('\n');
 
 module.exports = exports;
