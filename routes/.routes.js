@@ -25,7 +25,8 @@ router.get("/FAQ", isAuth, (req, res) => {
 router.get('/reporte/:idGraph', isAuth, graphController.getReporte);
 
 router.get('/reporte', isAuth, (req, response) => {
-    response.render('reporte'), {
+    console.log("Token: ", req.csrfToken());
+    response.render('reporte', {
         csrfToken: req.csrfToken(),
         privilegios: req.session.Privilegios,
         correo: req.session.Correo,
@@ -33,7 +34,8 @@ router.get('/reporte', isAuth, (req, response) => {
         nombre: req.session.Nombre,
         apellidoPaterno: req.session.ApellidoPaterno,
         apellidoMaterno: req.session.apellidoMaterno,
-    }
+    });
+    //console.log("Token: ", req.csrfToken());
 });
 
 router.post("/", isAuth, post_CSV); // ANTES de router,use("/")

@@ -189,4 +189,20 @@ exports.postDescargarLeads = async (req, res) => {
 
 //const csvString = 'Nombre,Telefono,Correo,Compania,Asignadoa,Creado,Horadecreacion,Fechadeprimermensaje,Horadelprimermensaje,Primermensaje,Fechadeultimomensaje,Horadelultimomensaje,Ultimomensaje,Status,EstadodeLead,Embudo,Etapa,Archivado,CreadoManualmente,Valor,Ganado,Etiquetas\n' + leadsData.map(lead => `${lead.Nombre},${lead.Telefono},${lead.Correo},${lead.Compania},${lead.Asignadoa},${lead.Creado},${lead.Horadecreacion},${lead.Fechadeprimermensaje},${lead.Horadelprimermensaje},${lead.Primermensaje},${lead.Fechadeultimomensaje},${lead.Horadelultimomensaje},${lead.Ultimomensaje},${lead.Status},${lead.EstadodeLead},${lead.Embudo},${lead.Etapa},${lead.Archivado},${lead.CreadoManualmente},${lead.Valor},${lead.Ganado},${lead.Etiquetas}`).join('\n');
 
+/* ========== CU. 7 MODIFICA LEAD | Andrea Medina - Diego Lira ========== */
+exports.getEditarLead = (req, res) => {
+    const { leadId } = req.params;
+
+    Lead.fetchOne(leadId)
+        .then(([leadFetched]) => {
+            res.render('editarLead', {
+                lead: leadFetched[0],
+                csrfToken: req.csrfToken(),
+            });
+        })
+        .catch();
+}
+
+/* ========================== FIN CU. 7 ==============================  */
+
 module.exports = exports;

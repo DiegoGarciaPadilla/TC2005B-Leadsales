@@ -40,4 +40,11 @@ module.exports = class Lead {
   static deleteLeadById(id) {
     return db.execute("UPDATE `lead` SET FechaHoraEliminado = CURRENT_TIMESTAMP WHERE IDLead = ?", [id]);
   }
+
+  static updateLeadById(id, nombre, tel, correo, comp, asig, fecha, hora, msj, status, edo, emb, etapa, arch, val, gan, etiq) {
+    return db.execute(
+      "UPADTE `lead` SET Nombre = ?, Telefono = ?, Correo = ?, Compania = ?, Asignadoa = ?, Fechadelultimomensaje = ?, Horadelultimomensaje = ?, Ultimomensaje = ?, Status = ?, EstadodeLead = ?, Embudo = ?, Etapa = ?, Archivado = ?, Valor = ?, Ganado = ?, Etiquetas = ? WHERE IDLead = ?",
+      [nombre, tel, correo, comp, asig, fecha, hora, msj, status, edo, emb, etapa, arch, val, gan, etiq, id]
+    );
+  }
 };
