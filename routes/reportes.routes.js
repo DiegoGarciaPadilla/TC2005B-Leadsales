@@ -15,10 +15,13 @@ const { getReportes } = require("../controllers/reporte.controller");
 // Importamos el middleware de privilegios
 
 const { consultaHistorial } = require("../util/privilegios/privilegios");
+const { route } = require("./.routes");
+const { postPDF } = require("../controllers/graph.controller");
 
 // Rutas
 
 router.get("/", isAuth, consultaHistorial, getReportes);
+
 
 // Exportamos el router
 
