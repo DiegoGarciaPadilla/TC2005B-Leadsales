@@ -5,7 +5,7 @@
 **/.DS_Store
 
 # Ignore keys
-keys.json
+util/db/keys.json
 
 # Ignore vscode settings
 .vscode/settings.json

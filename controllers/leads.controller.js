@@ -1,6 +1,7 @@
 const Lead = require("../model/leads.model");
-
 const Usuario = require("../model/usuario.model");
+const csv = require('csv-parser');
+const fs = require('fs');
 
 /* ========== CU. 25 CONSULTA REPORTE EN HISTORIAL | Diego García =============== */
 
@@ -47,10 +48,25 @@ exports.getLeads = (req, res) => {
     } else {
         Lead.fetchLeadsByUser(Correo)
             .then(([leadsFetched]) => {
-                res.render("directorio", {
-                    leads: leadsFetched,
-                    csrfToken: req.csrfToken(),
-                });
+                Usuario.fetchAllUsers()
+                    .then(([usuariosFetched]) => {
+                        res.render("directorio", {
+                            leads: leadsFetched,
+                            csrfToken: req.csrfToken(),
+                            correo: req.session.Correo,
+                            rol: req.session.Rol,
+                            nombre: req.session.Nombre,
+                            apellidoPaterno: req.session.ApellidoPaterno,
+                            apellidoMaterno: req.session.apellidoMaterno,
+                            usuarios: usuariosFetched,
+                            error: error,
+                            success: success,
+                        });
+                    })
+                    .catch((error) => {
+                        req.flash("error", "Error al cargar usuarios.");
+                        res.redirect("/inicio");
+                    });
             })
             .catch((error) => {
                 console.log(error);
@@ -120,5 +136,57 @@ exports.postEliminarLead = async (req, res) => {
   };
 
 /* ========================== FIN CU. 8 ==============================  */
+
+/* ========== CU. 27 Exporta datos de leads. | Chimali Nava =============== */
+
+exports.postDescargarLeads = async (req, res) => {
+    const selectedLeads = req.body.selectedLeads;
+
+    try {
+        const leadsData = [];
+        for (const IDLead of selectedLeads) {
+            const lead = await Lead.fetchOne(IDLead);
+            leadsData.push(lead[0]);
+        }
+        //console.log('Leads descargados:', leadsData);
+        
+        const csvString = 'Nombre,Telefono,Correo,Compania,Asignadoa,Creado,Horadecreacion,Fechadeprimermensaje,Horadelprimermensaje,Primermensaje,Fechadeultimomensaje,Horadelultimomensaje,Ultimomensaje,Status,EstadodeLead,Embudo,Etapa,Archivado,CreadoManualmente,Valor,Ganado,Etiquetas\n' +
+        leadsData.map(lead => {
+            const values = [
+                lead[0].Nombre,
+                lead[0].Telefono,
+                lead[0].Correo,
+                lead[0].Compania,
+                lead[0].Asignadoa,
+                lead[0].Creado,
+                lead[0].Horadecreacion,
+                lead[0].Fechadeprimermensaje,
+                lead[0].Horadelprimermensaje,
+                lead[0].Primermensaje,
+                lead[0].Fechadeultimomensaje,
+                lead[0].Horadelultimomensaje,
+                lead[0].Ultimomensaje,
+                lead[0].Status,
+                lead[0].EstadodeLead,
+                lead[0].Embudo,
+                lead[0].Etapa,
+                lead[0].Archivado,
+                lead[0].CreadoManualmente,
+                lead[0].Valor,
+                lead[0].Ganado,
+                lead[0].Etiquetas
+            ].map(value => value === undefined ? '' : value);
+            return values.join(',');
+        }).join('\n');
+
+        res.header('Content-Type', 'text/csv');
+        res.send(csvString);
+    } catch (error) {
+        console.error('Error al descargar leads:', error);
+        res.status(500).send('Error al descargar leads');
+    }
+};
+
+//const csvString = 'Nombre,Telefono,Correo,Compania,Asignadoa,Creado,Horadecreacion,Fechadeprimermensaje,Horadelprimermensaje,Primermensaje,Fechadeultimomensaje,Horadelultimomensaje,Ultimomensaje,Status,EstadodeLead,Embudo,Etapa,Archivado,CreadoManualmente,Valor,Ganado,Etiquetas\n' + leadsData.map(lead => `${lead.Nombre},${lead.Telefono},${lead.Correo},${lead.Compania},${lead.Asignadoa},${lead.Creado},${lead.Horadecreacion},${lead.Fechadeprimermensaje},${lead.Horadelprimermensaje},${lead.Primermensaje},${lead.Fechadeultimomensaje},${lead.Horadelultimomensaje},${lead.Ultimomensaje},${lead.Status},${lead.EstadodeLead},${lead.Embudo},${lead.Etapa},${lead.Archivado},${lead.CreadoManualmente},${lead.Valor},${lead.Ganado},${lead.Etiquetas}`).join('\n');
 
 module.exports = exports;
