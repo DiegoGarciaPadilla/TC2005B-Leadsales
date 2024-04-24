@@ -84,20 +84,17 @@ exports.postCrearLead = (req, res) => {
     const { nombre, telefono, embudo, asignadoa } = req.body;
     if (Privilegios.some((Privilegios => Privilegios.Descripcion === 'Crea lead todos.'))) {
 
-        Lead.createLead({
-                Nombre: nombre,
-                Telefono: telefono,
-                Embudo: embudo,
-                Asignadoa: asignadoa,
-            })
-            .then(() => {
-                res.redirect("/directorio");
+        Lead.createLead(nombre, telefono, embudo, asignadoa)
+            .then(([rows]) => {
+
+                res.status(200).json({ success: "Lead creado con exito",  lead: rows[0] });
             })
             .catch((error) => {
-                console.log(error);
+                console.error(error);
+                res.status(500).json({ message: "Error creando lead" });
             });
     } else {
-        res.redirect("/directorio");
+        console.log("No tienes permisos para crear leads");
     }
 };
 
