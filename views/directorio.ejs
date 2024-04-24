@@ -47,32 +47,20 @@
     })  %> 
   <div id="main-content" class="ml-14 mt-14 pl-8">
     <h1 class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">Directorio de <span class="text-blue-600 dark:text-blue-500"><%= correo %>!</span></h1>
-    
-    <div id="alertas">
-      <%- include('partials/success', {success: success}) %>
-      <%- include('partials/error', {error: error}) %>
-    </div>
+      
+    <%- include('partials/success', {success: success}) %>
+    <%- include('partials/error', {error: error}) %>
 
-    <div class="bg-white sm:rounded-lg w-1/4 flex justify-center items-center space-x-2">
-        <button onclick="confirmarAccion('eliminación')" type="button" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
+      <div class="bg-white sm:rounded-lg w-1/4">
+          <button onclick="confirmarEliminacion()" type="button" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
             <svg class="w-6 h-6 text-red-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
             </svg>                                  
             <span class="sr-only">Eliminar lead</span>
-        </button>
-        <button onclick="confirmarAccion('descarga')" type="button" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
-            <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2m-8 1V4m0 12-4-4m4 4 4-4"/>
-            </svg>                                             
-            <span class="sr-only">Descargar leads</span>
-        </button>
-        <button id="seleccionar" onclick="seleccionarTodo()" type="button" class="text-gray-800 bg-gray-300 border border-gray-400 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
-            Seleccionar todo
-        </button>
-    </div>
-  
-  
-      <div id="container" class="relative overflow-auto sm:rounded-lg w-3/4">
+          </button>
+      </div>
+
+        <div id="container" class="relative overflow-auto sm:rounded-lg w-3/4">
           <table class="text-sm text-left rtl:text-right text-gray-500 border-collapse rounded-lg w-full">
             <thead id="tableHead" class="text-xs text-white bg-gray-50">
               <tr>
@@ -142,7 +130,8 @@
               <% }); %>
             </tbody>
           </table>
-      </div>
+        </div>
+    </div>
 
     <div id="dialog" class="fixed left-0 top-0 bg-black bg-opacity-50 w-screen h-screen z-50 items-center justify-center
     opacity-0 hidden transition-opacity duration-500">
@@ -166,7 +155,6 @@
         </div>
       </div>
     </div>
-  </div>
 
 <script defer>
 
@@ -247,63 +235,38 @@
 
 <script>
 
-function confirmarAccion(mensaje) {
-    let html = `<div id="deleteModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
-            <div class="relative p-4 text-center bg-white rounded-lg shadow-md w-80 h-40">
-                <h2 class="text-lg font-semibold text-gray-800">Confirmación de ${mensaje}</h2>`;
-    
-    if (mensaje === 'eliminación') {
-        html += `<p class="mt-2 text-sm text-gray-600">¿Estás seguro de que deseas eliminar los leads seleccionados?</p>
-            <div class="mt-4 flex justify-center space-x-2">
-                <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" onclick="eliminarLeads()">Sí, eliminar</button>`;
-    } else if (mensaje === 'descarga') {
-        html += `
-            <div class="mt-4 flex justify-center space-x-2">
-                <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" onclick="descargarCSV()">Sí, descargar</button>`;
-    }
-    html += `<button class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300" onclick="cerrarModal()">Cancelar</button>
+  function confirmarEliminacion() {
+    const modalHTML = `
+        <div id="deleteModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+            <div class="relative p-4 text-center bg-white rounded-lg shadow-md">
+                <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarModal()">
+                    <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+                <h2 class="text-lg font-semibold text-gray-800">Confirmación de eliminación</h2>
+                <p class="mt-2 text-sm text-gray-600">¿Estás seguro de que deseas eliminar los leads seleccionados?</p>
+                <div class="mt-4 flex justify-center space-x-2">
+                    <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" onclick="eliminarLeads()">Sí, eliminar</button>
+                    <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300" onclick="cerrarModal()">Cancelar</button>
                 </div>
             </div>
-        </div>`;
+        </div>
+    `;
 
-    document.body.insertAdjacentHTML('beforeend', html);
-  }
-
-  function seleccionarTodo() {
-    const checkboxes = document.querySelectorAll('#containerElements input[type="checkbox"]');
-    const botonSeleccionar = document.querySelector('#seleccionar');
-
-    let todosSeleccionados = true;
-
-    checkboxes.forEach(checkbox => {
-        if (!checkbox.checked) {
-            todosSeleccionados = false;
-        }
-    });
-
-    if (todosSeleccionados) {
-        // Si todos los checkbox están marcados, cambiar el texto del botón y desmarcar todos los checkbox
-        botonSeleccionar.textContent = "Seleccionar todo";
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = false;
-        });
-    } else {
-        // Si no todos los checkbox están marcados, cambiar el texto del botón y marcar todos los checkbox
-        botonSeleccionar.textContent = "Deseleccionar todo";
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = true;
-        });
-    }
-}
-
-  function obtenerLeads() {
-    const checkboxes = document.querySelectorAll('#containerElements input[type="checkbox"]:checked');
-    const selectedLeads = Array.from(checkboxes).map(checkbox => checkbox.id);
-    return selectedLeads;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
   }
 
   function eliminarLeads() {
-    const selectedLeads = obtenerLeads();
+    const rows = document.querySelectorAll('#containerElements tr');
+    const selectedLeads = [];
+    rows.forEach(row => {
+        const checkbox = row.querySelector('input[type="checkbox"]');
+        if (checkbox.checked) {
+            const leadID = checkbox.id;
+            selectedLeads.push(leadID);
+        }
+    });
     console.log(selectedLeads);
     if (selectedLeads.length > 0) {
         const csrf = document.getElementById('_csrf').value;
@@ -319,105 +282,23 @@ function confirmarAccion(mensaje) {
                 return result.json();
             })
             .then((data) => {
-              if (data.success) {
-                const rows = document.querySelectorAll('#containerElements tr');
-                    rows.forEach(row => {
-                        const checkbox = row.querySelector('input[type="checkbox"]');
-                        if (checkbox.checked) {
-                            row.remove();
-                        }
-                });
-                cerrarModal();
-
-                const accion = 'Se eliminaron leads.';
-                operacionExitosa(accion);
-              }
-              else {
-                alert('Error al eliminar los leads');
-              } 
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-    } else {
-        alert('No se ha seleccionado ningún lead');
-    }
-}
-
-  function descargarCSV() {
-    const selectedLeads = obtenerLeads();
-    
-    if (selectedLeads.length > 0) {
-        const csrf = document.getElementById('_csrf').value;
-        fetch('/directorio/descargarLeads', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'csrf-token': csrf,
-            },
-            body: JSON.stringify({ selectedLeads: selectedLeads })
-        })
-        .then(response => response.blob())
-        .then(blob => {
-          cerrarModal();  
-          const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = nombrarArchivo(); 
-            a.click();
-
-            const accion = 'Se descargaron leads, consulta tus archivos.'
-            operacionExitosa(accion);
-
-            const rows = document.querySelectorAll('#containerElements tr');
-            rows.forEach(row => {
-              const checkbox = row.querySelector('input[type="checkbox"]');
-              if (checkbox.checked) {
-                checkbox.checked = false;
-              }
+                if (data.success) {
+                    window.location.href = '/directorio';
+                } else {
+                    console.error(data.error);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
             });
-        })
-        .catch(error => {
-            console.error('Error al descargar leads:', error);
-        });
     } else {
         alert('No se ha seleccionado ningún lead');
     }
   }
 
-  function nombrarArchivo() {
-      const date = new Date(); 
-      const timestamp = date.getFullYear() + (date.getMonth() + 1).toString().padStart(2, '0') + date.getDate().toString().padStart(2, '0') + '_' + date.getHours().toString().padStart(2, '0') + date.getMinutes().toString().padStart(2, '0') + date.getSeconds().toString().padStart(2, '0');
-      return `descarga_leads_leadtics_${timestamp}.csv`;
-}
-
-  function operacionExitosa(accion) {
-      const alertas = document.getElementById('alertas');
-          const alertHTML = `
-              <div id="alert-success" class="flex relative items-center p-4 mb-4 text-sm mr-24 text-green-800 border border-green-300 rounded-lg bg-green-50 w-2/3">
-                  <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarAlert()">
-                    <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                    </svg>
-                  </button>
-                  <div>
-                      <span class="font-bold"> ¡Acción exitosa! </span> 
-                      <span id="success-message">${accion}</span>
-                  </div>
-              </div>
-          `;
-          alertas.innerHTML = alertHTML;
-          document.getElementById('alert-success').style.display = 'block';
-  }
-
-  function cerrarModal() {
-      const deleteModal = document.getElementById('deleteModal');
-      deleteModal.parentNode.removeChild(deleteModal);
-  }
-
-  function cerrarAlert() {
-      const successAlert = document.getElementById('alert-success');
-      successAlert.parentNode.removeChild(successAlert);
+    function cerrarModal() {
+          const deleteModal = document.getElementById('deleteModal');
+          deleteModal.parentNode.removeChild(deleteModal);
   }
 
 </script>

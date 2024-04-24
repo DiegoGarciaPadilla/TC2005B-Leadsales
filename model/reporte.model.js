@@ -26,9 +26,4 @@ module.exports = class Reporte {
             idReporte,
         ]);
     }
-
-    static insertReport(IDUsuario, desc, liga) {
-        return db.execute('INSERT INTO `reporte` (IDUsuario, Fecha, Descripcion, Liga) VALUES (?, CURDATE(), ?, ?)', [IDUsuario, desc, liga]);
-    }
-
 };

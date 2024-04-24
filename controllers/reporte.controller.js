@@ -25,8 +25,7 @@ exports.getReportes = (req, res) => {
                 });
             })
             .catch((error) => {
-                req.flash("error", "Error al cargar reportes.");
-                res.redirect("/inicio");
+                console.log(error);
             });
     } else if (
         Privilegios.some(
@@ -41,8 +40,7 @@ exports.getReportes = (req, res) => {
                 });
             })
             .catch((error) => {
-                req.flash("error", "Error al cargar reportes.");
-                res.redirect("/inicio");
+                console.log(error);
             });
     }
 };

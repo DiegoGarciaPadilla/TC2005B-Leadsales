@@ -15,6 +15,7 @@
       padding-left: 10rem;
       max-width: calc(100vw - 10rem); /* Adjust the padding-left value */
     }
+
     </style>
 </head>
 <body class="bg-[#E4E8EE]">
@@ -27,13 +28,9 @@
   rol: rol,
   privilegios: privilegios
   }) %>  
-  <div id="main-content" class="w-full ml-14 mt-8 pl-20 display:flex">
-    
-    <div class="flex">
+    <div id="main-content" class="w-full ml-14 mt-8 pl-20 display:flex">
+
       <h1 class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">Bienvenidx <span class="text-blue-600 dark:text-blue-500"><%= correo %>!</span></h1>
-      <p id="p1" style="position: absolute; top: 25px; right: 350px;" class="text-lg font-bold leading-none tracking-tight text-gray-900 md:text-lg lg:text-lg dark:text-blue-500 underline underline-offset-4 decoration-1 decoration-blue-400 dark:decoration-blue-600"></p>
-    </div>
-      
       <%- include('partials/success', {success: success}) %>
 
       <div id="placeholder" class="bg-[#d2d9ea] w-[75%] rounded-2xl shadow-lg" style="height: 575px;">
@@ -65,20 +62,4 @@
     </div>
     </div>
 
-    <script>
-      let date = new Date();
-      let strDate = date.getDate() + ' ';
-      const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 
-      'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre ',
-      'Octubre', 'Noviembre', 'Diciembre']; 
-      let month = date.getMonth();
-      for (let i = 0; i < months.length; i++) {
-        if (month == i) {
-          strDate += months[i] + ' de ';
-        }
-      }
-      strDate += date.getFullYear();
-	    let current_date = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+ date.getDate();
-	    document.getElementById("p1").innerHTML = strDate;
-    </script>
 </body>

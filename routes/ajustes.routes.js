@@ -8,10 +8,6 @@ const router = express.Router();
 
 const { isAuth } = require("../util/privilegios/is-auth");
 
-// Importamos modelo de usuario
-
-const Usuario = require("../model/usuario.model");
-
 // Importamos el controlador de rol
 
 const {
@@ -74,29 +70,7 @@ router.post("/usuarios/eliminar", isAuth, eliminaUsuario, postEliminarUsuario);
 
 router.get("/cambiarContrasenia", isAuth, getCambiarContrasenia);
 
-router.post("/cambiarContrasenia", isAuth, postCambiarContrasenia);4
-
-router.get('/', isAuth, (req, res) => {
-    Usuario.fetchAllUsers()
-        .then(([usuariosFetched]) => {
-    res.render("ajustes", {
-        csrfToken: req.csrfToken(),
-        privilegios: req.session.Privilegios,
-        correo: req.session.Correo,
-        rol: req.session.Rol,
-        nombre: req.session.Nombre,
-        apellidoPaterno: req.session.ApellidoPaterno,
-        apellidoMaterno: req.session.apellidoMaterno,
-        usuarios: usuariosFetched,
-        success: "",
-        error: "",
-    });
-        
-    }).catch((error) => {
-        console.log(error);
-    });
-
-});
+router.post("/cambiarContrasenia", isAuth, postCambiarContrasenia);
 
 // Exportamos el router
 

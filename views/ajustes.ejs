@@ -2,86 +2,17 @@
 <head>
   <title>Ajustes</title>
   <link rel="stylesheet" href="/css/output.css" />
-  <link rel="icon" href="../public/uploads/favicon.ico" type="image/x-icon"/>
-  <style>
-
-    #main-content {
-      transition: padding-left 0.3s ease,  max-width 0.3s ease;
-      padding-left: 3.0rem;
-      max-width: calc(100vw - 3.5rem); /* Adjust the padding-left value */
-      overflow-x: hidden; /* Hide horizontal overflow */
-    }
-    .side:hover ~ #main-content {
-      padding-left: 10rem;
-      max-width: calc(100vw - 10rem); /* Adjust the padding-left value */
-    }
-    #sizeControl {
-      transition: transform 0.3s ease;
-    }
-    #sizeControl:hover {
-      transform: scale(0.95);
-    }
-
-    </style>
 </head>
-<body class="bg-[#E4E8EE]">
-  <%- include('partials/sidebar.ejs') %>
-  <%- include('partials/aside.ejs', {
-  correo: correo,
-  nombre: nombre, 
-  apellidoPaterno: apellidoPaterno,
-  apellidoMaterno: apellidoMaterno,
-  rol: rol,
-  privilegios: privilegios
-  }) %>  
-  <div id="main-content" class="w-full ml-14 mt-8 pl-20 flex flex-col"> <!-- Flex container for vertical alignment -->
-    <h1 class="mb-6 text-4xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">Ajustes</h1>
-  
-    <div class="flex"> <!-- Flex container for horizontal alignment -->
-      <div id="sizeControl" class="bg-white dark:bg-[#d2d9ea] w-[25%] h-48 rounded-2xl shadow-sm mr-4"> <!-- Adjust mr value for spacing -->
-        <a href="/ajustes/usuarios">
-          <section>
-            <div class="py-2 px-4 mx-auto">
-              <div class="flex items-center"> <!-- Flex container -->
-                <div class="pl-2 mr-4 w-10 h-10 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900 opacity-90">
-                  <svg width="75px" height="75px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19 21V15M16 18H22M12 15H8C6.13623 15 5.20435 15 4.46927 15.3045C3.48915 15.7105 2.71046 16.4892 2.30448 17.4693C2 18.2044 2 19.1362 2 21M15.5 3.29076C16.9659 3.88415 18 5.32131 18 7C18 8.67869 16.9659 10.1159 15.5 10.7092M13.5 7C13.5 9.20914 11.7091 11 9.5 11C7.29086 11 5.5 9.20914 5.5 7C5.5 4.79086 7.29086 3 9.5 3C11.7091 3 13.5 4.79086 13.5 7Z" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>  
-                </div>
-                <div class="pt-2 pl-12">
-                  <h3 class="mb-2 pt-5 text-xl font-bold dark:text-gray-500">Usuarios</h3>
-                  <div class="max-h-20 max-w-40 overflow-hidden"> <!-- Adjust max height as needed -->
-                    <p class="text-gray-500 dark:text-gray-400">Organiza los usuarios de tu empresa, a tu gusto</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </a>
-      </div>
-      
-      <div id="sizeControl" class="bg-white dark:bg-[#d2d9ea] w-[25%] h-48 rounded-2xl shadow-sm"> <!-- Adjust ml value for spacing -->
-        <a href="/ajustes/roles">
-          <section>
-            <div class="py-2 px-4 mx-auto">
-              <div class="flex items-center"> <!-- Flex container -->
-                <div class="pl-2 mr-4 w-10 h-10 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900 opacity-90">
-                  <svg width="80px" height="80px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8 8H20M11 12H20M14 16H20M4 8H4.01M7 12H7.01M10 16H10.01" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <div class="pt-2 pl-12">
-                  <h3 class="mb-2 pt-5 text-xl font-bold dark:text-gray-500">Roles</h3>
-                  <div class="max-h-20 max-w-40 overflow-hidden"> <!-- Adjust max height as needed -->
-                    <p class="text-gray-500 dark:text-gray-400">Crea y administra los roles de tus empleados</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </a>
-      </div>
+<body>
+    <nav><%- include('partials/sidebar.ejs') %></nav>
+    <%- include('partials/aside.ejs') %> <%-include('partials/background')%>
+    <div class="p-4 sm:ml-64">
+      <header>
+        <h1
+          class="mb-4 text-4xl font-bold text-gray-900"
+        >
+          Ajustes
+        </h1>
+      </header>
     </div>
-  </div>
-</body>
-</html>
+  </body>
