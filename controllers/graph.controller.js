@@ -166,21 +166,19 @@ exports.getReporte = (req, res, next) => {
 
 
 exports.postPDF = (req, res, next) => {
-    const { IDUsuario } = req.session;
-    const { pdfData } = req.body;
-    const { csrfToken } = req.csrfToken();
-    
+  const { IDUsuario } = req.session;
+  const { pdfData } = req.body;
+  const { csrfToken } = req.csrfToken();
 
-    Reporte.insertReport(IDUsuario, 'Reporte', pdfData)
+  Reporte.insertReport(IDUsuario, "Reporte", pdfData)
     .then(() => {
-        console.log('PDF Almacenado');
-        res.redirect('/historial');
+      console.log("PDF Almacenado");
+      res.redirect("/historial");
     })
     .catch((error) => {
-        console.log(error);
-    })
-
-}
+      console.log(error);
+    });
+};
 
 /* ========================== FIN CU. 02 ==============================  */
 
