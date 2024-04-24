@@ -897,6 +897,10 @@ video {
   height: 0.625rem;
 }
 
+.h-40 {
+  height: 10rem;
+}
+
 .max-h-20 {
   max-height: 5rem;
 }
@@ -979,6 +983,10 @@ video {
 
 .w-2\/5 {
   width: 40%;
+}
+
+.w-80 {
+  width: 20rem;
 }
 
 .max-w-40 {
@@ -1193,6 +1201,11 @@ video {
 .border-purple-400 {
   --tw-border-opacity: 1;
   border-color: rgb(192 132 252 / var(--tw-border-opacity));
+}
+
+.border-gray-400 {
+  --tw-border-opacity: 1;
+  border-color: rgb(156 163 175 / var(--tw-border-opacity));
 }
 
 .bg-\[\#E4E8EE\] {
