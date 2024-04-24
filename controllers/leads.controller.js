@@ -1,6 +1,7 @@
 const Lead = require("../model/leads.model");
-
 const Usuario = require("../model/usuario.model");
+const csv = require('csv-parser');
+const fs = require('fs');
 
 /* ========== CU. 25 CONSULTA REPORTE EN HISTORIAL | Diego García =============== */
 
@@ -120,5 +121,36 @@ exports.postEliminarLead = async (req, res) => {
   };
 
 /* ========================== FIN CU. 8 ==============================  */
+
+/* ========== CU. 27 Exporta datos de leads. | Chimali Nava =============== */
+
+exports.postDescargarLeads = async (req, res) => {
+    const selectedLeads = req.body.selectedLeads;
+    console.log('Leads por descargar:', selectedLeads);
+
+    try {
+        const leadsData = [];
+        for (const IDLead of selectedLeads) {
+            const [lead] = await Lead.fetchOne(IDLead);
+            console.log('Lead descargado:', lead);
+            leadsData.push(lead);
+        }
+        console.log('Leads descargados:', leadsData);
+
+        const csvString = leadsData.map(item => Object.values(item).join(',')).join('\n');
+
+        const date = new Date();
+        const timestamp = date.getFullYear() + '-' + (date.getMonth() + 1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0') + '_' + date.getHours().toString().padStart(2, '0') + '-' + date.getMinutes().toString().padStart(2, '0') + '-' + date.getSeconds().toString().padStart(2, '0');
+        const fileName = 'descarga_leads_leadtics_' + timestamp + '.csv';
+        console.log('Descargando leads:', fileName);
+
+        res.header('Content-Type', 'text/csv');
+        res.attachment(fileName);
+        res.send(csvString);
+    } catch (error) {
+        console.error('Error al descargar leads:', error);
+        res.status(500).send('Error al descargar leads');
+    }
+};
 
 module.exports = exports;
