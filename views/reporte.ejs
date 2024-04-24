@@ -25,7 +25,7 @@
             #element {
                 position: relative;
             }
-            
+
             #main-content {
                 transition: padding-left 0.3s ease;
                 padding-left: 3.5rem;
@@ -57,14 +57,19 @@
             </h1>
             <div class="flex flex-col">
                 <div class="mb-4 flex flex-row space-between">
-                    <div class="flex flex-row gap-10">
+                    <form
+                        action="/reporte"
+                        method="GET"
+                        class="flex flex-row gap-10"
+                    >
                         <div>
                             <label for="dateSelector" class="mr-2"
-                                >Inicio:</label
+                                >Inicio</label
                             >
                             <input
                                 type="date"
                                 id="dateStart"
+                                required
                                 class="px-2 py-1 border border-gray-300 rounded-md"
                                 max="<%= new Date().toISOString().split('T')[0] %>"
                                 onchange="validateDate()"
@@ -75,12 +80,22 @@
                             <input
                                 type="date"
                                 id="dateEnd"
+                                required
                                 class="px-2 py-1 border border-gray-300 rounded-md"
                                 max="<%= new Date().toISOString().split('T')[0] %>"
                                 onchange="validateDate()"
                             />
                         </div>
-                    </div>
+                        <div>
+                            <button
+                                type="button"
+                                id="searchByDateBtn"
+                                class="h-10 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none"
+                            >
+                                Buscar por fecha
+                            </button>
+                        </div>
+                    </form>
                 </div>
                 <div class="mb-4">
                     <label for="graphSelector" class="mr-2"
@@ -89,7 +104,7 @@
                     <select
                         id="graphSelector"
                         class="px-2 py-1 border border-gray-300 rounded-md"
-                        onchange="showGraph()"
+                        onchange="selectGraph()"
                     >
                         <option value="graphOne">Leads por día</option>
                         <option value="graphTwo">
@@ -105,7 +120,7 @@
                     <button
                         onclick="descargarPDF()"
                         type="button"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none"
                     >
                         Generar PDF
                     </button>
@@ -150,26 +165,26 @@
     </body>
 
     <script defer>
-        const graficas_asincronas = (idGraph) => {
-            fetch(`/reporte/${idGraph}`, {
+        const getData = (dateStart = '', dateEnd = '') => {
+
+            const url = dateStart && dateEnd ? `/reporte/json?dateStart=${dateStart}&dateEnd=${dateEnd}` : `/reporte/json`;
+
+            fetch(url, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                 },
             })
                 .then((result) => {
-                    console.log("llegue a primer then");
                     if (!result.ok) {
                         throw new Error("Network response was not ok");
                     }
                     return result.json();
                 })
                 .then((data) => {
-                    console.log("llegue a segundo then");
                     console.log(data);
                     Object.keys(data).forEach((key) => {
                         const graphData = data[key];
-                        console.log(graphData);
 
                         // Leads promedio por día
 
@@ -206,11 +221,15 @@
                                 return promedioLeadsPorDia[fecha];
                             });
 
+                            // Destruir gráfica si ya existe
+                            let chart_1 = Chart.getChart("graphOne");
+                            if (chart_1) chart_1.destroy();
+
                             // Instancia de Chart JS
                             let ctx1 = document
                                 .getElementById("graphOne")
                                 .getContext("2d");
-                            let chart_1 = new Chart(ctx1, {
+                            chart_1 = new Chart(ctx1, {
                                 type: "line",
                                 data: {
                                     labels: fechas,
@@ -269,7 +288,7 @@
                                 "Diciembre",
                             ];
 
-                            // Arreglos para variables
+                            // Arreglos para letiables
 
                             let anios = [];
                             let meses = [];
@@ -312,11 +331,15 @@
                                 };
                             });
 
+                            // Destruir gráfica si ya existe
+                            let chart_2 = Chart.getChart("graphTwo");
+                            if (chart_2) chart_2.destroy();
+
                             // Instancia de Chart JS
-                            var ctx2 = document
+                            let ctx2 = document
                                 .getElementById("graphTwo")
                                 .getContext("2d");
-                            var chart_2 = new Chart(ctx2, {
+                            chart_2 = new Chart(ctx2, {
                                 type: "bar",
                                 data: {
                                     labels: meses.map((mes) => {
@@ -391,11 +414,15 @@
                                     return acc;
                                 }, {});
 
+                            // Destruir gráfica si ya existe
+                            let chart_3 = Chart.getChart("graphThree");
+                            if (chart_3) chart_3.destroy();
+
                             // Instancia de Chart JS
-                            var ctx3 = document
+                            let ctx3 = document
                                 .getElementById("graphThree")
                                 .getContext("2d");
-                            var chart_3 = new Chart(ctx3, {
+                            chart_3 = new Chart(ctx3, {
                                 type: "bar",
                                 data: {
                                     labels: Object.keys(leadsPorUsuario).map(
@@ -463,11 +490,15 @@
                                 leadsPorStatus[status].push(leads);
                             });
 
+                            // Destruir gráfica si ya existe
+                            let chart_4 = Chart.getChart("graphFour");
+                            if (chart_4) chart_4.destroy();
+
                             // Instancia de Chart JS
-                            var ctx4 = document
+                            let ctx4 = document
                                 .getElementById("graphFour")
                                 .getContext("2d");
-                            var chart_4 = new Chart(ctx4, {
+                            chart_4 = new Chart(ctx4, {
                                 type: "doughnut",
                                 data: {
                                     labels: Object.keys(leadsPorStatus),
@@ -526,7 +557,7 @@
                 });
         };
 
-        const showGraph = () => {
+        const selectGraph = () => {
             const graficaSeleccionada =
                 document.getElementById("graphSelector").value;
             const contenedorGraficas =
@@ -540,12 +571,9 @@
                 graficaSeleccionada + "Container"
             );
             contenedorSeleccionado.style.display = "block"; // Show the selected graph container
-
-            console.log("Grafica seleccionada: ", graficaSeleccionada);
-            console.log("Contenedor seleccionado: ", contenedorSeleccionado.id);
         };
 
-        function descargarPDF() {
+        const descargarPDF = () => {
             const canvas = document.getElementById("graphOne");
 
             const imagenUno = canvas.toDataURL("image/jpeg", 1.0);
@@ -565,37 +593,18 @@
             },
         };
 
-        /*
-const hideGraph = () => {
-
-  const nums = ['Two', 'Three', 'Four', 'Five', 'Six', 'Seven'];
-
-  for (let i = 0; i <= 5; i++) {
-    let string = 'graph' + nums[i] + 'Container';
-    document.getElementById(string).style.display = 'none';
-  }
-
-}
-*/
-
-        document.addEventListener("DOMContentLoaded", () => {
-            graficas_asincronas("1");
-        });
-
-        function validateDate() {
+        const validateDate = () => {
             const startDate = document.getElementById("dateStart");
             const endDate = document.getElementById("dateEnd");
 
             if (startDate.value && !endDate.value) {
                 endDate.min = startDate.value;
-                endDate.max = '';
-                startDate.max = '';
+                startDate.max = "";
             }
 
             if (!startDate.value && endDate.value) {
                 startDate.max = endDate.value;
-                startDate.min = '';
-                endDate.min = '';
+                endDate.min = "";
             }
 
             if (startDate.value && endDate.value) {
@@ -607,6 +616,25 @@ const hideGraph = () => {
                 startDate.max = new Date().toISOString().split("T")[0];
                 endDate.max = new Date().toISOString().split("T")[0];
             }
-        }
+        };
+
+        // Cargar gráficas por defecto
+
+        document.addEventListener("DOMContentLoaded", () => {
+            getData();
+        });
+
+        // Cargar gráficas con fecha
+
+        document.getElementById("searchByDateBtn").addEventListener("click", () => {
+            
+            // Obtener fechas de los inputs
+            const dateStart = document.getElementById("dateStart").value;
+            const dateEnd = document.getElementById("dateEnd").value;
+
+            // Obtener datos con fechas y cargar gráficas
+            getData(dateStart, dateEnd);
+        });
+        
     </script>
 </html>
