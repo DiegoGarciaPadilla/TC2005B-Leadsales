@@ -48,4 +48,22 @@ exports.getReportes = (req, res) => {
 };
 /* ========================== FIN CU. 24 ==============================  */
 
+/* ========== CU. 25 CONSULTA REPORTE EN HISTORIAL | Sebas Colin =============== */
+
+exports.consultaReporte = (req, res) => {
+    const { IDReporte } = req.params;
+
+    Reporte.fetchOne(IDReporte)
+        .then(([reporte]) => {
+            console.log(reporte[0]);
+            res.status(200).json(reporte[0]);
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+}
+
+/* ========================== FIN CU. 25 ==============================  */
+
+
 module.exports = exports;

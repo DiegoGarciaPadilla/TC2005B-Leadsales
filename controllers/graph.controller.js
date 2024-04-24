@@ -1,4 +1,5 @@
 const Graph = require("../model/graph.model");
+const Reporte = require("../model/reporte.model");
 
 exports.getReporte = (req, res) => {
     res.render('reporte', {
@@ -12,7 +13,7 @@ exports.getReporte = (req, res) => {
     });
 }
 
-/* ========== CU. 02 GENERA REPORTE | Sebas Colín - Andrea Medina =============== */
+/* ========== CU. 02 GENERA REPORTE | Sebas Colín - Andrea Medina - Diego García =============== */
 
 exports.getReporteJSON = (req, res, next) => {
     const { Privilegios, Nombre, ApellidoPaterno } = req.session;
@@ -175,5 +176,23 @@ exports.getReporteJSON = (req, res, next) => {
 };
 
 /* ========================== FIN CU. 02 ==============================  */
+
+/* ============== CU. 02 PT. 2 GENERA REPORTE | Sebas Colín ================  */
+
+exports.postPDF = (req, res, next) => {
+    const { IDUsuario } = req.session;
+    const { pdfData } = req.body;
+    const { csrfToken } = req.csrfToken();
+  
+    Reporte.insertReport(IDUsuario, "Reporte", pdfData)
+      .then(() => {
+        console.log("PDF Almacenado");
+        
+        res.redirect("/historial");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
 module.exports = exports;

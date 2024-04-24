@@ -43,14 +43,14 @@
   <div id="main-content" class="ml-14 mt-14 pl-8">
     <h1 class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">Historial de <span class="text-blue-600 dark:text-blue-500"><%= correo %>!</span></h1>
     <div id="container" class="relative overflow-auto sm:rounded-lg w-3/4">
-          <table class="text-sm text-left rtl:text-right text-gray-500 border-collapse rounded-lg w-full">
+          <table class="text-sm text-center text-gray-500 border-collapse rounded-lg w-full">
             <thead id="tableHead" class="text-xs text-white bg-gray-50">
               <tr>
-                <th scope="col" class="px-6 py-3 bg-blue-700">Descripción</th>
-                <th scope="col" class="px-6 py-3 bg-blue-700">Fecha</th>
-                <th scope="col" class="px-6 py-3 bg-blue-700">Generado por:</th>
-                <th scope="col" class="px-6 py-3 bg-blue-700">Periodo</th>
-                <th scope="col" class="px-6 py-3 bg-blue-700"> </th>
+                <th scope="col" class="px-6 py-3 bg-blue-700 text-center">Descripción</th>
+                <th scope="col" class="px-6 py-3 bg-blue-700 text-center">Fecha</th>
+                <th scope="col" class="px-6 py-3 bg-blue-700 text-center">Generado por:</th>
+                <th scope="col" class="px-6 py-3 bg-blue-700 text-center">Descarga</th>
+                <!-- <th scope="col" class="px-6 py-3 bg-blue-700"> </th> -->
               </tr>
             </thead>
             <tbody id="containerElements">
@@ -59,8 +59,13 @@
                 <td class="px-4 py-2 sm:px-3 sm:py-3"><%= reporte.Descripcion %></td>
                 <td class="px-4 py-2 sm:px-3 sm:py-3"><%= reporte.Fecha.toLocaleDateString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'}) %></td>
                 <td class="px-4 py-2 sm:px-3 sm:py-3"><%= reporte.NombreCompleto %></td>
-                <td class="px-4 py-2 sm:px-3 sm:py-3">''</td>
-                <td class="px-4 py-2 sm:px-3 sm:py-3">''</td>
+                <td class="px-4 py-2 sm:px-3 sm:py-3 flex items-center justify-center">
+                  <button onclick="descargaPDF('<%=reporte.IDReporte%>')">
+                    <svg class="w-4 h-4 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2m-8 1V4m0 12-4-4m4 4 4-4"/>
+                    </svg> 
+                  </button>
+                </td>
               </tr>
             <% }); %>
           </tbody>
@@ -68,4 +73,107 @@
     </div>
   </div>
 </body>
+
+<script>
+
+  function dataURItoBlob(dataURI) {
+
+    // Convert base64 to raw binary data held in a string
+    const byteString = atob(dataURI.split(',')[1]);
+
+    // Separate the MIME type from the data
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    // Write the bytes of the string to an ArrayBuffer
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const intArray = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+        intArray[i] = byteString.charCodeAt(i);
+    }
+
+    // Create a Blob object from the ArrayBuffer and the MIME type
+    return new Blob([arrayBuffer], { type: mimeString });
+    
+}
+
+
+  function descargaPDF(IDReporte) {
+
+    console.log(IDReporte);
+
+    fetch(`/historial/${ IDReporte }`, {
+      method: 'GET', 
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then((result) => {
+      console.log('primer then');
+      return result.json();
+    })
+    .then((data) => {
+      console.log('segundo then');
+      console.log(data);
+      
+      console.log(data.Liga);
+      const ligaBuffer = data.Liga; // Get the Buffer object from the response
+      // Convert ArrayBuffer to Uint8Array
+      const uint8Array = new Uint8Array(ligaBuffer.data);
+
+      // Convert Uint8Array to Blob
+      const blob = new Blob([uint8Array], { type: 'application/pdf' });
+
+      // Read the Blob as data URL
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const base64String = event.target.result;
+        console.log('Base64 String:', base64String);
+        
+        const blob = dataURItoBlob(base64String);
+
+        // Create a link element to trigger the download
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        let name = data.Descripcion;
+        link.download = name;
+
+        // Append the link to the body and trigger a click event to start the download
+        document.body.appendChild(link);
+        link.click();
+
+        // Remove the link from the body
+        document.body.removeChild(link);
+
+      };
+      reader.readAsDataURL(blob);
+
+      // // Arreglo de bits 
+      // const arregloBits = new Uint8Array(binaryString.length);
+      // for (let i = 0; i < binaryString.length; i++) {
+      //     arregloBits[i] = binaryString.charCodeAt(i);
+      // }
+      // // Crear Blob desde datos binarios
+      // const blob = new Blob([arregloBits], { type: 'application/pdf' });
+      // // URL del blob
+      // const url = URL.createObjectURL(blob);
+      // // Link de descarga
+      // const link = document.createElement('a');
+      // link.href = url;  
+      // link.download = item.Descripcion;
+      // // Append the link to the body and trigger a click event to start the download
+      // document.body.appendChild(link);
+      // link.click();
+      // // Remove the link from the body
+      // document.body.removeChild(link);
+      // // Revoke the URL to release memory
+      // URL.revokeObjectURL(url);
+
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  }
+
+</script>
+
 </html>
