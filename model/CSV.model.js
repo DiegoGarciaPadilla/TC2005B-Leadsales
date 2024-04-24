@@ -59,8 +59,6 @@ module.exports = class CSV {
                         }
                     });
                 });
-                // Save CSV file to database
-                // db.execute('INSERT INTO csv (name) VALUES (?)', [this.name]);
 
                 // Delete the CSV file after saving to the database
                 fs.unlinkSync(`public/uploads/${this.name}`);

@@ -51,6 +51,10 @@ const fileStorage = multer.diskStorage({
 
 app.use(multer({ storage: fileStorage }).single("file"));
 
+// Flash messages - session
+const flash = require('connect-flash');
+app.use(flash());
+
 // Protección CSRF
 const csrfProtection = csrf({ cookie: true});
 app.use(csrfProtection);

@@ -10,6 +10,8 @@ const Rol = require("../model/rol.model");
 exports.getLogin = (req, res) => {
     const err = req.session.error || "";
     req.session.error = "";
+    const error = req.flash("error") || "";
+    
     res.render("login", {
         correo: req.session.correo || "",
         registro: false,
@@ -78,19 +80,27 @@ exports.postLogin = (req, res) => {
                                 .catch((error) => {
                                     console.log(error);
                                 });
+                        } else {
+                            req.session.error = "Correo o contraseña incorrectos";
+                            req.flash("falla", "Correo o contraseña incorrectos");
+                            res.redirect("/usuarios/login");
                         }
                     })
                     .catch((error) => {
                         console.log(error);
-                        console.log("Contraseña incorrecta");
+                        req.flash("falla", "Error de conexión. Intenta más tarde.");
+                        res.redirect("/usuarios/login");
                     });
             } else {
                 req.session.error = "Correo o contraseña incorrectos";
+                req.flash("falla", "Correo o contraseña incorrectos");
                 res.redirect("/usuarios/login");
             }
         })
         .catch((error) => {
             console.log(error);
+            req.flash("falla", "Error de conexión. Intenta más tarde.");
+            res.redirect("/usuarios/login");
         });
 };
 
@@ -102,6 +112,8 @@ exports.getUsuarios = (req, res) => {
     const err = req.session.error || "";
     req.session.error = "";
 
+    const msg = req.flash("success") || "";
+
     Usuario.fetchAllUsers()
         .then(([usuariosFetched]) => {
             Usuario.fetchRoles()
@@ -109,8 +121,9 @@ exports.getUsuarios = (req, res) => {
                     res.render("usuarios", {
                         usuarios: usuariosFetched,
                         roles: rolesFetched,
-                        error: err,
+                        error: "",
                         csrfToken: req.csrfToken(),
+                        success: msg,
                     });
                 })
                 .catch((error) => {
@@ -167,6 +180,7 @@ exports.postRegistrarUsuario = (req, res) => {
             nuevoUsuario
                 .save(req.body.rol)
                 .then(() => {
+                    req.flash("success", "El usuario se ha registrado exitosamente.");
                     res.redirect("/ajustes/usuarios");
                 })
                 .catch((error) => {
@@ -186,7 +200,7 @@ exports.postEliminarUsuario = (req, res) => {
 
     Usuario.eliminar(IDUsuario)
         .then(() => {
-            res.status(200).json({ success: true });
+            res.status(200).json({ success: "El usuario ha sido eliminado correctamente" });
         })
         .catch((error) => {
             console.log(error);

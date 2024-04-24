@@ -386,6 +386,27 @@ exports.consultaReporte = (req, res, next) => {
     }
 };
 
+// --- 26. Importa datos de leads. ---
+
+exports.consultaReporte = (req, res, next) => {
+    // Obtiene los privilegios del usuario
+    const { Privilegios } = req.session;
+
+    // Verifica si el usuario tiene el privilegio
+    if (
+        Privilegios.some(
+            (priv) => priv.Descripcion === "Importa datos de leads."
+        )
+    ) {
+        next();
+    }
+
+    // Si el usuario no tiene el privilegio, redirige a la pagina de inicio
+    else {
+        res.redirect("/");
+    }
+};
+
 // --- 27. Exporta datos de leads. ---
 
 exports.exportaLead = (req, res, next) => {
