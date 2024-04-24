@@ -112,6 +112,8 @@ exports.getUsuarios = (req, res) => {
     const err = req.session.error || "";
     req.session.error = "";
 
+    const {Privilegios} = req.session;
+
     const msg = req.flash("success") || "";
 
     Usuario.fetchAllUsers()
@@ -124,6 +126,7 @@ exports.getUsuarios = (req, res) => {
                         error: "",
                         csrfToken: req.csrfToken(),
                         success: msg,
+                        Privilegios: Privilegios,
                     });
                 })
                 .catch((error) => {
