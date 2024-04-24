@@ -28,6 +28,15 @@
     .side:hover ~ #main-content {
       padding-left: 10rem;
     }
+    #adj {
+      transition: color 0.3s ease, transform 0.3s ease; 
+    }
+
+    #adj:hover {
+      color: #2563eb; 
+      transform: scale(1.05); 
+    }
+
 
   </style>
 
@@ -36,7 +45,12 @@
     <%- include('partials/sidebar.ejs') %> 
 
     <div id="main-content" class="ml-14 mt-14 pl-8">
-      <h1 class="mb-16 text-4xl text-gray-900"> Usuarios </h1>
+      <nav class="flex">
+        <a href="/ajustes">
+          <h1 id="adj" class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-400 md:text-3xl lg:text-3xl">Ajustes</h1>
+        </a>
+        <h1 class="mb-6 pl-2 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">/ Usuarios</h1>
+      </nav>
 
       <div id="alertas">
         <%- include('partials/success', {success: success}) %>
@@ -178,7 +192,7 @@
                 </button>
                 <div>
                   <span class="font-bold"> ¡Acción exitosa! </span> 
-                  <span id="success-message">${data.success}</span>
+                  <span id="success-message">Se descargaron leads, consulta tus archivos.</span>
                 </div>
               </div>
             `;
