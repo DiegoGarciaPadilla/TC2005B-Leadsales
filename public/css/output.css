@@ -1391,6 +1391,10 @@ video {
   padding-top: 24rem;
 }
 
+.pr-10 {
+  padding-right: 2.5rem;
+}
+
 .text-left {
   text-align: left;
 }

@@ -10,10 +10,24 @@ module.exports = class Rol {
         return db.execute("SELECT * FROM rol WHERE FechaHoraEliminado IS NULL");
     }
 
-    static fetchRolById(id) {
+    static fetchRolById(IDRol) {
         return db.execute(
             "SELECT * FROM rol WHERE IDRol = ? AND FechaHoraEliminado IS NULL",
-            [id]
+            [IDRol]
+        );
+    }
+
+    static fetchRolByNombre(Nombre) {
+        return db.execute(
+            "SELECT * FROM rol WHERE Nombre = ? AND FechaHoraEliminado IS NULL",
+            [Nombre]
+        );
+    }
+
+    static createRol(Nombre, DescripcionRol) {
+        return db.execute(
+            "INSERT INTO rol (Nombre, DescripcionRol) VALUES (?, ?)",
+            [Nombre, DescripcionRol]
         );
     }
 
@@ -24,9 +38,9 @@ module.exports = class Rol {
         );
     }
 
-    static updatePrivilegiosRolById(IDRol, IDPrivlegioList) {
+    static updatePrivilegiosRolById(IDRol, PrivilegiosArray) {
         // Insertar los nuevos privilegios
-        const queries = IDPrivlegioList.map((IDPrivilegio) =>
+        const queries = PrivilegiosArray.map((IDPrivilegio) =>
             db.execute(
                 "INSERT INTO privilegio_rol (IDRol, IDPrivilegio) VALUES (?, ?)",
                 [IDRol, IDPrivilegio]

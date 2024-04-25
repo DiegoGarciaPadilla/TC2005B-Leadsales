@@ -16,6 +16,8 @@ const Usuario = require("../model/usuario.model");
 
 const {
     getRoles,
+    getCrearRol,
+    postCrearRol,
     getEditarRol,
     postEditarRol,
     postEliminarRol,
@@ -47,6 +49,10 @@ const {
 // Rutas
 
 router.get("/roles", isAuth, consultaRol, getRoles);
+
+router.get("/roles/crearRol", isAuth, getCrearRol);
+
+router.post("/roles/crearRol", isAuth, postCrearRol);
 
 router.get("/roles/editarRol/:IDRol", isAuth, modificaRol, getEditarRol);
 
