@@ -25,23 +25,24 @@ module.exports = class Rol {
     }
 
     static updatePrivilegiosRolById(IDRol, IDPrivlegioList) {
-        
         // Insertar los nuevos privilegios
-        const queries = IDPrivlegioList.map((IDPrivilegio) => db.execute(
-            "INSERT INTO privilegio_rol (IDRol, IDPrivilegio) VALUES (?, ?)",
-            [IDRol, IDPrivilegio]
-        ));
+        const queries = IDPrivlegioList.map((IDPrivilegio) =>
+            db.execute(
+                "INSERT INTO privilegio_rol (IDRol, IDPrivilegio) VALUES (?, ?)",
+                [IDRol, IDPrivilegio]
+            )
+        );
 
         // Ejecutar todas las consultas (.. significa que se expande el array en argumentos separados)
         return Promise.all([...queries]);
     }
 
-    static deleteRolById(IDRol, IDUsuario) {
-        let query1 = db.execute(
+    static deleteRolById(IDRol) {
+        const query1 = db.execute(
             "UPDATE rol SET FechaHoraEliminado = CURRENT_TIMESTAMP WHERE IDRol = ?",
             [IDRol]
         );
-        let query2 = db.execute(
+        const query2 = db.execute(
             "UPDATE usuario_rol SET FechaHoraFin = CURRENT_TIMESTAMP WHERE IDRol = ?",
             [IDRol]
         );
@@ -50,9 +51,8 @@ module.exports = class Rol {
     }
 
     static deletePrivilegiosRolById(IDRol) {
-        return db.execute(
-            "DELETE FROM privilegio_rol WHERE IDRol = ?",
-            [IDRol]
-        );
+        return db.execute("DELETE FROM privilegio_rol WHERE IDRol = ?", [
+            IDRol,
+        ]);
     }
 };
