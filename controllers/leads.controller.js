@@ -195,10 +195,15 @@ exports.getEditarLead = (req, res) => {
 
     Lead.fetchOne(leadId)
         .then(([leadFetched]) => {
-            res.render('editarLead', {
-                lead: leadFetched[0],
-                csrfToken: req.csrfToken(),
-            });
+            Usuario.fetchAllUsers()
+                .then(([usuariosFetched]) => {
+                    res.render('editarLead', {
+                        lead: leadFetched[0],
+                        csrfToken: req.csrfToken(),
+                        usuarios: usuariosFetched,
+                    });
+                })
+                .catch()
         })
         .catch();
 }
