@@ -10,14 +10,15 @@ module.exports = class Privilegio {
         return db.execute("SELECT * FROM privilegios");
     }
 
-    static fetchPrivilegioById(id) {
+    static fetchPrivilegioById(IDPrivilegio) {
         return db.execute(
             "SELECT * FROM privilegios WHERE IDPrivilegio = ?",
-            [id]
+            [IDPrivilegio]
         );
     }
 
-    static fetchPrivilegioByIDRol(IDRol) {
+
+    static fetchPrivilegiosByIDRol(IDRol) {
         return db.execute(
             "SELECT * FROM privilegios WHERE IDPrivilegio IN (SELECT IDPrivilegio FROM privilegio_rol WHERE IDRol = ?)",
             [IDRol]
