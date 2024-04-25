@@ -171,4 +171,71 @@ exports.postDescargarLeads = async (req, res) => {
 
 //const csvString = 'Nombre,Telefono,Correo,Compania,Asignadoa,Creado,Horadecreacion,Fechadeprimermensaje,Horadelprimermensaje,Primermensaje,Fechadeultimomensaje,Horadelultimomensaje,Ultimomensaje,Status,EstadodeLead,Embudo,Etapa,Archivado,CreadoManualmente,Valor,Ganado,Etiquetas\n' + leadsData.map(lead => `${lead.Nombre},${lead.Telefono},${lead.Correo},${lead.Compania},${lead.Asignadoa},${lead.Creado},${lead.Horadecreacion},${lead.Fechadeprimermensaje},${lead.Horadelprimermensaje},${lead.Primermensaje},${lead.Fechadeultimomensaje},${lead.Horadelultimomensaje},${lead.Ultimomensaje},${lead.Status},${lead.EstadodeLead},${lead.Embudo},${lead.Etapa},${lead.Archivado},${lead.CreadoManualmente},${lead.Valor},${lead.Ganado},${lead.Etiquetas}`).join('\n');
 
+/* ========== CU. 7 MODIFICA LEAD | Andrea Medina - Diego Lira ========== */
+exports.getEditarLead = (req, res) => {
+    const { leadId } = req.params;
+
+    Lead.fetchOne(leadId)
+        .then(([leadFetched]) => {
+            Usuario.fetchAllUsers()
+                .then(([usuariosFetched]) => {
+                    res.render('editarLead', {
+                        lead: leadFetched[0],
+                        csrfToken: req.csrfToken(),
+                        usuarios: usuariosFetched,
+                    });
+                })
+                .catch()
+        })
+        .catch();
+}
+
+exports.postEditarLead = (req, res) => {
+    const { leadId } = req.params;
+    let {
+        nombre,
+        telefono,
+        correo,
+        compania,
+        asignadoa,
+        fechadelultimomensaje,
+        horadelultimomensaje,
+        ultimomensaje,
+        status,
+        estado,
+        embudo,
+        etapa,
+        archivado,
+        valor,
+        ganado,
+        etiquetas,
+    } = req.body;
+
+    nombre = nombre === undefined ? null : nombre;
+    telefono = telefono === undefined ? null : telefono;
+    correo = correo === undefined ? null : correo;
+    compania = compania === undefined ? null : compania;
+    asignadoa = asignadoa === undefined ? null : asignadoa;
+    fechadelultimomensaje = fechadelultimomensaje === undefined ? null : new Date(fechadelultimomensaje).toISOString().split('T')[0];
+    horadelultimomensaje = horadelultimomensaje === undefined ? null : horadelultimomensaje;
+    ultimomensaje = ultimomensaje === undefined ? null : ultimomensaje;
+    status = status === undefined ? null : status;
+    estado = estado === undefined ? null : estado;
+    embudo = embudo === undefined ? null : embudo;
+    etapa = etapa === undefined ? null : etapa;
+    archivado = archivado === undefined ? null : archivado;
+    valor = valor === undefined ? null : valor;
+    ganado = ganado === undefined ? null : ganado;
+    etiquetas = etiquetas === undefined ? null : etiquetas;
+    
+    Lead.updateLeadById(leadId, nombre, telefono, correo, compania, asignadoa, fechadelultimomensaje, horadelultimomensaje, ultimomensaje, status, estado, embudo, etapa, archivado, valor, ganado, etiquetas)
+        .then(() => {
+            req.flash('success', 'Lead actualizado correctamente.');
+            res.redirect('/directorio');
+        })
+        .catch();
+}
+
+/* ========================== FIN CU. 7 ==============================  */
+
 module.exports = exports;
