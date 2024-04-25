@@ -72,164 +72,224 @@
 
         <div id="container" class="relative overflow-auto sm:rounded-lg w-3/4">
             <table class="text-sm text-left rtl:text-right text-gray-500 border-collapse rounded-lg w-full">
-                <thead class="text-xs text-white bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 bg-blue-700"> Nombre completo </th>
-                        <th scope="col" class="px-6 py-3 bg-blue-700"> Correo </th>
-                        <th scope="col" class="px-6 py-3 bg-blue-700"> Teléfono </th>
-                        <th scope="col" class="px-6 py-3 bg-blue-700"> Domicilio </th>
-                        <th scope="col" class="px-6 py-3 bg-blue-700"> Rol </th>
-                        <th scope="col" class="px-6 py-3 bg-blue-700">  </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% i = 0 %>
-                    <% usuarios.forEach((usuario) => { %>
-                    <tr id="usuario<%- usuario.IDUsuario %>" class="bg-white border-b hover:bg-gray-50">
-                        <td class="px-4 py-2 sm:px-3 sm:py-3">
-                            <span class="cursor-pointer relative" 
-                                onmouseover="document.getElementById('popover0_<%= usuario.IDUsuario %>').classList.remove('hidden')"
-                                onmouseout="document.getElementById('popover0_<%= usuario.IDUsuario %>').classList.add('hidden')"
-                            >
-                                <%= (usuario.Nombre + ' ' + usuario.ApellidoPaterno + ' ' + usuario.ApellidoMaterno).substr(0, 15) + ((usuario.Nombre + ' ' + usuario.ApellidoPaterno + ' ' + usuario.ApellidoMaterno).length > 15 ? '...' : '') %>
-                                <div id="popover0_<%= usuario.IDUsuario %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-5 top-8">
-                                    <%= usuario.Nombre %> <%= usuario.ApellidoPaterno %> <%= usuario.ApellidoMaterno %>
-                                </div>
-                            </span>  
-                        </td>
-                        <td class="px-4 py-2 sm:px-3 sm:py-3">
-                            <!-- Mostrar solo el inicio del correo -->
-                            <span class="cursor-pointer relative" 
-                                onmouseover="document.getElementById('popover_<%= usuario.IDUsuario %>').classList.remove('hidden')"
-                                onmouseout="document.getElementById('popover_<%= usuario.IDUsuario %>').classList.add('hidden')"
-                            >
-                                <%= usuario.Correo.substr(0, 20) + (usuario.Correo.length > 20 ? '...' : '') %>
-                                <div id="popover_<%= usuario.IDUsuario %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-                                    <%= usuario.Correo %>
-                                </div>
-                            </span>
-                        </td>
-                        <td class="px-4 py-2 sm:px-3 sm:py-3">
-                            <!-- Mostrar solo el inicio del teléfono -->
-                            <span class="cursor-pointer relative" 
-                                onmouseover="document.getElementById('popover2_<%= usuario.IDUsuario %>').classList.remove('hidden')"
-                                onmouseout="document.getElementById('popover2_<%= usuario.IDUsuario %>').classList.add('hidden')"
-                            >
-                                <%= usuario.Telefono.substr(0, 20) + (usuario.Telefono.length > 20 ? '...' : '') %>
-                                <div id="popover2_<%= usuario.IDUsuario %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-                                    <%= usuario.Telefono %>
-                                </div>
-                            </span>
-                        </td>
-                        <td class="px-4 py-2 sm:px-3 sm:py-3">
-                            <!-- Mostrar solo el inicio del domicilio -->
-                            <span class="cursor-pointer relative" 
-                                onmouseover="document.getElementById('popover3_<%= usuario.IDUsuario %>').classList.remove('hidden')"
-                                onmouseout="document.getElementById('popover3_<%= usuario.IDUsuario %>').classList.add('hidden')"
-                            >
-                                <%= usuario.Domicilio.substr(0, 20) + (usuario.Domicilio.length > 20 ? '...' : '') %>
-                                <div id="popover3_<%= usuario.IDUsuario %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-                                    <%= usuario.Domicilio %>
-                                </div>
-                            </span>
-                        </td>
-                        <td class="px-4 py-2 sm:px-3 sm:py-3">
-                            <%= roles[i].Nombre %> 
-                        </td>
-                        <td class="px-4 py-2 sm:px-3 sm:py-3"> 
-                            <% if (roles[i].Nombre != 'Owner') { %>
-                                <button onclick="confirmarEliminacion('<%=usuario.IDUsuario%>', '<%=usuario.Nombre%>', '<%=usuario.ApellidoPaterno%>')" type="button" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
-                                    <svg class="w-6 h-6 text-red-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-                                    </svg>                                  
-                                    <span class="sr-only">Eliminar rol</span>
-                                </button>
-                            <% } %>
-                        </td>
-                        <% i += 1 %>
-                    </tr>
-                    <% }); %>
-                </tbody>
-            </table>
-        </div>
-    </div>        
-                
-</body> 
+              <thead class="text-xs text-white bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-6 py-3 bg-blue-700"> Nombre completo </th>
+                  <th scope="col" class="px-6 py-3 bg-blue-700"> Correo </th>
+                  <th scope="col" class="px-6 py-3 bg-blue-700"> Teléfono </th>
+                  <th scope="col" class="px-6 py-3 bg-blue-700"> Domicilio </th>
+                  <th scope="col" class="px-6 py-3 bg-blue-700"> Rol </th>
+                  <th scope="col" class="px-6 py-3 bg-blue-700">  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <% i = 0 %>
+                <% usuarios.forEach((usuario) => { %>
+                  <tr id="usuario<%- usuario.IDUsuario %>" class="bg-white border-b hover:bg-gray-50">
+                    <td class="px-4 py-2 sm:px-3 sm:py-3">
+                      <span class="cursor-pointer relative" 
+                            onmouseover="document.getElementById('popover0_<%= usuario.IDUsuario %>').classList.remove('hidden')"
+                            onmouseout="document.getElementById('popover0_<%= usuario.IDUsuario %>').classList.add('hidden')"
+                      >
+                        <%= (usuario.Nombre + ' ' + usuario.ApellidoPaterno + ' ' + usuario.ApellidoMaterno).substr(0, 15) + ((usuario.Nombre + ' ' + usuario.ApellidoPaterno + ' ' + usuario.ApellidoMaterno).length > 15 ? '...' : '') %>
+                        <div id="popover0_<%= usuario.IDUsuario %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-5 top-8">
+                          <%= usuario.Nombre %> <%= usuario.ApellidoPaterno %> <%= usuario.ApellidoMaterno %>
+                        </div>
+                      </span>  
+                    </td>
+                    <td class="px-4 py-2 sm:px-3 sm:py-3">
+                      <!-- Mostrar solo el inicio del correo -->
+                      <span class="cursor-pointer relative" 
+                            onmouseover="document.getElementById('popover_<%= usuario.IDUsuario %>').classList.remove('hidden')"
+                            onmouseout="document.getElementById('popover_<%= usuario.IDUsuario %>').classList.add('hidden')"
+                      >
+                        <%= usuario.Correo.substr(0, 20) + (usuario.Correo.length > 20 ? '...' : '') %>
+                        <div id="popover_<%= usuario.IDUsuario %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
+                          <%= usuario.Correo %>
+                        </div>
+                      </span>
+                    </td>
+                    <td class="px-4 py-2 sm:px-3 sm:py-3">
+                      <!-- Mostrar solo el inicio del teléfono -->
+                      <span class="cursor-pointer relative" 
+                            onmouseover="document.getElementById('popover2_<%= usuario.IDUsuario %>').classList.remove('hidden')"
+                            onmouseout="document.getElementById('popover2_<%= usuario.IDUsuario %>').classList.add('hidden')"
+                      >
+                        <%= usuario.Telefono.substr(0, 20) + (usuario.Telefono.length > 20 ? '...' : '') %>
+                        <div id="popover2_<%= usuario.IDUsuario %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
+                          <%= usuario.Telefono %>
+                        </div>
+                      </span>
+                    </td>
+                    <td class="px-4 py-2 sm:px-3 sm:py-3">
+                    <!-- Mostrar solo el inicio del domicilio -->
+                    <span class="cursor-pointer relative" 
+                    onmouseover="document.getElementById('popover3_<%= usuario.IDUsuario %>').classList.remove('hidden')"
+                    onmouseout="document.getElementById('popover3_<%= usuario.IDUsuario %>').classList.add('hidden')"
+                      >
+                        <%= usuario.Domicilio.substr(0, 20) + (usuario.Domicilio.length > 20 ? '...' : '') %>
+                        <div id="popover3_<%= usuario.IDUsuario %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
+                          <%= usuario.Domicilio %>
+                        </div>
+                      </span>
+                    </td>
+                    <td id="rol" class="px-4 py-2 sm:px-3 sm:py-3">
+                      <%= roles[i].Nombre %> 
+                      <button onclick="confirmarAccion('modificación de rol','<%=usuario.IDUsuario%>', '<%=roles[i].Nombre%>', '<%=usuario.Nombre%>', '<%=usuario.ApellidoPaterno%>')" type="button"
+                          class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
+                          <svg class="w-6 h-6 text-blue-700" aria-hidden="true" width="24" xmlns="http://www.w3.org/2000/svg" height="24" fill="none" viewBox="0 0 24 24">
+                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                          </svg>
+                          <span class="sr-only">Modificar usuario</span>
+                      </button>
+                    </td>
+                    <td class="px-4 py-2 sm:px-3 sm:py-3"> 
+                      <% if (roles[i].Nombre != 'Owner') { %>
+                        <button onclick="confirmarAccion('eliminación','<%=usuario.IDUsuario%>', '<%=roles[i].Nombre%>', '<%=usuario.Nombre%>', '<%=usuario.ApellidoPaterno%>')" type="button" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
+                            <svg class="w-6 h-6 text-red-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+                            </svg>                                  
+                            <span class="sr-only">Eliminar usuario</span>
+                        </button>
+                    <% } %>
+                    </td>
+                        <% i = i + 1 %>
+                  </tr>
+                      <% }); %>
+
 <script>
 
-const confirmarEliminacion = (IDUsuario, Nombre, ApellidoPaterno) => {
-    const modalHTML = `
-        <div id="deleteModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
-            <div class="relative p-4 text-center bg-white rounded-lg shadow-md">
-                <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarModal()">
-                    <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                    </svg>
-                </button>
-                <h2 class="text-lg font-semibold text-gray-800">Confirmación de eliminación</h2>
-                <p class="mt-2 text-sm text-gray-600">¿Estás seguro de que deseas eliminar al usuario "${Nombre} ${ApellidoPaterno}"?</p>
-                <div class="mt-4 flex justify-center space-x-2">
-                    <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" onclick="eliminar(${IDUsuario})">Sí, eliminar</button>
-                    <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300" onclick="cerrarModal()">Cancelar</button>
+  function confirmarAccion(mensaje, IDUsuario, nombreRol, Nombre, ApellidoPaterno) {
+      let modalHTML = `
+          <div id="deleteModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+              <div class="relative p-4 text-center bg-white rounded-lg shadow-md">
+                  <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarModal()">
+                      <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                      </svg>
+                  </button>
+                  <h2 class="text-lg font-semibold text-gray-800">Confirmación de ${mensaje}</h2>`;
+      if (mensaje === 'eliminación') {
+          modalHTML += `
+              <p class="mt-2 text-sm text-gray-600">¿Confirmas la eliminación del usuario "${Nombre} ${ApellidoPaterno}"?</p>
+                  <div class="mt-4 flex justify-center space-x-2">
+                      <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" onclick="eliminar(${IDUsuario})">Sí, eliminar</button>`;
+      } else if (mensaje === 'modificación de rol') {
+          console.log("Entro al mensaje de modificación de rol, el rol actual es: ", nombreRol, indice);
+          modalHTML += `   
+              <div class="mb-4">
+                <label for="rolSeleccionado" class="mt-2 text-sm text-gray-600"> Selecciona un rol </label>
+                <select id="rolSeleccionado" name="rolSeleccionado" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" onchange="capturarIDRol(this.value)" required>
+                <option value="" disabled selected>Selecciona un rol</option>
+                <%for (let i = 0; i < rolesTodos.length; i++) {%>
+                    <%if (rolesTodos[i].Nombre !== 'Owner') { %>
+                      <%if (rolesTodos[i].Nombre !== roles[i].Nombre) {%>
+                        <option value="<%=rolesTodos[i].IDRol%>"> <%=rolesTodos[i].Nombre%> </option>
+                    <%}%>
+                  <%}%>
+                <%}%>
+                </select>
                 </div>
-            </div>
-        </div>
-        `;
+                    <p class="mt-2 text-sm text-gray-600">¿Confirmas la modificación el rol de "${Nombre} ${ApellidoPaterno}" cuyo rol actual es "${nombreRol}"?</p>
+                        <div class="mt-4 flex justify-center space-x-2">
+                            <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" onclick="cambiarRol(${IDUsuario})">Sí, cambiar</button>`;
+      }
+      else {
+          console.error('Mensaje no válido');
+      }
+      modalHTML += `
+          <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300" onclick="cerrarModal()">Cancelar</button>
+                  </div>
+              </div>
+          </div>`;
+      document.body.insertAdjacentHTML('beforeend', modalHTML);
+  }
 
-    document.body.insertAdjacentHTML("beforeend", modalHTML);
-};
+  let idRolSeleccionado;
+  function capturarIDRol(idRol) {
+      idRolSeleccionado = idRol;
+      console.log('Este es el seleccionado', idRolSeleccionado);
+  }
 
-const eliminar = (IDUsuario) => {
-    console.log("Entro a la función");
-    const csrf = document.getElementById("_csrf").value;
+  function cambiarRol(IDUsuario) {
+      const csrf = document.getElementById('_csrf').value;
+      fetch(`/ajustes/usuarios/asignarRol`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'csrf-token': csrf,
+          },
+          body: JSON.stringify({IDUsuario : IDUsuario, idRolSeleccionado: idRolSeleccionado})
+      })
+      .then((result) => {
+          return result.json();
+      })
+      .then((data) => {
+          if (data.success) {
+            const filaUsuario = document.getElementById(`usuario${IDUsuario}`);
+            const celdaRol = filaUsuario.querySelector('#rol'); 
+            celdaRol.textContent = data.nuevoRol;
 
-    fetch(`/ajustes/usuarios/eliminar`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "csrf-token": csrf,
-        },
-        body: JSON.stringify({ IDUsuario: IDUsuario }),
-    })
-        .then((result) => {
-            return result.json();
-        })
-        .then((data) => {
-            if (data.success) {
-                const alertas = document.getElementById("alertas");
+            cerrarModal();
+            
+            const accion = 'Se actualizó rol de usuario exitosamente.';
+            operacionExitosa(accion);
 
-                const alertHTML = `
-                    <div id="alert-success" class="flex relative items-center p-4 mb-4 text-sm mr-24 text-green-800 border border-green-300 rounded-lg bg-green-50" role="alert">
-                        <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarAlert()">
-                            <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                            </svg>
-                        </button>
-                        <div>
-                            <span class="font-bold"> ¡Acción exitosa! </span> 
-                            <span id="success-message">Se descargaron leads, consulta tus archivos.</span>
-                        </div>
-                    </div>
-                    `;
+          } else {
+            console.error(data.error);
+          }
+      })
+  }
 
-                alertas.innerHTML = alertHTML;
+  function eliminar(IDUsuario) {
+      console.log("Entro a la función");
+      const csrf = document.getElementById('_csrf').value;
+      fetch(`/ajustes/usuarios/eliminar`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'csrf-token': csrf,
+          },
+          body: JSON.stringify({ IDUsuario: IDUsuario })
+      })
+      .then((result) => {
+          return result.json();
+      })
+      .then((data) => {
+          if (data.success) {
+            document.getElementById(`usuario${IDUsuario}`).remove();
+            cerrarModal();
 
-                document.getElementById("alert-success").style.display =
-                    "block";
-                document.getElementById("success-message").innerHTML =
-                    data.success;
+            const accion = 'Se eliminó usuario exitosamente.';
+            operacionExitosa(accion);
+          } else {
+            console.error(data.error);
+          }
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+  }
 
-                document.getElementById(`usuario${IDUsuario}`).remove();
-                
-                cerrarModal();
-            } else {
-                console.error(data.error);
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-};
+  function operacionExitosa(accion) {
+      const alertas = document.getElementById('alertas');
+          const alertHTML = `
+              <div id="alert-success" class="flex relative items-center p-4 mb-4 text-sm mr-24 text-green-800 border border-green-300 rounded-lg bg-green-50 w-2/3">
+                  <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarAlert()">
+                    <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                  </button>
+                  <div>
+                      <span class="font-bold"> ¡Acción exitosa! </span> 
+                      <span id="success-message">${accion}</span>
+                  </div>
+              </div>
+          `;
+          alertas.innerHTML = alertHTML;
+          document.getElementById('alert-success').style.display = 'block';
+  }
 
 const cerrarModal = () => {
     // Remueve el modal del DOM

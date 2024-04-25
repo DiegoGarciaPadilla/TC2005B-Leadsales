@@ -120,15 +120,23 @@ exports.getUsuarios = (req, res) => {
         .then(([usuariosFetched]) => {
             Usuario.fetchRoles()
                 .then(([rolesFetched]) => {
-                    res.render("usuarios", {
-                        usuarios: usuariosFetched,
-                        roles: rolesFetched,
-                        error: "",
-                        csrfToken: req.csrfToken(),
-                        success: msg,
-                        Privilegios: Privilegios,
-                    });
-                })
+                    Rol.fetchAll()
+                        .then(([rolesFetchedAll]) => {
+                            console.log("Roles todos:", rolesFetchedAll);
+                            res.render("usuarios", {
+                                usuarios: usuariosFetched,
+                                roles: rolesFetched,
+                                rolesTodos: rolesFetchedAll,
+                                error: "",
+                                csrfToken: req.csrfToken(),
+                                success: msg,
+                                Privilegios: Privilegios,
+                            });
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                    }) 
                 .catch((error) => {
                     console.log(error);
                 });
@@ -212,6 +220,24 @@ exports.postEliminarUsuario = (req, res) => {
 };
 
 /* ========================== FIN CU. 12 ==============================  */
+
+/* ====== CU. 18 ASIGNA ROL A USUARIO | Chimali Nava ======= */
+
+exports.postAsignarRol = async (req, res) => {
+    try {
+        const { IDUsuario, idRolSeleccionado } = req.body;
+        console.log("Datos controller: ", IDUsuario, idRolSeleccionado);
+
+        const nuevoRol = await Usuario.asignarRol(IDUsuario, idRolSeleccionado);
+        console.log("Rol asignado: ", nuevoRol);
+        res.status(200).json({ success: true, nuevoRol : nuevoRol});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Error al asignar el rol" });
+    }
+};
+
+/* ========================== FIN CU. 18 ==============================  */
 
 /* ========== CU. 29 CERRAR SESIÓN | Andrea Medina  =============== */
 

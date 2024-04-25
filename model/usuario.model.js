@@ -65,14 +65,14 @@ module.exports = class Usuario {
     }
 
     static fetchRol(IDUsuario) {
-        return db.execute("SELECT IDRol FROM usuario_rol WHERE IDUsuario= ?", [
+        return db.execute("SELECT IDRol FROM usuario_rol WHERE IDUsuario= ? AND FechaHoraFin IS NULL", [
             IDUsuario,
         ]);
     }
 
     static fetchRoles() {
         return db.execute(
-            "SELECT R.Nombre FROM rol AS R JOIN usuario_rol AS UR ON UR.IDRol = R.IDRol"
+            "SELECT R.Nombre FROM rol AS R JOIN usuario_rol AS UR ON UR.IDRol = R.IDRol JOIN usuario AS U ON UR.IDUsuario = U.IDUsuario WHERE UR.FechaHoraFin IS NULL AND U.FechaHoraEliminado IS NULL;"
         );
     }
 
@@ -134,5 +134,21 @@ module.exports = class Usuario {
                     [hashedPassword, Correo]
                 )
             );
+    }
+
+    static async asignarRol(IDUsuario, IDRol) {
+        let query1 = db.execute(
+            "UPDATE usuario_rol SET FechaHoraFin = CURRENT_TIMESTAMP() WHERE IDUsuario = ?",
+            [IDUsuario]
+        );
+
+        let query2 = db.execute(
+            "INSERT INTO usuario_rol (IDUsuario, IDRol, FechaHoraInicio) VALUES (?, ?, CURRENT_TIMESTAMP())",
+            [IDUsuario, IDRol]
+        );
+
+        let query3 = db.execute("SELECT Nombre FROM rol WHERE IDRol = ?", [IDRol]);
+
+        return Promise.all([query1, query2, query3]);
     }
 };

@@ -30,6 +30,7 @@ const {
     getRegistrarUsuario,
     postRegistrarUsuario,
     postEliminarUsuario,
+    postAsignarRol,
 } = require("../controllers/usuario.controller");
 
 const {
@@ -39,6 +40,7 @@ const {
     consultaUsuarios,
     registraCuenta,
     eliminaUsuario,
+    asignaRol,
 } = require("../util/privilegios/privilegios");
 
 const {
@@ -80,7 +82,9 @@ router.post("/usuarios/eliminar", isAuth, eliminaUsuario, postEliminarUsuario);
 
 router.get("/cambiarContrasenia", isAuth, getCambiarContrasenia);
 
-router.post("/cambiarContrasenia", isAuth, postCambiarContrasenia);4
+router.post("/cambiarContrasenia", isAuth, postCambiarContrasenia);
+
+router.post("/usuarios/asignarRol", isAuth, asignaRol, postAsignarRol);
 
 router.get('/', isAuth, (req, res) => {
     Usuario.fetchAllUsers()
