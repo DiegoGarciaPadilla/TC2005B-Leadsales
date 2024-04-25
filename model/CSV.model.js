@@ -5,6 +5,7 @@ const csvParser = require("csv-parser");
 const moment = require("moment");
 
 const db = require("../util/db/db");
+const { rejects } = require("assert");
 
 module.exports = class CSV {
     constructor(fName) {
@@ -64,6 +65,47 @@ module.exports = class CSV {
                 fs.unlinkSync(`public/uploads/${this.name}`);
             });
     }
+
+        check() {
+            return new Promise((resolve, reject) => {
+
+                const nombres = [
+                    'Nombre', 'Telefono', 'Correo', 'Compania', 'Asignadoa',
+                    'Creado', 'Horadecreacion', 'Fechadeprimermensaje', 'Horadelprimermensaje', 
+                    'Primermensaje', 'Fechadeultimomensaje', 'Horadelultimomensaje', 'Ultimomensaje',
+                    'Status', 'EstadodeLead', 'Embudo', 'Etapa', 'Archivado', 'CreadoManualmente', 
+                    'Valor', 'Ganado', 'Etiquetas'
+                ];
+                const headings = [];
+                fs.createReadStream(`public/uploads/${this.name}`) // Read the CSV file, NOT CREATE
+                    .pipe(csvParser())
+                    .on("headers", (headers) => {
+                        headers.forEach((header) =>  {
+                            // console.log(header);
+                            headings.push(header)
+                        });
+                        console.log('CACA');
+                        for (let i = 0; i < headings.length; i++) {
+                            if (!nombres.includes(headings[i])) {
+                                console.log(`Missing heading: ${headings[i]}`);
+                                resolve(false);
+                                return;
+                            }
+                        }
+                        resolve(true);
+
+                    })
+                    .on("error", (error) => {
+                        console.error(error);
+                        reject(error);
+                    })
+                    .on("end", () => {
+                        console.log('CSV procesado!');
+                    }); 
+
+            });
+                
+        }
 
     static fetchAll() {
         return db.execute("SELECT * FROM csv");
