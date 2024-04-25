@@ -6,8 +6,6 @@ module.exports = class Reporte {
         this.rfecha = Rfecha;
     }
 
-    save() {}
-
     static fetchAll() {
         return db.execute(
             "SELECT R.Fecha, R.Descripcion, R.Liga, CONCAT(U.Nombre, ' ', U.ApellidoPaterno) AS NombreCompleto FROM `reporte` AS R JOIN `usuario` AS U ON R.IDUsuario = U.IDUsuario"
