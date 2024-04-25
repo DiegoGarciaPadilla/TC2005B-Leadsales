@@ -17,6 +17,7 @@ const {
     postEliminarLead,
     postDescargarLeads,
     getEditarLead,
+    postEditarLead
 } = require("../controllers/leads.controller");
 
 // Importamos el middleware de privilegios
@@ -42,6 +43,8 @@ router.post("/eliminarLeads", isAuth, eliminaLead, postEliminarLead);
 router.post("/descargarLeads", isAuth, exportaLead, postDescargarLeads);
 
 router.get("/editarLead/:leadId", isAuth, modificaLead, getEditarLead);
+
+router.post("/editarLead/:leadId", isAuth, modificaLead, postEditarLead);
 
 // Exportamos el router
 

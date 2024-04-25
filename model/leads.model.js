@@ -43,7 +43,7 @@ module.exports = class Lead {
 
   static updateLeadById(id, nombre, tel, correo, comp, asig, fecha, hora, msj, status, edo, emb, etapa, arch, val, gan, etiq) {
     return db.execute(
-      "UPADTE `lead` SET Nombre = ?, Telefono = ?, Correo = ?, Compania = ?, Asignadoa = ?, Fechadelultimomensaje = ?, Horadelultimomensaje = ?, Ultimomensaje = ?, Status = ?, EstadodeLead = ?, Embudo = ?, Etapa = ?, Archivado = ?, Valor = ?, Ganado = ?, Etiquetas = ? WHERE IDLead = ?",
+      "UPDATE `lead` SET Nombre = ?, Telefono = ?, Correo = ?, Compania = ?, Asignadoa = ?, Fechadeultimomensaje = ?, Horadelultimomensaje = ?, Ultimomensaje = ?, Status = ?, EstadodeLead = ?, Embudo = ?, Etapa = ?, Archivado = ?, Valor = ?, Ganado = ?, Etiquetas = ? WHERE IDLead = ?",
       [nombre, tel, correo, comp, asig, fecha, hora, msj, status, edo, emb, etapa, arch, val, gan, etiq, id]
     );
   }

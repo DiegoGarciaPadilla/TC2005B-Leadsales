@@ -208,6 +208,52 @@ exports.getEditarLead = (req, res) => {
         .catch();
 }
 
+exports.postEditarLead = (req, res) => {
+    const { leadId } = req.params;
+    let {
+        nombre,
+        telefono,
+        correo,
+        compania,
+        asignadoa,
+        fechadelultimomensaje,
+        horadelultimomensaje,
+        ultimomensaje,
+        status,
+        estado,
+        embudo,
+        etapa,
+        archivado,
+        valor,
+        ganado,
+        etiquetas,
+    } = req.body;
+
+    nombre = nombre === undefined ? null : nombre;
+    telefono = telefono === undefined ? null : telefono;
+    correo = correo === undefined ? null : correo;
+    compania = compania === undefined ? null : compania;
+    asignadoa = asignadoa === undefined ? null : asignadoa;
+    fechadelultimomensaje = fechadelultimomensaje === undefined ? null : new Date(fechadelultimomensaje).toISOString().split('T')[0];
+    horadelultimomensaje = horadelultimomensaje === undefined ? null : horadelultimomensaje;
+    ultimomensaje = ultimomensaje === undefined ? null : ultimomensaje;
+    status = status === undefined ? null : status;
+    estado = estado === undefined ? null : estado;
+    embudo = embudo === undefined ? null : embudo;
+    etapa = etapa === undefined ? null : etapa;
+    archivado = archivado === undefined ? null : archivado;
+    valor = valor === undefined ? null : valor;
+    ganado = ganado === undefined ? null : ganado;
+    etiquetas = etiquetas === undefined ? null : etiquetas;
+    
+    Lead.updateLeadById(leadId, nombre, telefono, correo, compania, asignadoa, fechadelultimomensaje, horadelultimomensaje, ultimomensaje, status, estado, embudo, etapa, archivado, valor, ganado, etiquetas)
+        .then(() => {
+            req.flash('success', 'Lead actualizado correctamente.');
+            res.redirect('/directorio');
+        })
+        .catch();
+}
+
 /* ========================== FIN CU. 7 ==============================  */
 
 module.exports = exports;
