@@ -53,14 +53,13 @@
                     <span id="error-message"> </span>
                 </div>
 
-                <div id="bloque1" class="grid gap-6 mb-0 md:grid-cols-4">
-                    <div>
+                <div id="bloque1" class="grid gap-6 mb-0 mr-4 md:grid-cols-4">
+                    <div class="mt-4 mr-4">
                         <label
                             for="nombre"
                             class="block mb-2 text-sm font-bold text-gray-700"
                         >
                             Nombre
-                            <span class="font-bold text-red-700"> * </span>
                         </label>
                         <input
                             type="text"
@@ -72,13 +71,12 @@
                             maxlength="64"
                         />
                     </div>
-                    <div>
+                    <div class="m-4">
                         <label
                             for="telefono"
                             class="block mb-2 text-sm font-bold text-gray-700"
                         >
-                            Telefono
-                            <span class="font-bold text-red-700"> * </span>
+                            Teléfono
                         </label>
                         <input
                             type="text"
@@ -90,7 +88,7 @@
                             maxlength="32"
                         />
                     </div>
-                    <div>
+                    <div class="m-4">
                         <label
                             for="correo"
                             class="block mb-2 text-sm font-bold text-gray-700"
@@ -103,17 +101,16 @@
                             name="correo"
                             value="<%= lead.Correo %>"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            placeholder="Contreras"
+                            placeholder="martharoco@gmail.com"
                             maxlength="32"
                         />
                     </div>
-                    <div>
+                    <div class="m-4">
                         <label
                             for="compania"
                             class="block mb-2 text-sm font-bold text-gray-700"
                         >
                             Compañía
-                            <span class="font-bold text-red-700"> * </span>
                         </label>
                         <input
                             type="text"
@@ -121,10 +118,10 @@
                             name="compania"
                             value="<%= lead.Compania %>"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            placeholder="martharoco@gmail.com"
+                            placeholder="Coca-Cola"
                         />
                     </div>
-                    <div>
+                    <div class="mt-4 mr-4">
                         <label
                             for="asignadoa"
                             class="block mb-2 text-sm font-bold text-gray-700"
@@ -142,7 +139,7 @@
                             maxlength="32"
                         />
                     </div>
-                    <div>
+                    <div class="m-4">
                         <label
                             for="creado"
                             class="block mb-2 text-sm font-bold text-gray-700"
@@ -151,35 +148,37 @@
                             <span class="font-bold text-red-700"> * </span>
                         </label>
                         <input
-                            type="text"
+                            type="date"
                             id="creado"
                             name="creado"
-                            value="<%= lead.Creado %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            value="<%= new Date(lead.Creado).toISOString().split('T')[0] %>"
+                            class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             required
                             maxlength="32"
                             readonly
                         />
                     </div>
 
-                    <div class="mb-6">
+                    <div class="m-4">
                         <label
                             for="horadecreacion"
                             class="block mb-2 text-sm font-bold text-gray-700"
                         >
                             Hora de creación
+                            <span class="font-bold text-red-700"> * </span>
                         </label>
                         <input
                             type="text"
                             id="horadecreacion"
                             name="horadecreacion"
                             value="<%= lead.Horadecreacion %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             placeholder="4425189756"
+                            required
                             readonly
                         />
                     </div>
-                    <div class="mb-4">
+                    <div class="m-4">
                         <label
                             for="fechadeprimermensaje"
                             class="block mb-2 text-sm font-bold text-gray-700"
@@ -190,56 +189,254 @@
                             type="text"
                             id="fechadeprimermensaje"
                             name="fechadeprimermensaje"
-                            value="<%= lead.Fechadeprimermensaje %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            value="<%= new Date(lead.Fechadeprimermensaje).toISOString().split('T')[0] %>"
+                            class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             placeholder="4425189756"
                             readonly
                         />
                     </div>
-                    <div>
+                    <div class="mt-4 mr-4">
                         <label
                             for="horadelprimermensaje"
                             class="block mb-2 text-sm font-bold text-gray-700"
                         >
                             Hora del primer mensaje
-                            <span class="font-bold text-red-700"> * </span>
                         </label>
                         <input
                             type="text"
                             id="horadelprimermensaje"
                             name="horadelprimermensaje"
                             value=" <%= lead.Horadelprimermensaje %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             maxlength="64"
                             readonly
                         />
                     </div>
-                </div>
-
-                <div class="mt-0 mb-6">
-                    <label
-                        for="domicilio"
-                        class="block mb-2 text-sm font-bold text-gray-700"
-                    >
-                        Domicilio
-                    </label>
-                    <input
-                        type="text"
-                        id="domicilio"
-                        name="domicilio"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                        placeholder="Av. Las Fuentes #512"
-                        maxlength="256"
-                    />
+                    <div class="m-4">
+                        <label
+                            for="primermensaje"
+                            class="block mb-2 text-sm font-bold text-gray-700"
+                        >
+                            Primer mensaje
+                        </label>
+                        <input
+                            type="text"
+                            id="primermensaje"
+                            name="primermensaje"
+                            value=" <%= lead.Primermensaje %>"
+                            class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            maxlength="64"
+                            readonly
+                        />
+                    </div>
+                    <div class="m-4">
+                        <label
+                            for="fechadelultimomensaje"
+                            class="block mb-2 text-sm font-bold text-gray-700"
+                        >
+                            Fecha del último mensaje
+                        </label>
+                        <input
+                            type="date"
+                            id="fechadelultimomensaje"
+                            name="fechadelultimomensaje"
+                            value=" <%= lead.Fechadelultimomensaje %>"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            maxlength="64"
+                        />
+                    </div>
+                    <div class="m-4">
+                        <label
+                            for="horadelultimomensaje"
+                            class="block mb-2 text-sm font-bold text-gray-700"
+                        >
+                            Hora del último mensaje
+                        </label>
+                        <input
+                            type="text"
+                            id="horadelultimomensaje"
+                            name="horadelultimomensaje"
+                            value=" <%= lead.Horadelultimomensaje %>"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            maxlength="64"
+                        />
+                    </div>
+                    <div class="mt-4 mr-4">
+                        <label
+                            for="ultimomensaje"
+                            class="block mb-2 text-sm font-bold text-gray-700"
+                        >
+                            Último mensaje
+                        </label>
+                        <input
+                            type="text"
+                            id="ultimomensaje"
+                            name="ultimomensaje"
+                            value=" <%= lead.Ultimomensaje %>"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            maxlength="64"
+                        />
+                    </div>
+                    <div class="m-4">
+                        <label
+                            for="status"
+                            class="block mb-2 text-sm font-bold text-gray-700"
+                        >
+                            Status
+                        </label>
+                        <input
+                            type="text"
+                            id="status"
+                            name="status"
+                            value=" <%= lead.Status %>"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            maxlength="64"
+                        />
+                    </div>
+                    <div class="m-4">
+                        <label
+                            for="estadodelead"
+                            class="block mb-2 text-sm font-bold text-gray-700"
+                        >
+                            Estado de Lead
+                        </label>
+                        <input
+                            type="text"
+                            id="estadodelead"
+                            name="estadodelead"
+                            value=" <%= lead.EstadodeLead %>"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            maxlength="64"
+                        />
+                    </div>
+                    <div class="m-4">
+                        <label
+                            for="embudo"
+                            class="block mb-2 text-sm font-bold text-gray-700"
+                        >
+                            Embudo
+                            <span class="font-bold text-red-700"> * </span>
+                        </label>
+                        <input
+                            type="text"
+                            id="embudo"
+                            name="embudo"
+                            value=" <%= lead.Embudo %>"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            maxlength="64"
+                            required
+                        />
+                    </div>
+                    <div class="mt-4 mr-4">
+                        <label
+                            for="etapa"
+                            class="block mb-2 text-sm font-bold text-gray-700"
+                        >
+                            Etapa
+                        </label>
+                        <input
+                            type="text"
+                            id="etapa"
+                            name="etapa"
+                            value=" <%= lead.Etapa %>"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            maxlength="64"
+                        />
+                    </div>
+                    <div class="m-4">
+                        <label
+                            for="archivado"
+                            class="block mb-2 text-sm font-bold text-gray-700"
+                        >
+                            Archivado
+                            <span class="font-bold text-red-700"> * </span>
+                        </label>
+                        <input
+                            type="text"
+                            id="archivado"
+                            name="archivado"
+                            value=" <%= lead.Archivado %>"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            maxlength="64"
+                            required
+                        />
+                    </div>
+                    <div class="m-4">
+                        <label
+                            for="creadomanualmente"
+                            class="block mb-2 text-sm font-bold text-gray-700"
+                        >
+                            Creado Manualmente
+                            <span class="font-bold text-red-700"> * </span>
+                        </label>
+                        <input
+                            type="text"
+                            id="creadomanualmente"
+                            name="creadomanualmente"
+                            value=" <%= lead.CreadoManualmente %>"
+                            class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            maxlength="64"
+                            required
+                            readonly
+                        />
+                    </div>
+                    <div class="m-4">
+                        <label
+                            for="valor"
+                            class="block mb-2 text-sm font-bold text-gray-700"
+                        >
+                            Valor
+                        </label>
+                        <input
+                            type="text"
+                            id="valor"
+                            name="valor"
+                            value=" <%= lead.Valor %>"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            maxlength="64"
+                        />
+                    </div>
+                    <div class="mt-4 mr-4">
+                        <label
+                            for="ganado"
+                            class="block mb-2 text-sm font-bold text-gray-700"
+                        >
+                            Ganado
+                        </label>
+                        <input
+                            type="text"
+                            id="ganado"
+                            name="ganado"
+                            value=" <%= lead.Ganado %>"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            maxlength="64"
+                        />
+                    </div>
+                    <div class="m-4">
+                        <label
+                            for="etiquetas"
+                            class="block mb-2 text-sm font-bold text-gray-700"
+                        >
+                            Etiquetas
+                        </label>
+                        <input
+                            type="text"
+                            id="etiquetas"
+                            name="etiquetas"
+                            value=" <%= lead.Etiquetas %>"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            maxlength="64"
+                        />
+                    </div>
                 </div>
 
                 <button
                     type="submit"
                     name="submit-button"
                     id="submit-button"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+                    class="mt-4 mb-8 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
                 >
-                    Registrar cuenta
+                    Guardar lead
                 </button>
             </form>
         </div>
