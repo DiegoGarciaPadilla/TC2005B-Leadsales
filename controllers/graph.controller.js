@@ -73,12 +73,12 @@ exports.getReporteJSON = (req, res, next) => {
 
         // graphPromises.push(promesaGraphSix);
 
-        // // Gráfica 7
-        // const Graph7 = new Graph(7);
-        // const g7 = Graph.fetchAllForGraphs(dateStart, dateEnd);
-        // const promesaGraphSeven = Graph.graphSeven(g7);
+        // Gráfica 7
+        const Graph7 = new Graph(7);
+        const g7 = Graph.fetchAllForGraphs(dateStart, dateEnd);
+        const promesaGraphSeven = Graph.graphSeven(g7);
 
-        // graphPromises.push(promesaGraphSeven);
+        graphPromises.push(promesaGraphSeven);
 
         // Datos de todas las gráficas pendientes a resolver
         Promise.all(graphPromises)
@@ -90,6 +90,8 @@ exports.getReporteJSON = (req, res, next) => {
                     graph3Data: results[2][0],
                     graph4Data: results[3][0],
                     graph5Data: results[4][0],
+                    //graph6Data: results[5][0],
+                    graph7Data: results[5][0],
                 };
 
                 // Respuesta de JSON con datos para todas las gráficas
@@ -146,11 +148,11 @@ exports.getReporteJSON = (req, res, next) => {
         // graphPromises.push(promesaGraphSix);
 
         // Gráfica 7
-        // const Graph7 = new Graph(7);
-        // const g7 = Graph.fetchSomeForGraphs(dateStart, dateEnd);
-        // const promesaGraphSeven = Graph.graphSeven(g7);
+        const Graph7 = new Graph(7);
+        const g7 = Graph.fetchSomeForGraphs(dateStart, dateEnd);
+        const promesaGraphSeven = Graph.graphSeven(g7);
 
-        // graphPromises.push(promesaGraphSeven);
+        graphPromises.push(promesaGraphSeven);
 
         // Datos de todas las gráficas pendientes a resolver
         Promise.all(graphPromises)
@@ -162,6 +164,8 @@ exports.getReporteJSON = (req, res, next) => {
                     graph3Data: results[2][0],
                     graph4Data: results[3][0],
                     graph5Data: results[4][0],
+                    //graph6Data: results[5][0],
+                    graph7Data: results[5][0],
                 };
 
                 // Respuesta de JSON con datos para todas las gráficas

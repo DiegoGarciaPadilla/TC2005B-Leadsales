@@ -76,8 +76,8 @@ module.exports = class Graph {
     }
 
     static async graphSeven(filter) {
-        let query = "SELECT Archivado, COUNT(*) AS `Cantidad` FROM (";
-        query += filter + ") AS Leads GROUP BY Archivado";
+        let query = "SELECT Archivado, Embudo, COUNT(*) AS Cantidad FROM (";
+        query += filter + ") AS Leads GROUP BY Archivado, Embudo";
 
         return db.execute(query);
     }
