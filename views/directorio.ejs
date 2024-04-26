@@ -54,14 +54,14 @@
     </div>
 
     <div class="bg-white sm:rounded-lg w-1/4 flex justify-center items-center space-x-2">
-        <button onclick="confirmarAccion('eliminación')" type="button" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
-            <svg class="w-6 h-6 text-red-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <button id="eliminar-lead" onclick="confirmarAccion('eliminación')" type="button" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
+            <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
             </svg>                                  
             <span class="sr-only">Eliminar lead</span>
         </button>
-        <button onclick="confirmarAccion('descarga')" type="button" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
-            <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <button id="descargar-leads" onclick="confirmarAccion('descarga')" type="button" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
+            <svg class="w-6 h-6 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2m-8 1V4m0 12-4-4m4 4 4-4"/>
             </svg>                                             
             <span class="sr-only">Descargar leads</span>
@@ -255,6 +255,42 @@
 </script>
 
 <script>
+  
+  const eliminarLeadButton = document.getElementById('eliminar-lead');
+  const descargarLeadsButton = document.getElementById('descargar-leads');
+  const checkboxes = document.querySelectorAll('#containerElements input[type="checkbox"]');
+  
+  function updateButtonState() {
+    // Comprueba si al menos un checkbox está seleccionado
+    const isAnyCheckboxChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+    eliminarLeadButton.disabled = !isAnyCheckboxChecked;
+    descargarLeadsButton.disabled = !isAnyCheckboxChecked;
+    
+    const eliminarSVG = eliminarLeadButton.querySelector('svg');
+    const descargarSVG = descargarLeadsButton.querySelector('svg');
+
+    // Cambio de color si están habilitados o deshabilitados
+    if (isAnyCheckboxChecked) {
+      eliminarSVG.classList.add('text-red-700');
+      eliminarSVG.classList.remove('text-gray-500');
+      descargarSVG.classList.add('text-blue-700');
+      descargarSVG.classList.remove('text-gray-500');
+    } 
+    else {
+      eliminarSVG.classList.add('text-gray-500');
+      eliminarSVG.classList.remove('text-red-700');
+      descargarSVG.classList.add('text-gray-500');
+      descargarSVG.classList.remove('text-blue-700');
+    }
+  }
+
+  // Llama a updateButtonState al inicio para establecer el estado inicial de los botones
+  updateButtonState();
+
+  // Llama a updateButtonState cada vez que un checkbox cambia
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', updateButtonState);
+  });
 
 function confirmarAccion(mensaje) {
     let html = `<div id="deleteModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
@@ -266,9 +302,9 @@ function confirmarAccion(mensaje) {
             <div class="mt-4 flex justify-center space-x-2">
                 <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" onclick="eliminarLeads()">Sí, eliminar</button>`;
     } else if (mensaje === 'descarga') {
-        html += `
+        html += `<p class="mt-2 text-sm text-gray-600">¿Estás seguro de que deseas descargar los leads seleccionados?</p>
             <div class="mt-4 flex justify-center space-x-2">
-                <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" onclick="descargarCSV()">Sí, descargar</button>`;
+                <button class="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-800" onclick="descargarCSV()">Sí, descargar</button>`;
     }
     html += `<button class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300" onclick="cerrarModal()">Cancelar</button>
                 </div>
