@@ -173,17 +173,16 @@ exports.postEditarRol = async (req, res) => {
 
 /* ========== CU. 16 ELIMINA ROLES | Gabriela Chimali =============== */
 
-exports.postEliminarRol = (req, res, next) => {
-    const { IDRol } = req.body;
-    console.log(IDRol);
-    Rol.deleteRolById(IDRol)
-        .then(() => {
-            res.status(200).json({ success: true });
-        })
-        .catch((error) => {
-            console.error(error);
-            res.status(500).json({ error: "Error al eliminar el rol" });
-        });
+exports.postEliminarRol = async (req, res) => {
+    try {
+        const { IDRol } = req.body;
+        console.log("IDRol a eliminar: ", IDRol);
+        await Rol.deleteRolById(IDRol);
+        res.status(200).json({ success: true });
+    } catch(error) {
+        console.error(error);
+        res.status(500).json({ error: "Error al eliminar el rol" });
+    }
 };
 
 /* ========================== FIN CU. 16 ==============================  */
