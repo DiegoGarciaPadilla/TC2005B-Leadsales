@@ -40,8 +40,8 @@
     </style>
 </head>
 <body class="bg-[#E4E8EE]">
+    <input type="hidden" id="_csrf" value="<%= csrfToken %>">
     <nav><%- include('partials/sidebar.ejs') %></nav>
-
     <div id="main-content" class="ml-14 mt-14 pl-8">
         <nav class="flex">
             <a href="/ajustes">
@@ -124,10 +124,6 @@
                                     </svg>
                                     <span class="sr-only">Modificar rol</span>
                                 </a>
-                                <a
-                                href="/ajustes/roles/editarPrivilegios/<%= roles[i].IDRol %>"
-                                class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center"
-                            ></a>
                             <% } %> <% if (roles[i].Nombre != 'Owner' &&
                             roles[i].Nombre != 'Administrador' &&
                             roles[i].Nombre != 'Seller') { %>
