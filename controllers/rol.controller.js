@@ -16,6 +16,7 @@ exports.getCrearRol = (req, res) => {
                 error: err,
                 csrfToken: req.csrfToken(),
                 success: "",
+                error: "",
             });
         })
         .catch((error) => {
@@ -47,24 +48,7 @@ exports.postCrearRol = async (req, res) => {
             // Asigna los privilegios al rol
             Rol.updatePrivilegiosRolById(IDRol, PrivilegiosArray)
                 .then(() => {
-                    // Obtiene los privilegios de la sesion
-                    const { Privilegios } = req.session;
-
-                    // Obtiene todos los roles de la base de datos
-                    Rol.fetchAll()
-                        .then(([rolesFetched]) => {
-                            res.render("roles", {
-                                roles: rolesFetched,
-                                error: "",
-                                success: "Rol creado exitosamente.",
-                                csrfToken: req.csrfToken(),
-                                privilegios: Privilegios,
-                            });
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                        });
-
+                    res.redirect("/ajustes/roles");
                 })
                 .catch((error) => {
                     console.log(error);
@@ -92,8 +76,7 @@ exports.getRoles = (req, res) => {
         .then(([rolesFetched]) => {
             res.render("roles", {
                 roles: rolesFetched,
-                error: "",
-                success: "",
+                error: err,
                 csrfToken: req.csrfToken(),
                 privilegios: Privilegios,
             });
@@ -180,21 +163,7 @@ exports.postEditarRol = async (req, res) => {
         // Actualiza los privilegios del rol
         await Rol.updatePrivilegiosRolById(IDRol, PrivilegiosArray);
 
-        // Obtiene todos los roles de la base de datos
-        Rol.fetchAll()
-            .then(([rolesFetched]) => {
-                res.render("roles", {
-                    roles: rolesFetched,
-                    error: "",
-                    success: "Lead editado exitosamente.",
-                    csrfToken: req.csrfToken(),
-                    privilegios: Privilegios,
-                });
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-
+        res.redirect("/ajustes/roles");
     } catch (error) {
         console.log(error);
     }

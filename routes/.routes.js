@@ -30,6 +30,10 @@ router.get('/reporte', isAuth, getReporte);
 router.post("/", isAuth, post_CSV); // ANTES de router,use("/")
 
 router.get("/", isAuth,  (req, res) => {
+    const success = req.flash("success") || "";
+    const error = req.flash("falla") || "";
+    console.log(req.flash("error"));
+
     Usuario.fetchAllUsers()
         .then(([usuariosFetched]) => {
             res.render("inicio", {
@@ -41,8 +45,8 @@ router.get("/", isAuth,  (req, res) => {
                 apellidoPaterno: req.session.ApellidoPaterno,
                 apellidoMaterno: req.session.apellidoMaterno,
                 usuarios: usuariosFetched,
-                success: "",
-                error: "",
+                success: success,
+                error: error,
             });
         
     }).catch((error) => {

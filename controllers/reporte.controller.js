@@ -25,24 +25,8 @@ exports.getReportes = (req, res) => {
                 });
             })
             .catch((error) => {
-                Usuario.fetchAllUsers()
-                    .then(([usuariosFetched]) => {
-                        res.render("inicio", {
-                            csrfToken: req.csrfToken(),
-                            privilegios: req.session.Privilegios,
-                            correo: req.session.Correo,
-                            rol: req.session.Rol,
-                            nombre: req.session.Nombre,
-                            apellidoPaterno: req.session.ApellidoPaterno,
-                            apellidoMaterno: req.session.apellidoMaterno,
-                            usuarios: usuariosFetched,
-                            success: "",
-                            error: "Error al cargar reportes.",
-                        });
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+                req.flash("error", "Error al cargar reportes.");
+                res.redirect("/inicio");
             });
     } else if (
         Privilegios.some(
@@ -57,24 +41,8 @@ exports.getReportes = (req, res) => {
                 });
             })
             .catch((error) => {
-                Usuario.fetchAllUsers()
-                    .then(([usuariosFetched]) => {
-                        res.render("inicio", {
-                            csrfToken: req.csrfToken(),
-                            privilegios: req.session.Privilegios,
-                            correo: req.session.Correo,
-                            rol: req.session.Rol,
-                            nombre: req.session.Nombre,
-                            apellidoPaterno: req.session.ApellidoPaterno,
-                            apellidoMaterno: req.session.apellidoMaterno,
-                            usuarios: usuariosFetched,
-                            success: "",
-                            error: "Error al cargar reportes.",
-                        });
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+                req.flash("error", "Error al cargar reportes.");
+                res.redirect("/inicio");
             });
     }
 };

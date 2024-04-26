@@ -11,6 +11,8 @@ const fs = require('fs');
 
 exports.getLeads = (req, res) => {
     const { Correo, Privilegios } = req.session; // Test user
+    const error = req.flash("error") || "";
+    const success = req.flash("success") || "";
 
     if (
         Privilegios.some(
@@ -30,15 +32,17 @@ exports.getLeads = (req, res) => {
                             apellidoPaterno: req.session.ApellidoPaterno,
                             apellidoMaterno: req.session.apellidoMaterno,
                             usuarios: usuariosFetched,
-                            error: "",
-                            success: "",
+                            error: error,
+                            success: success,
                         });
                     })
                     .catch((error) => {
+                        req.flash("error", "Error al cargar usuarios.");
                         res.redirect("/inicio");
                     });
             })
             .catch((error) => {
+                req.flash("error", "Error al cargar leads.");
                 res.redirect("/inicio");
             });
     } else {
@@ -51,6 +55,7 @@ exports.getLeads = (req, res) => {
             })
             .catch((error) => {
                 console.log(error);
+                req.flash("error", "Error al cargar leads.");
                 res.redirect("/inicio");
             });
     }
@@ -66,6 +71,7 @@ exports.getLeadDetails = (req, res) => {
     Lead.fetchOne(leadId)
         .then(([testLead]) => res.status(200).json(testLead[0]))
         .catch(() => {
+            req.flash("error", "El lead no ha podido ser consultado.");
             redirect("/directorio");
         });
 };
@@ -224,51 +230,8 @@ exports.postEditarLead = (req, res) => {
     
     Lead.updateLeadById(leadId, nombre, telefono, correo, compania, asignadoa, fechadelultimomensaje, horadelultimomensaje, ultimomensaje, status, estado, embudo, etapa, archivado, valor, ganado, etiquetas)
         .then(() => {
-            const { Correo, Privilegios } = req.session; // Test user
-
-            if (
-                Privilegios.some(
-                    (priv) => priv.Descripcion === "Consulta directorio todos."
-                )
-            ) {
-                Lead.fetchAll()
-                    .then(([leadsFetched]) => {
-                        Usuario.fetchAllUsers()
-                            .then(([usuariosFetched]) => {
-                                res.render("directorio", {
-                                    leads: leadsFetched,
-                                    csrfToken: req.csrfToken(),
-                                    correo: req.session.Correo,
-                                    rol: req.session.Rol,
-                                    nombre: req.session.Nombre,
-                                    apellidoPaterno: req.session.ApellidoPaterno,
-                                    apellidoMaterno: req.session.apellidoMaterno,
-                                    usuarios: usuariosFetched,
-                                    error: "",
-                                    success: "Tu lead ha sido editado con éxito.",
-                                });
-                            })
-                            .catch((error) => {
-                                res.redirect("/inicio");
-                            });
-                    })
-                    .catch((error) => {
-                        res.redirect("/inicio");
-                    });
-            } else {
-                Lead.fetchLeadsByUser(Correo)
-                    .then(([leadsFetched]) => {
-                        res.render("directorio", {
-                            leads: leadsFetched,
-                            csrfToken: req.csrfToken(),
-                        });
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                        res.redirect("/inicio");
-                    });
-            }
-
+            req.flash('success', 'Lead actualizado correctamente.');
+            res.redirect('/directorio');
         })
         .catch();
 }

@@ -64,7 +64,7 @@
 
 <script>
   const telefono = document.getElementById('telefono');
-  const submitButton = document.getElementById('crearLeadBoton');
+  const submitButton = document.getElementById('submit-button');
 
   const errorDiv = document.getElementById('div-error');
   const errorMessage = document.getElementById('error-message');
@@ -144,9 +144,6 @@
         if (tableBody) {
           // Si el elemento existe, hacer algo...
           console.log('El elemento existe');
-
-          operacionExitosa('Lead creado exitosamente');
-
           const row = tableBody.insertRow(0);
 
           /// Agregar nuevas celdas a la fila en el orden deseado
@@ -190,24 +187,5 @@
       .catch(error => {
         // Manejar cualquier error que ocurra durante la solicitud
       });
-
-      function operacionExitosa(accion) {
-      const alertas = document.getElementById('alertas');
-          const alertHTML = `
-              <div id="alert-success" class="flex relative items-center p-4 mb-4 text-sm mr-24 text-green-800 border border-green-300 rounded-lg bg-green-50 w-2/3">
-                  <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarAlert()">
-                    <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                    </svg>
-                  </button>
-                  <div>
-                      <span class="font-bold"> ¡Acción exitosa! </span> 
-                      <span id="success-message">${accion}</span>
-                  </div>
-              </div>
-          `;
-          alertas.innerHTML = alertHTML;
-          document.getElementById('alert-success').style.display = 'block';
-  }
   }
 </script>
