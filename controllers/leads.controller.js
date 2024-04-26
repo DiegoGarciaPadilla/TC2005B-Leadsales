@@ -47,6 +47,13 @@ exports.getLeads = (req, res) => {
                 res.render("directorio", {
                     leads: leadsFetched,
                     csrfToken: req.csrfToken(),
+                    correo: req.session.Correo,
+                    rol: req.session.Rol,
+                    nombre: req.session.Nombre,
+                    apellidoPaterno: req.session.ApellidoPaterno,
+                    apellidoMaterno: req.session.apellidoMaterno,   
+                    error: "",
+                    success: "",
                 });
             })
             .catch((error) => {
