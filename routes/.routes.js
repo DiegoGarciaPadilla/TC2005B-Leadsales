@@ -46,7 +46,7 @@ router.get("/", isAuth,  (req, res) => {
                 apellidoPaterno: req.session.ApellidoPaterno,
                 apellidoMaterno: req.session.apellidoMaterno,
                 usuarios: usuariosFetched,
-                success: success,
+                success: "",
                 error: error,
             });
         
