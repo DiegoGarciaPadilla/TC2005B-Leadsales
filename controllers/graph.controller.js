@@ -80,6 +80,13 @@ exports.getReporteJSON = (req, res, next) => {
 
         graphPromises.push(promesaGraphSeven);
 
+        // Gráfica 8
+        const Graph8 = new Graph(8);
+        const g8 = Graph.fetchAllForGraphs(dateStart, dateEnd);
+        const promesaGraphEight = Graph.graphEight(g8);
+
+        graphPromises.push(promesaGraphEight);
+
         // Datos de todas las gráficas pendientes a resolver
         Promise.all(graphPromises)
             .then((results) => {
@@ -92,6 +99,7 @@ exports.getReporteJSON = (req, res, next) => {
                     graph5Data: results[4][0],
                     //graph6Data: results[5][0],
                     graph7Data: results[5][0],
+                    graph8Data: results[6][0],
                 };
 
                 // Respuesta de JSON con datos para todas las gráficas
@@ -149,10 +157,16 @@ exports.getReporteJSON = (req, res, next) => {
 
         // Gráfica 7
         const Graph7 = new Graph(7);
-        const g7 = Graph.fetchSomeForGraphs(dateStart, dateEnd);
+        const g7 = Graph.fetchSomeForGraphs(NombreCompleto, dateStart, dateEnd);
         const promesaGraphSeven = Graph.graphSeven(g7);
 
         graphPromises.push(promesaGraphSeven);
+
+        const Graph8 = new Graph(8);
+        const g8 = Graph.fetchSomeForGraphs(NombreCompleto, dateStart, dateEnd);
+        const promesaGraphEight = Graph.graphEight(g8);
+
+        graphPromises.push(promesaGraphEight);
 
         // Datos de todas las gráficas pendientes a resolver
         Promise.all(graphPromises)
@@ -166,6 +180,7 @@ exports.getReporteJSON = (req, res, next) => {
                     graph5Data: results[4][0],
                     //graph6Data: results[5][0],
                     graph7Data: results[5][0],
+                    graph8Data: results[6][0],
                 };
 
                 // Respuesta de JSON con datos para todas las gráficas
