@@ -59,6 +59,11 @@
             </h1>
         </nav>
 
+        <div id="alertas">
+            <%- include('partials/success', {success: success}) %>
+            <%- include('partials/error', {error: error}) %>
+        </div>
+
         <% if (privilegios.some((privilegio => privilegio.Descripcion === 'Crea rol.'))) { %>
             <a href="/ajustes/roles/crearRol">
                 <button
@@ -207,6 +212,9 @@
                 } else {
                     console.error(data.error);
                 }
+
+                const accion = 'Se eliminó el rol exitosamente.';
+                operacionExitosa(accion);
             })
             .catch((error) => {
                 console.log(error);
@@ -217,4 +225,23 @@
         const deleteModal = document.getElementById("deleteModal");
         deleteModal.parentNode.removeChild(deleteModal);
     }
+
+    function operacionExitosa(accion) {
+      const alertas = document.getElementById('alertas');
+          const alertHTML = `
+              <div id="alert-success" class="flex relative items-center p-4 mb-4 text-sm mr-24 text-green-800 border border-green-300 rounded-lg bg-green-50 w-2/3">
+                  <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarAlert()">
+                    <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                  </button>
+                  <div>
+                      <span class="font-bold"> ¡Acción exitosa! </span> 
+                      <span id="success-message">${accion}</span>
+                  </div>
+              </div>
+          `;
+          alertas.innerHTML = alertHTML;
+          document.getElementById('alert-success').style.display = 'block';
+  }
 </script>
