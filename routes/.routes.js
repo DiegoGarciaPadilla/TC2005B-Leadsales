@@ -31,6 +31,7 @@ router.post("/", isAuth, post_CSV); // ANTES de router,use("/")
 
 router.get("/", isAuth,  (req, res) => {
     const success = req.flash("success") || "";
+    console.log("success", success, "type", typeof success);
     const error = req.flash("falla") || "";
     console.log(req.flash("error"));
 
