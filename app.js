@@ -23,7 +23,7 @@ app.use(cookieParser());
 app.use(session({
     secret: 'Mario',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
 }));
 
 // Body parser
