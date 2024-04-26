@@ -10,13 +10,13 @@ const Rol = require("../model/rol.model");
 exports.getLogin = (req, res) => {
     const err = req.session.error || "";
     req.session.error = "";
-    const error = req.flash("error") || "";
     
     res.render("login", {
         correo: req.session.correo || "",
         registro: false,
         csrfToken: req.csrfToken(),
         error: err,
+        success: "",
         privilegios: req.session.privilegios || [],
     });
 };
@@ -82,25 +82,47 @@ exports.postLogin = (req, res) => {
                                 });
                         } else {
                             req.session.error = "Correo o contraseña incorrectos";
-                            req.flash("falla", "Correo o contraseña incorrectos");
-                            res.redirect("/usuarios/login");
+                            res.render("login", {
+                                correo: req.session.correo || "",
+                                registro: false,
+                                csrfToken: req.csrfToken(),
+                                error: "Correo o contraseña incorrectos.",
+                                success: "",
+                                privilegios: req.session.privilegios || [],
+                            });
                         }
                     })
                     .catch((error) => {
-                        console.log(error);
-                        req.flash("falla", "Error de conexión. Intenta más tarde.");
-                        res.redirect("/usuarios/login");
+                        res.render("login", {
+                            correo: req.session.correo || "",
+                            registro: false,
+                            csrfToken: req.csrfToken(),
+                            error: "Ups! Intenta más tarde.",
+                            success: "",
+                            privilegios: req.session.privilegios || [],
+                        });
                     });
             } else {
                 req.session.error = "Correo o contraseña incorrectos";
-                req.flash("falla", "Correo o contraseña incorrectos");
-                res.redirect("/usuarios/login");
+                res.render("login", {
+                    correo: req.session.correo || "",
+                    registro: false,
+                    csrfToken: req.csrfToken(),
+                    error: "Correo o contraseña incorrectos.",
+                    success: "",
+                    privilegios: req.session.privilegios || [],
+                });
             }
         })
         .catch((error) => {
-            console.log(error);
-            req.flash("falla", "Error de conexión. Intenta más tarde.");
-            res.redirect("/usuarios/login");
+            res.render("login", {
+                correo: req.session.correo || "",
+                registro: false,
+                csrfToken: req.csrfToken(),
+                error: "Ups! Intenta más tarde.",
+                success: "",
+                privilegios: req.session.privilegios || [],
+            });
         });
 };
 
@@ -113,8 +135,6 @@ exports.getUsuarios = (req, res) => {
     req.session.error = "";
 
     const {Privilegios} = req.session;
-
-    const msg = req.flash("success") || "";
 
     Usuario.fetchAllUsers()
         .then(([usuariosFetched]) => {
@@ -129,7 +149,7 @@ exports.getUsuarios = (req, res) => {
                                 rolesTodos: rolesFetchedAll,
                                 error: "",
                                 csrfToken: req.csrfToken(),
-                                success: msg,
+                                success: "",
                                 Privilegios: Privilegios,
                             });
                         })
@@ -191,8 +211,36 @@ exports.postRegistrarUsuario = (req, res) => {
             nuevoUsuario
                 .save(req.body.rol)
                 .then(() => {
-                    req.flash("success", "El usuario se ha registrado exitosamente.");
-                    res.redirect("/ajustes/usuarios");
+                    const {Privilegios} = req.session;
+
+                    Usuario.fetchAllUsers()
+                        .then(([usuariosFetched]) => {
+                            Usuario.fetchRoles()
+                                .then(([rolesFetched]) => {
+                                    Rol.fetchAll()
+                                        .then(([rolesFetchedAll]) => {
+                                            console.log("Roles todos:", rolesFetchedAll);
+                                            res.render("usuarios", {
+                                                usuarios: usuariosFetched,
+                                                roles: rolesFetched,
+                                                rolesTodos: rolesFetchedAll,
+                                                error: "",
+                                                csrfToken: req.csrfToken(),
+                                                success: "El usuario se ha registrado exitosamente.",
+                                                Privilegios: Privilegios,
+                                            });
+                                        })
+                                        .catch((error) => {
+                                            console.log(error);
+                                        });
+                                    }) 
+                                .catch((error) => {
+                                    console.log(error);
+                                });
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
                 })
                 .catch((error) => {
                     console.log(error);
