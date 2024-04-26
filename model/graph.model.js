@@ -30,6 +30,7 @@ module.exports = class Graph {
     }
 
     static async graphOne(filter) {
+        console.log("graphOne filter: ", filter);
         let query =
             "SELECT DATE_FORMAT(Creado, '%Y-%m-%d') AS `Fecha`, COUNT(*) AS `Leads` FROM (";
         query +=
@@ -79,6 +80,13 @@ module.exports = class Graph {
         let query = "SELECT Archivado, Embudo, COUNT(*) AS Cantidad FROM (";
         query += filter + ") AS Leads GROUP BY Archivado, Embudo";
 
+        return db.execute(query);
+    }
+
+    static async graphEight(filter) {
+        console.log("graphEight filter: ", filter);
+        let query = "SELECT CONCAT(YEAR(Creado), '-', LPAD(MONTH(Creado), 2, '0')) AS `Mes_Anio`, COUNT(CASE WHEN CreadoManualmente = 'TRUE' THEN 1 END) AS CreadosManualmente, COUNT(CASE WHEN CreadoManualmente = 'FALSE' THEN 1 END) AS Cargados FROM (";
+        query += filter + ") AS Leads GROUP BY Mes_Anio ORDER BY Mes_Anio;";
         return db.execute(query);
     }
 };

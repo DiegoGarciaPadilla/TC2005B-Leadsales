@@ -90,6 +90,7 @@
                         <option value="graphFour">Leads por status</option>
                         <option value="graphFive">Graph Five</option>
                         <option value="graphSeven">Archivados</option>
+                        <option value="graphEight">Tipo de creación de leads</option>
                         <!-- Add more options for other graphs -->
                     </select>
                 </div>
@@ -119,6 +120,9 @@
             </div>
             <div id="graphSevenContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
                 <canvas id="graphSeven" width="400" height="200"></canvas>
+            </div>
+            <div id="graphEightContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
+                <canvas id="graphEight" width="400" height="200"></canvas>
             </div>
         </div>
 </body>
@@ -194,7 +198,7 @@
                                 labels: fechas,
                                 datasets: [
                                     {
-                                        label: "Leads por día",
+                                        label: "",
                                         data: leads,
                                         backgroundColor:
                                             "rgba(54, 162, 235, 0.2)",
@@ -206,6 +210,20 @@
                                 ],
                             },
                             options: {
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Leads promedio por día',
+                                        font: {
+                                            size: 20,
+                                            weight: 'bold',
+                                        },
+                                        color: '#20293A'
+                                    },
+                                    legend: {
+                                        display: false
+                                    }
+                                },
                                 scales: {
                                     y: {
                                         ticks: {
@@ -216,7 +234,7 @@
                                         ticks: {
                                             autoSkip: true,
                                             maxRotation: 90,
-                                            minRotation: 90,
+                                            minRotation: 60,
                                         },
                                         display: true,
                                         min: 50,
@@ -224,7 +242,6 @@
                                     },
                                 },
                             },
-                            plugins: [colorFondo],
                         });
                     }
 
@@ -307,6 +324,17 @@
                                 datasets: datasets,
                             },
                             options: {
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Leads por Mes y Año',
+                                        font: {
+                                            size: 20,
+                                            weight: 'bold',
+                                        },
+                                        color: '#20293A'
+                                    }
+                                },
                                 scales: {
                                     x: {
                                         stacked: true,
@@ -404,12 +432,22 @@
                                 ],
                             },
                             options: {
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Leads por Usuario',
+                                        font: {
+                                            size: 20,
+                                            weight: 'bold',
+                                        },
+                                        color: '#20293A'
+                                    },
+                                    legend: {
+                                        display: false
+                                    }
+                                },
                                 indexAxis: "y",
                                 responsive: true,
-                                title: {
-                                    text: "New Bar Chart",
-                                    display: true,
-                                },
                             },
                         });
 
@@ -481,8 +519,13 @@
                                     },
                                     title: {
                                         display: true,
-                                        text: "Leads por status",
-                                    },
+                                        text: 'Leads por Status',
+                                        font: {
+                                            size: 20,
+                                            weight: 'bold',
+                                        },
+                                        color: '#20293A'
+                                    }
                                 },
                             },
                         });
@@ -532,6 +575,8 @@
                             embudosData[embudo][archivado] += cantidad;
                         });
 
+                        let chart_7 = Chart.getChart("graphSeven");
+                        if (chart_7) chart_7.destroy();
 
                         let ctx7 = document.getElementById('graphSeven').getContext('2d');
 
@@ -539,7 +584,7 @@
                         let dataSi = labels.map(label => embudosData[label].Si);
                         let dataNo = labels.map(label => embudosData[label].No);
 
-                        let chart = new Chart(ctx7, {
+                        chart_7 = new Chart(ctx7, {
                             type: 'bar',
                             data: {
                                 labels: labels,
@@ -558,6 +603,18 @@
                                 }]
                             },
                             options: {
+                                plugins: {
+                                    colorFondo,
+                                    title: {
+                                        display: true,
+                                        text: 'Leads Activos vs Archivados',
+                                        font: {
+                                            size: 20,
+                                            weight: 'bold',
+                                        },
+                                        color: '#20293A'
+                                    }
+                                },
                                 scales: {
                                     y: {
                                         beginAtZero: true
@@ -566,6 +623,67 @@
                             }
                         });
 
+                    }
+                    if (key === "graph8Data") {
+
+                        let labels = graphData.map(item => item.Mes_Anio);
+                        let dataCreadosManualmente = graphData.map(item => item.CreadosManualmente);
+                        let dataCargados = graphData.map(item => item.Cargados);
+
+                        let chart_8 = Chart.getChart("graphEight");
+                        if (chart_8) chart_8.destroy();
+
+                        let ctx8 = document.getElementById('graphEight').getContext('2d');
+                        chart_8 = new Chart(ctx8, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Creados Manualmente',
+                                    data: dataCreadosManualmente,
+                                    borderColor: 'rgba(220, 38, 38, 1)',
+                                    fill: false
+                                }, {
+                                    label: 'Cargados',
+                                    data: dataCargados,
+                                    borderColor: 'rgba(67, 147, 108, 1)',
+                                    fill: false
+                                }]
+                            },
+                            options: {
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Leads Creados Manualmente vs Cargados mediante CSV',
+                                        font: {
+                                            size: 20,
+                                            weight: 'bold',
+                                        },
+                                        color: '#20293A'
+                                    }
+                                },
+                                scales: {
+                                    x: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Año-Mes'
+                                        },
+                                        ticks: {
+                                            autoSkip: true,
+                                            minRotation: 60
+                                        }
+                                    },
+                                    y: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Cantidad'
+                                        }
+                                    }
+                                }
+                            }
+                        });
                     }
                 });
             });
