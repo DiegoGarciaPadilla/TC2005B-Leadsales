@@ -38,6 +38,12 @@ exports.getReportes = (req, res) => {
                 res.render("historial", {
                     reportes: reportesFetched,
                     csrfToken: req.csrfToken(),
+                    correo: req.session.Correo,
+                    rol: req.session.Rol,
+                    privilegios: req.session.Privilegios,
+                    nombre: req.session.Nombre,
+                    apellidoPaterno: req.session.ApellidoPaterno,
+                    apellidoMaterno: req.session.apellidoMaterno,
                 });
             })
             .catch((error) => {
