@@ -2,92 +2,134 @@
 <head>
     <title>Cambiar Contraseña</title>
     <link rel="stylesheet" href="/css/output.css" />
+    <style>
+        body {
+        background-color: #E4E8EE;
+        }
+        #main-content {
+          transition: padding-left 0.3s ease,  max-width 0.3s ease;
+          padding-left: 3.0rem;
+          max-width: calc(100vw - 3.5rem); /* Adjust the padding-left value */
+          overflow-x: hidden; /* Hide horizontal overflow */
+        }
+        .side:hover ~ #main-content {
+          padding-left: 10rem;
+          max-width: calc(100vw - 10rem); /* Adjust the padding-left value */
+        }
+        #adj {
+        transition: color 0.3s ease, transform 0.3s ease; 
+        }
+
+        #adj:hover {
+        color: #2563eb; 
+        transform: scale(1.05); 
+        }
+    
+        </style>
 </head>
 <body>
     <nav><%- include('partials/sidebar.ejs') %></nav>
-    <div class="p-4 sm:ml-32">
-        <header class="text-left">
-            <div class="mb-4">
-                <%- include('partials/rutaActual', {path: ['ajustes',
-                'cambiarContrasenia']}) %>
-            </div>
-            <h1 class="mb-4 text-4xl font-bold text-gray-900">
-                Cambiar Contraseña
-            </h1>
-        </header>
+
+    <div id="main-content" class="ml-14 mt-14 mr-8 pl-8 display:flex">
+        <nav class="flex">
+            <a href="/ajustes">
+                <h1 id="adj" class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-400 md:text-3xl lg:text-3xl">Ajustes</h1>
+            </a>
+            <h1 class="mb-6 pl-2 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">/ Cambiar Contraseña </h1>
+        </nav>
+        <p class="mt-2 mb-6 font-bold text-red-700">* Obligatorio</p>
         <%- include('partials/error', {error: error}) %> <%-
         include('partials/success', {success: success}) %>
         <form action="/ajustes/cambiarContrasenia" method="POST">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
             <input type="hidden" name="Correo" value="<%= correo %>" />
-            <div class="mb-4">
-                <label
-                    for="ContraseniaActual"
-                    class="block text-gray-700 text-sm font-bold mb-2"
-                    >Contraseña Actual</label
-                >
-                <input
-                    type="password"
-                    id="ContraseniaActual"
-                    name="ContraseniaActual"
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-            </div>
-            <div class="mb-4">
-                <label
-                    for="NuevaContrasenia"
-                    class="block text-gray-700 text-sm font-bold mb-2"
-                    >Nueva Contraseña</label
-                >
-                <input
-                    type="password"
-                    id="NuevaContrasenia"
-                    name="NuevaContrasenia"
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-                <div class="flex flex-col">
-                    <span
-                        id="passwordError"
-                        class="text-red-500 invisible colapse"
-                        >La contraseña debe tener:</span
+
+            <div id="bloque1" class="grid gap-6 mb-0 mr-4 md:grid-cols-2">
+
+                <div class="">
+                    <label
+                        for="ContraseniaActual"
+                        class="block text-gray-700 text-sm font-bold mb-2"
                     >
-                    <ul>
-                        <li
-                            id="passwordLengthError"
-                            class="text-red-500 ml-5"
-                        ></li>
-                        <li
-                            id="passwordUppercaseError"
-                            class="text-red-500 ml-5"
-                        ></li>
-                        <li
-                            id="passwordNumberError"
-                            class="text-red-500 ml-5"
-                        ></li>
-                        <li
-                            id="passwordSpecialCharError"
-                            class="text-red-500 ml-5"
-                        ></li>
-                    </ul>
+                        Contraseña actual
+                        <span class="font-bold text-red-700">
+                             * 
+                        </span>
+                    </label>
+                    <input
+                        type="password"
+                        id="ContraseniaActual"
+                        name="ContraseniaActual"
+                        class="shadow bg-gray-50 border border-gray-300 text-gray-700 leading-tight rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-3/4 p-2.5" 
+                        required
+                    />
                 </div>
-            </div>
-            <div class="mb-4">
-                <label
-                    for="ConfirmarNuevaContrasenia"
-                    class="block text-gray-700 text-sm font-bold mb-2"
-                    >Confirmar Nueva Contraseña</label
-                >
-                <input
-                    type="password"
-                    id="ConfirmarNuevaContrasenia"
-                    name="ConfirmarNuevaContrasenia"
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
+                <div class="-ml-4">
+                    <label
+                        for="NuevaContrasenia"
+                        class="block text-gray-700 text-sm font-bold mb-2"
+                    >
+                        Nueva contraseña
+                        <span class="font-bold text-red-700">
+                            * 
+                       </span>
+                    </label>
+                    <input
+                        type="password"
+                        id="NuevaContrasenia"
+                        name="NuevaContrasenia"
+                        class="shadow bg-gray-50 border border-gray-300 text-gray-700 leading-tight rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-3/4 p-2.5" 
+                        required
+                    />
+                    <div class="flex flex-col">
+                        <span
+                            id="passwordError"
+                            class="text-red-500 invisible colapse"
+                            >La contraseña debe tener:</span
+                        >
+                        <ul>
+                            <li
+                                id="passwordLengthError"
+                                class="text-red-500 ml-5"
+                            ></li>
+                            <li
+                                id="passwordUppercaseError"
+                                class="text-red-500 ml-5"
+                            ></li>
+                            <li
+                                id="passwordNumberError"
+                                class="text-red-500 ml-5"
+                            ></li>
+                            <li
+                                id="passwordSpecialCharError"
+                                class="text-red-500 ml-5"
+                            ></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label
+                        for="ConfirmarNuevaContrasenia"
+                        class="block text-gray-700 text-sm font-bold mb-2"
+                    >
+                        Confirmar nueva contraseña
+                        <span class="font-bold text-red-700">
+                            * 
+                       </span>
+                    </label>
+                    <input
+                        type="password"
+                        id="ConfirmarNuevaContrasenia"
+                        name="ConfirmarNuevaContrasenia"
+                        class="shadow bg-gray-50 border border-gray-300 text-gray-700 leading-tight rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-3/4 p-2.5" 
+                        required
+                    />
+                </div>
             </div>
             <button
                 id="cambiarContraseniaBtn"
                 type="submit"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                class="mt-6 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
                 disabled
             >
                 Cambiar Contraseña
