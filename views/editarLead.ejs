@@ -92,7 +92,7 @@
                             id="nombre"
                             name="nombre"
                             value=" <%= lead.Nombre %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             placeholder="Martha"
                             maxlength="64"
                         />
@@ -109,7 +109,7 @@
                             id="telefono"
                             name="telefono"
                             value="<%= lead.Telefono %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             placeholder="4465897835"
                             maxlength="32"
                         />
@@ -126,7 +126,7 @@
                             id="correo"
                             name="correo"
                             value="<%= lead.Correo %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             placeholder="martharoco@gmail.com"
                             maxlength="32"
                         />
@@ -143,7 +143,7 @@
                             id="compania"
                             name="compania"
                             value="<%= lead.Compania %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             placeholder="Coca-Cola"
                         />
                     </div>
@@ -158,7 +158,7 @@
                         <select 
                             id="asignado"
                             name="asignadoa" 
-                            class="bg-gray-50 border border-gray-300 text-gray-700 leading-tight rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
+                            class="shadow bg-gray-50 border border-gray-300 text-gray-700 leading-tight rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
                             required
                         >
                             <% for (let i = 0; i < usuarios.length; i++) { %> 
@@ -182,7 +182,7 @@
                             id="creado"
                             name="creado"
                             value="<%= new Date(lead.Creado).toISOString().split('T')[0] %>"
-                            class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             required
                             maxlength="32"
                             readonly
@@ -203,7 +203,7 @@
                             id="horadecreacion"
                             name="horadecreacion"
                             value="<%= lead.Horadecreacion %>"
-                            class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             placeholder="4425189756"
                             required
                             readonly
@@ -222,7 +222,7 @@
                             id="fechadeprimermensaje"
                             name="fechadeprimermensaje"
                             value="<%= new Date(lead.Fechadeprimermensaje).toISOString().split('T')[0] %>"
-                            class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             placeholder="4425189756"
                             readonly
                             style="cursor: not-allowed;"
@@ -240,7 +240,7 @@
                             id="horadelprimermensaje"
                             name="horadelprimermensaje"
                             value=" <%= lead.Horadelprimermensaje %>"
-                            class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             maxlength="64"
                             readonly
                             style="cursor: not-allowed;"
@@ -258,7 +258,7 @@
                             id="primermensaje"
                             name="primermensaje"
                             value=" <%= lead.Primermensaje %>"
-                            class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             maxlength="64"
                             readonly
                             style="cursor: not-allowed;"
@@ -276,7 +276,7 @@
                             id="fechadelultimomensaje"
                             name="fechadelultimomensaje"
                             value="<%= new Date(lead.Fechadeprimermensaje).toISOString().split('T')[0] %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             maxlength="64"
                         />
                     </div>
@@ -292,7 +292,7 @@
                             id="horadelultimomensaje"
                             name="horadelultimomensaje"
                             value=" <%= lead.Horadelultimomensaje %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             maxlength="64"
                         />
                     </div>
@@ -308,7 +308,7 @@
                             id="ultimomensaje"
                             name="ultimomensaje"
                             value=" <%= lead.Ultimomensaje %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             maxlength="64"
                         />
                     </div>
@@ -324,7 +324,7 @@
                             id="status"
                             name="status"
                             value=" <%= lead.Status %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             maxlength="64"
                         />
                     </div>
@@ -340,7 +340,7 @@
                             id="estadodelead"
                             name="estadodelead"
                             value=" <%= lead.EstadodeLead %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             maxlength="64"
                         />
                     </div>
@@ -357,7 +357,7 @@
                             id="embudo"
                             name="embudo"
                             value=" <%= lead.Embudo %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             maxlength="64"
                             required
                         />
@@ -374,7 +374,7 @@
                             id="etapa"
                             name="etapa"
                             value=" <%= lead.Etapa %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             maxlength="64"
                         />
                     </div>
@@ -389,7 +389,7 @@
                         <select
                         id="archivado"
                         name="archivado"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                        class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         required
                         >
                             <option value="Si" <%= lead.Archivado === 'Si' ? 'selected' : '' %>>Sí</option>
@@ -409,7 +409,7 @@
                             id="creadomanualmente"
                             name="creadomanualmente"
                             value="<%= lead.CreadoManualmente === 'TRUE' ? 'Sí' : 'No' %>"
-                            class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             maxlength="64"
                             required
                             readonly
@@ -428,7 +428,7 @@
                             id="valor"
                             name="valor"
                             value=" <%= lead.Valor %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             maxlength="64"
                         />
                     </div>
@@ -444,7 +444,7 @@
                             id="ganado"
                             name="ganado"
                             value=" <%= lead.Ganado %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             maxlength="64"
                         />
                     </div>
@@ -460,7 +460,7 @@
                             id="etiquetas"
                             name="etiquetas"
                             value=" <%= lead.Etiquetas %>"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             maxlength="64"
                         />
                     </div>
