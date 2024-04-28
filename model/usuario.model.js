@@ -63,8 +63,17 @@ module.exports = class Usuario {
             `
             SELECT U.*, UR.IDRol, R.Nombre AS NombreRol 
             FROM usuario AS U 
-            LEFT JOIN usuario_rol AS UR ON U.IDUsuario = UR.IDUsuario AND UR.FechaHoraFin IS NULL
-            LEFT JOIN rol AS R ON UR.IDRol = R.IDRol
+            JOIN (
+                SELECT UR1.*
+                FROM usuario_rol AS UR1
+                INNER JOIN (
+                    SELECT IDUsuario, MAX(FechaHoraInicio) AS MaxFechaHoraInicio
+                    FROM usuario_rol
+                    WHERE FechaHoraFin IS NULL
+                    GROUP BY IDUsuario
+                ) AS UR2 ON UR1.IDUsuario = UR2.IDUsuario AND UR1.FechaHoraInicio = UR2.MaxFechaHoraInicio
+            ) AS UR ON U.IDUsuario = UR.IDUsuario
+            JOIN rol AS R ON UR.IDRol = R.IDRol
             WHERE U.FechaHoraEliminado IS NULL
             `
         );
@@ -112,8 +121,19 @@ module.exports = class Usuario {
             [IDUsuario]
         );
         const query2 = db.execute(
-            "UPDATE usuario_rol SET FechaHoraFin = CURRENT_TIMESTAMP() WHERE IDUsuario = ?",
-            [IDUsuario]
+            `
+            UPDATE usuario_rol 
+            SET FechaHoraFin = CURRENT_TIMESTAMP() 
+            WHERE IDUsuario = ? AND FechaHoraInicio = (
+                SELECT MAX(FechaHoraInicio) 
+                FROM (
+                    SELECT FechaHoraInicio
+                    FROM usuario_rol 
+                    WHERE IDUsuario = ?
+                ) AS derivedTable
+            )
+            `,
+            [IDUsuario, IDUsuario]
         );
 
         return Promise.all([query1, query2]);
@@ -144,8 +164,19 @@ module.exports = class Usuario {
 
     static async asignarRol(IDUsuario, IDRol) {
         let query1 = db.execute(
-            "UPDATE usuario_rol SET FechaHoraFin = CURRENT_TIMESTAMP() WHERE IDUsuario = ?",
-            [IDUsuario]
+            `
+            UPDATE usuario_rol 
+            SET FechaHoraFin = CURRENT_TIMESTAMP() 
+            WHERE IDUsuario = ? AND FechaHoraInicio = (
+                SELECT MAX(FechaHoraInicio) 
+                FROM (
+                    SELECT FechaHoraInicio
+                    FROM usuario_rol 
+                    WHERE IDUsuario = ?
+                ) AS derivedTable
+            )
+            `,
+            [IDUsuario, IDUsuario]
         );
 
         let query2 = db.execute(

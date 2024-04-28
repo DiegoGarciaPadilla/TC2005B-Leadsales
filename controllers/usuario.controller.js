@@ -123,7 +123,6 @@ exports.getUsuarios = (req, res) => {
                     Rol.fetchAll()
                         .then(([rolesFetchedAll]) => {
                             console.log("Roles todos:", rolesFetchedAll);
-                            console.log("Usuarios:", usuariosFetched);
                             res.render("usuarios", {
                                 usuarios: usuariosFetched,
                                 roles: rolesFetched,
