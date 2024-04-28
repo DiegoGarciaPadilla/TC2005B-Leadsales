@@ -60,7 +60,13 @@ module.exports = class Usuario {
 
     static fetchAllUsers() {
         return db.execute(
-            "SELECT * FROM usuario WHERE FechaHoraEliminado IS NULL"
+            `
+            SELECT U.*, UR.IDRol, R.Nombre AS NombreRol 
+            FROM usuario AS U 
+            LEFT JOIN usuario_rol AS UR ON U.IDUsuario = UR.IDUsuario AND UR.FechaHoraFin IS NULL
+            LEFT JOIN rol AS R ON UR.IDRol = R.IDRol
+            WHERE U.FechaHoraEliminado IS NULL
+            `
         );
     }
 
@@ -147,8 +153,7 @@ module.exports = class Usuario {
             [IDUsuario, IDRol]
         );
 
-        let query3 = db.execute("SELECT Nombre FROM rol WHERE IDRol = ?", [IDRol]);
-
-        return Promise.all([query1, query2, query3]);
+        await Promise.all([query1, query2]);
+        return db.execute("SELECT Nombre FROM rol WHERE IDRol = ?", [IDRol]);
     }
 };

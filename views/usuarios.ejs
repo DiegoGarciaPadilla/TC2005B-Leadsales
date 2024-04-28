@@ -79,12 +79,12 @@
                   <th scope="col" class="px-6 py-3 bg-blue-700"> Teléfono </th>
                   <th scope="col" class="px-6 py-3 bg-blue-700"> Domicilio </th>
                   <th scope="col" class="px-6 py-3 bg-blue-700"> Rol </th>
-                  <th scope="col" class="px-6 py-3 bg-blue-700">  </th>
+                  <th scope="col" class="px-6 py-3 bg-blue-700"> Acciones </th>
                 </tr>
               </thead>
 
               <tbody>
-                <% i = 0 %>
+                
                 <% usuarios.forEach((usuario) => { %>
                   <tr id="usuario<%- usuario.IDUsuario %>" class="bg-white border-b hover:bg-gray-50">
                     <td class="px-4 py-2 sm:px-3 sm:py-3">
@@ -135,18 +135,18 @@
                       </span>
                     </td>
                     <td id="rol" class="px-4 py-2 sm:px-3 sm:py-3">
-                      <%= roles[i].Nombre %> 
-                      <button onclick="confirmarAccion('modificación de rol','<%=usuario.IDUsuario%>', '<%=roles[i].Nombre%>', '<%=usuario.Nombre%>', '<%=usuario.ApellidoPaterno%>')" type="button"
-                          class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
-                          <svg class="w-6 h-6 text-blue-700" aria-hidden="true" width="24" xmlns="http://www.w3.org/2000/svg" height="24" fill="none" viewBox="0 0 24 24">
-                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
-                          </svg>
-                          <span class="sr-only">Modificar usuario</span>
-                      </button>
+                      <%= usuario.NombreRol %>
                     </td>
-                    <td class="px-4 py-2 sm:px-3 sm:py-3"> 
-                      <% if (roles[i].Nombre != 'Owner') { %>
-                        <button onclick="confirmarAccion('eliminación','<%=usuario.IDUsuario%>', '<%=roles[i].Nombre%>', '<%=usuario.Nombre%>', '<%=usuario.ApellidoPaterno%>')" type="button" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
+                    <td class="px-4 py-2 sm:px-3 sm:py-3">
+                      <% if (usuario.NombreRol != 'Owner') { %>
+                        <button onclick="confirmarAccion('modificación de rol','<%=usuario.IDUsuario%>', '<%=usuario.NombreRol%>', '<%=usuario.Nombre%>', '<%=usuario.ApellidoPaterno%>')" type="button"
+                            class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
+                            <svg class="w-6 h-6 text-blue-700" aria-hidden="true" width="24" xmlns="http://www.w3.org/2000/svg" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                            </svg>
+                            <span class="sr-only">Modificar usuario</span>
+                        </button>
+                        <button onclick="confirmarAccion('eliminación','<%=usuario.IDUsuario%>', '<%=usuario.NombreRol%>', '<%=usuario.Nombre%>', '<%=usuario.ApellidoPaterno%>')" type="button" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
                             <svg class="w-6 h-6 text-red-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                             </svg>                                  
@@ -154,13 +154,14 @@
                         </button>
                     <% } %>
                     </td>
-                        <% i = i + 1 %>
+                        
                   </tr>
                       <% }); %>
 
 <script>
 
-  function confirmarAccion(mensaje, IDUsuario, nombreRol, Nombre, ApellidoPaterno) {
+  const rolesTodos = <%- JSON.stringify(rolesTodos) %>;
+  function confirmarAccion(mensaje, IDUsuario, NombreRol, Nombre, ApellidoPaterno) {
       let modalHTML = `
           <div id="deleteModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
               <div class="relative p-4 text-center bg-white rounded-lg shadow-md">
@@ -176,22 +177,21 @@
                   <div class="mt-4 flex justify-center space-x-2">
                       <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" onclick="eliminar(${IDUsuario})">Sí, eliminar</button>`;
       } else if (mensaje === 'modificación de rol') {
-          console.log("Entro al mensaje de modificación de rol, el rol actual es: ", nombreRol, indice);
           modalHTML += `   
               <div class="mb-4">
                 <label for="rolSeleccionado" class="mt-2 text-sm text-gray-600"> Selecciona un rol </label>
                 <select id="rolSeleccionado" name="rolSeleccionado" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" onchange="capturarIDRol(this.value)" required>
-                <option value="" disabled selected>Selecciona un rol</option>
-                <%for (let i = 0; i < rolesTodos.length; i++) {%>
-                    <%if (rolesTodos[i].Nombre !== 'Owner') { %>
-                      <%if (rolesTodos[i].Nombre !== roles[i].Nombre) {%>
-                        <option value="<%=rolesTodos[i].IDRol%>"> <%=rolesTodos[i].Nombre%> </option>
-                    <%}%>
-                  <%}%>
-                <%}%>
-                </select>
+                <option value="" disabled selected>Selecciona un rol</option>`;
+
+                for (let i = 0; i < rolesTodos.length; i++) {
+                    if (rolesTodos[i].Nombre !== 'Owner' && rolesTodos[i].Nombre !== NombreRol) {
+                        modalHTML += `<option value="${rolesTodos[i].IDRol}">${rolesTodos[i].Nombre}</option>`;
+                    }
+                }
+
+                modalHTML += `</select>
                 </div>
-                    <p class="mt-2 text-sm text-gray-600">¿Confirmas la modificación el rol de "${Nombre} ${ApellidoPaterno}" cuyo rol actual es "${nombreRol}"?</p>
+                    <p class="mt-2 text-sm text-gray-600">¿Confirmas la modificación el rol de "${Nombre} ${ApellidoPaterno}" cuyo rol actual es "${NombreRol}"?</p>
                         <div class="mt-4 flex justify-center space-x-2">
                             <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" onclick="cambiarRol(${IDUsuario})">Sí, cambiar</button>`;
       }
