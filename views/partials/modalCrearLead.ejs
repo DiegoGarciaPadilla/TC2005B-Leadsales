@@ -144,45 +144,83 @@
       .then(response => response.json()) // Convertir la respuesta en JSON
       .then(data => {
         console.log(data);
-        // Buscar el elemento en el DOM
+
         const tableBody = document.getElementById('containerElements');
 
         if (tableBody) {
-          // Si el elemento existe, hacer algo...
+
           console.log('El elemento existe');
           const row = tableBody.insertRow(0);
+          row.classList.add("bg-white", "border-b", "hover:bg-gray-50");
 
-          /// Agregar nuevas celdas a la fila en el orden deseado
-          const cell0 = row.insertCell(0); // Checkbox
-          const cell1 = row.insertCell(1); // Nombre
-          const cell2 = row.insertCell(2); // Ultimo mensaje
-          const cell3 = row.insertCell(3); // Primer mensaje
-          const cell4 = row.insertCell(4); // Asignado a
-          const cell5 = row.insertCell(5); // Telefono
-          const cell6 = row.insertCell(6); // Consulta mas (boton)
+          const cell0 = row.insertCell(0);
+          const cell1 = row.insertCell(1);
+          const cell2 = row.insertCell(2);
+          const cell3 = row.insertCell(3);
+          const cell4 = row.insertCell(4);
+          const cell5 = row.insertCell(5);
+          const cell6 = row.insertCell(6);
 
-          // Establecer el contenido de las celdas
           cell1.textContent = data.lead.Nombre;
-          cell2.textContent = data.lead.Ultimomensaje; // Asegúrate de que este es el nombre correcto de la propiedad
-          cell3.textContent = data.lead.Primermensaje; // Asegúrate de que este es el nombre correcto de la propiedad
+          cell2.textContent = data.lead.Ultimomensaje;
+          cell3.textContent = data.lead.Primermensaje;
           cell4.textContent = data.lead.Asignadoa;
           cell5.textContent = data.lead.Telefono;
 
-          // Crear un nuevo botón y agregarlo a la celda
-          const buttonConsultar = document.createElement('button');
-          buttonConsultar.textContent = 'Consulta más';
-          cell6.appendChild(buttonConsultar);
 
-          const buttonCheck = document.createElement('input');
-          buttonCheck.type = 'checkbox';
-          cell0.appendChild(buttonCheck);
+          // Agregar estilo y funcionamiento a el checkbox
+          cell0.innerHTML = `
+            <div class="flex items-center">
+              <input id="${data.lead.IDLead}" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300">
+              <label for="${data.lead.IDLead}" class="sr-only">checkbox</label>
+            </div>
+          `;
+          cell0.classList.add("px-4", "py-2", "sm:px-3", "sm:py-3");
+          
+          // Agregar estilo y funcionamiento a la celda Consulta más
+          cell6.innerHTML = `
+            <button onclick="showDialog(${data.lead.IDLead})">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+            </button>
+          `;
+          cell6.classList.add('flex', 'justify-center', 'pt-2.5');
 
-          cell1.classList.add('clase-de-la-celda'); // Reemplaza 'clase-de-la-celda' con la clase real
-          cell2.classList.add('clase-de-la-celda'); // Reemplaza 'clase-de-la-celda' con la clase real
-          cell3.classList.add('clase-de-la-celda'); // Reemplaza 'clase-de-la-celda' con la clase real
-          cell4.classList.add('clase-de-la-celda'); // Reemplaza 'clase-de-la-celda' con la clase real
-          cell5.classList.add('clase-de-la-celda'); // Reemplaza 'clase-de-la-celda' con la clase real
-          cell6.classList.add('clase-de-la-celda'); // Reemplaza 'clase-de-la-celda' con la clase real
+          // Agregar estilo y funcionamiento a la celda Nombre
+          cell1.innerHTML = `
+            <span class="cursor-pointer relative" 
+                  onmouseover="document.getElementById('popover0_${data.lead.IDLead}').classList.remove('hidden')"
+                  onmouseout="document.getElementById('popover0_${data.lead.IDLead}').classList.add('hidden')"
+            >
+              ${data.lead.Nombre.substr(0, 15) + (data.lead.Nombre.length > 15 ? '...' : '')}
+              <div id="popover0_${data.lead.IDLead}" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
+                ${data.lead.Nombre}
+              </div>
+            </span>
+          `;
+          cell1.classList.add("px-4", "py-2", "sm:px-3", "sm:py-3");
+
+          // Agregar estilo y funcionamiento a la celda Último mensaje
+          cell2.innerHTML = `
+            <p></p>
+          `;
+          cell2.classList.add('px-4', 'py-2', 'sm:px-3', 'sm:py-3');
+
+          // Agregar estilo y funcionamiento a la celda Primer mensaje
+          cell3.innerHTML = `
+            <p></p>
+          `;
+          cell3.classList.add("px-4", "py-2", "sm:px-3", "sm:py-3");
+
+          // Agregar estilo y funcionamiento a la celda Asignado a
+          cell4.classList.add('px-4', 'py-2', 'sm:px-3', 'sm:py-3');
+
+          // Agregar estilo y funcionamiento a la celda Teléfono
+          cell5.classList.add('px-4', 'py-2', 'sm:px-3', 'sm:py-3');
+
+
+
 
         } else {
           // Si el elemento no existe, hacer algo diferente...
@@ -196,4 +234,81 @@
         // Manejar cualquier error que ocurra durante la solicitud
       });
   }
+</script>
+
+<script defer>
+
+  function hideDialog() {
+    
+    let dialog = document.getElementById('dialog');
+    dialog.classList.add('opacity-0');
+    setTimeout(() => {
+      dialog.classList.add('hidden');
+      dialog.classList.remove('flex');
+    }, 500);
+  }
+  
+  function showDialog(IDLead) {
+    
+    fetch(`/directorio/${IDLead}`, {
+        method: 'GET', 
+        headers: {
+          'Content-Type': 'application/json',
+        }
+    }).then((result) => {
+        return result.json(); // Return another promise
+    }).then((data) => {
+        let dialog = document.getElementById('dialog');
+        let leadDetails = data;
+
+        let leadInfo = '<table class="rounded-lg bg-gray-300 w-full"><thead id="tableHead" class="text-xs text-white bg-gray-50"><tr>';
+
+        for (let key in leadDetails) {
+            if (leadDetails.hasOwnProperty(key) && leadDetails[key]) { // Check if value is not empty
+                leadInfo += `<th scope="col" class="px-6 py-3 bg-blue-700">${key}</th>`;
+            }
+        }
+
+        leadInfo += '</tr></thead><tbody><tr id="element" class="bg-gray-100 border-b hover:bg-gray-50">';
+
+        let cont = 0;
+        for (let key in leadDetails) {
+            if (leadDetails.hasOwnProperty(key) && leadDetails[key]) { // Check if value is not empty
+                let str = leadDetails[key];
+
+                if (typeof str === 'string' && !isNaN(Date.parse(str))) {
+                    let date = new Date(str);
+                    str = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+                }
+
+                let strShort = str.length > 20 ? str.substr(0, 20) + '...' : str;
+
+                leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3">${strShort}
+                                  <span class="cursor-pointer relative" 
+                                        onmouseover="document.getElementById('popover${cont}').classList.remove('hidden')"
+                                        onmouseout="document.getElementById('popover${cont}').classList.add('hidden')"
+                                  >
+                                    <div id="popover${cont}" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
+                                      ${str} 
+                                    </div>
+                              </td>`; 
+                cont++;
+            }
+        }
+
+        leadInfo += '</tr></tbody></table>';
+
+        document.getElementById('leadDetails').innerHTML = leadInfo;
+
+        dialog.classList.remove('hidden');
+        dialog.classList.add('flex');
+        setTimeout(() => {
+            dialog.classList.add('opacity-100');
+        }, 20);
+    }).catch(error => {
+        console.error('Error fetching lead details:', error);
+    });
+}
+
+
 </script>
