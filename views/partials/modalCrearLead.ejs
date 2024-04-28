@@ -36,32 +36,34 @@
           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           id="embudo" type="text" placeholder="Embudo" name="embudo" required>
       </div>
-      <% for (let i = 0; i < privilegios.length; i++) { %>
-        <% if (privilegios[i].Descripcion == 'Crea lead todos.') { %>
-          <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="asignadoa">
-              Asignado a
-              <span class="font-bold text-red-700"> * </span>
-            </label>
-            <select id="asignado" name="asignadoa"
-              class="bg-gray-50 border border-gray-300 text-gray-700 leading-tight rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              required>
-              <option selected> Elige un usuario </option>
-              <% for (let i=0; i < usuarios.length; i++) { %>
-                <option value="<%= usuarios[i].Nombre + ' ' + usuarios[i].ApellidoPaterno %>">
-                  <%= usuarios[i].Nombre + ' ' + usuarios[i].ApellidoPaterno %>
-                </option>
-                <% } %>
-            </select>
-          </div>
-        <% } %>
-      <% } %>
-      <div class="flex items-center justify-between">
-        <button id="crearLeadBoton"
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-          Crear
-        </button>
-      </div>
+
+      <% if (privilegios.some(privilegio=> privilegio.Descripcion === 'Crea lead todos.')) { %>
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="asignadoa">
+            Asignado a
+            <span class="font-bold text-red-700"> * </span>
+          </label>
+          <select id="asignado" name="asignadoa"
+            class="bg-gray-50 border border-gray-300 text-gray-700 leading-tight rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            required>
+            <option selected> Elige un usuario </option>
+            <% for (let i=0; i < usuarios.length; i++) { %>
+              <option value="<%= usuarios[i].Nombre + ' ' + usuarios[i].ApellidoPaterno %>">
+                <%= usuarios[i].Nombre + ' ' + usuarios[i].ApellidoPaterno %>
+              </option>
+              <% } %>
+          </select>
+        </div>
+        <% } else { %>
+          <input type="hidden" id="asignado" name="asignadoa" value="<%= nombre + ' ' + apellidoPaterno %>">
+          <% } %>
+
+            <div class="flex items-center justify-between">
+              <button id="crearLeadBoton"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Crear
+              </button>
+            </div>
     </form>
   </div>
 </div>
@@ -224,6 +226,8 @@
           // Si el elemento no existe, hacer algo diferente...
           console.log('El elemento no existe');
         }
+
+
 
       })
       .catch(error => {
