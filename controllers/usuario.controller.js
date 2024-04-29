@@ -223,18 +223,19 @@ exports.postEliminarUsuario = (req, res) => {
 
 /* ====== CU. 18 ASIGNA ROL A USUARIO | Chimali Nava ======= */
 
-exports.postAsignarRol = async (req, res) => {
-    try {
-        const { IDUsuario, idRolSeleccionado } = req.body;
-        console.log("Datos controller: ", IDUsuario, idRolSeleccionado);
+exports.postAsignarRol = (req, res) => {
+    const { IDUsuario, idRolSeleccionado } = req.body;
+    console.log("Datos controller: ", IDUsuario, idRolSeleccionado);
 
-        const nuevoRol = await Usuario.asignarRol(IDUsuario, idRolSeleccionado);
-        console.log("Rol asignado: ", nuevoRol);
-        res.status(200).json({ success: true, nuevoRol : nuevoRol});
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: "Error al asignar el rol" });
-    }
+    Usuario.asignarRol(IDUsuario, idRolSeleccionado)
+        .then(([nuevoRol]) => {
+            console.log("Rol asignado: ", nuevoRol[0].Nombre);
+            res.status(200).json({ success: true, nuevoRol: nuevoRol[0].Nombre});
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(500).json({ error: "Error al asignar el rol" });
+        });
 };
 
 /* ========================== FIN CU. 18 ==============================  */

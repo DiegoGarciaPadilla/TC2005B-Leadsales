@@ -1,4 +1,8 @@
 const Graph = require("../model/graph.model");
+const Reporte = require("../model/reporte.model");
+
+const path = require("path");
+const fs = require("fs");
 
 exports.getReporte = (req, res) => {
     res.render('reporte', {
@@ -12,7 +16,7 @@ exports.getReporte = (req, res) => {
     });
 }
 
-/* ========== CU. 02 GENERA REPORTE | Sebas Colín - Andrea Medina =============== */
+/* ========== CU. 02 GENERA REPORTE | Sebas Colín - Andrea Medina - Diego García =============== */
 
 exports.getReporteJSON = (req, res, next) => {
     const { Privilegios, Nombre, ApellidoPaterno } = req.session;
@@ -80,6 +84,13 @@ exports.getReporteJSON = (req, res, next) => {
 
         graphPromises.push(promesaGraphSeven);
 
+        // Gráfica 8
+        const Graph8 = new Graph(8);
+        const g8 = Graph.fetchAllForGraphs(dateStart, dateEnd);
+        const promesaGraphEight = Graph.graphEight(g8);
+
+        graphPromises.push(promesaGraphEight);
+
         // Datos de todas las gráficas pendientes a resolver
         Promise.all(graphPromises)
             .then((results) => {
@@ -92,6 +103,7 @@ exports.getReporteJSON = (req, res, next) => {
                     graph5Data: results[4][0],
                     //graph6Data: results[5][0],
                     graph7Data: results[5][0],
+                    graph8Data: results[6][0],
                 };
 
                 // Respuesta de JSON con datos para todas las gráficas
@@ -149,10 +161,16 @@ exports.getReporteJSON = (req, res, next) => {
 
         // Gráfica 7
         const Graph7 = new Graph(7);
-        const g7 = Graph.fetchSomeForGraphs(dateStart, dateEnd);
+        const g7 = Graph.fetchSomeForGraphs(NombreCompleto, dateStart, dateEnd);
         const promesaGraphSeven = Graph.graphSeven(g7);
 
         graphPromises.push(promesaGraphSeven);
+
+        const Graph8 = new Graph(8);
+        const g8 = Graph.fetchSomeForGraphs(NombreCompleto, dateStart, dateEnd);
+        const promesaGraphEight = Graph.graphEight(g8);
+
+        graphPromises.push(promesaGraphEight);
 
         // Datos de todas las gráficas pendientes a resolver
         Promise.all(graphPromises)
@@ -166,6 +184,7 @@ exports.getReporteJSON = (req, res, next) => {
                     graph5Data: results[4][0],
                     //graph6Data: results[5][0],
                     graph7Data: results[5][0],
+                    graph8Data: results[6][0],
                 };
 
                 // Respuesta de JSON con datos para todas las gráficas
@@ -179,5 +198,42 @@ exports.getReporteJSON = (req, res, next) => {
 };
 
 /* ========================== FIN CU. 02 ==============================  */
+
+/* ============== CU. 02 PT. 2 GENERA REPORTE | Sebas Colín ================  */
+
+exports.postPDF = (req, res, next) => {
+    const { IDUsuario } = req.session;
+    console.log("Esto es body: ", req.body);
+    const { pdfData } = req.body;
+    const { csrfToken } = req.csrfToken();
+  
+    Reporte.insertReport(IDUsuario, "Reporte", pdfData)
+      .then(([rows]) => {
+        reporteID = rows[0].id;
+        console.log("ID del reporte: ", reporteID);
+        console.log("PDF Almacenado");
+        
+        // Convert the base64 string back to a Buffer
+        const pdfBuffer = Buffer.from(pdfData, 'base64');
+    
+        // Define the path where you want to save the PDF
+        const pdfPath = path.join('public', 'uploads', 'reportes', `Reporte_${reporteID}.pdf`);
+    
+        // Write the PDF Buffer to a file
+        fs.writeFile(pdfPath, pdfBuffer, (err => {
+            if (err) {
+            console.error('Error writing PDF:', err);
+            } else {
+            console.log(`PDF saved successfully as ${pdfPath}`);
+            }
+        }));
+
+        res.status(200).json({ message: "PDF Almacenado correctamente" });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+  };
 
 module.exports = exports;

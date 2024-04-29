@@ -32,6 +32,7 @@ exports.getLeads = (req, res) => {
                             apellidoPaterno: req.session.ApellidoPaterno,
                             apellidoMaterno: req.session.apellidoMaterno,
                             usuarios: usuariosFetched,
+                            privilegios: Privilegios,
                             error: error,
                             success: success,
                         });
@@ -51,6 +52,14 @@ exports.getLeads = (req, res) => {
                 res.render("directorio", {
                     leads: leadsFetched,
                     csrfToken: req.csrfToken(),
+                    correo: req.session.Correo,
+                    rol: req.session.Rol,
+                    nombre: req.session.Nombre,
+                    apellidoPaterno: req.session.ApellidoPaterno,
+                    apellidoMaterno: req.session.apellidoMaterno,
+                    privilegios: Privilegios,
+                    error: error,
+                    success: success,
                 });
             })
             .catch((error) => {
@@ -94,8 +103,17 @@ exports.postCrearLead = (req, res) => {
                 console.error(error);
                 res.status(500).json({ message: "Error creando lead" });
             });
-    } else {
-        console.log("No tienes permisos para crear leads");
+    } else if (Privilegios.some((Privilegios => Privilegios.Descripcion === 'Crea lead propios.'))){
+        const nombreCompleto = req.session.Nombre + ' ' + req.session.ApellidoPaterno;
+        Lead.createLead(nombre, telefono, embudo, nombreCompleto)
+            .then(([rows]) => {
+
+                res.status(200).json({ success: "Lead creado con exito",  lead: rows[0] });
+            })
+            .catch((error) => {
+                console.error(error);
+                res.status(500).json({ message: "Error creando lead" });
+            });
     }
 };
 
