@@ -298,13 +298,12 @@
         <script defer>
             /* ================== Variables ================== */
 
+            const tablaLeads = document.getElementById("containerElements");
             const eliminarLeadButton = document.getElementById("eliminar-lead");
             const descargarLeadsButton = document.getElementById("descargar-leads");
             const checkboxes = document.querySelectorAll(
                 '#containerElements input[type="checkbox"]'
             );
-
-
 
             /* ================== Seleccionar leads ================== */
 
@@ -523,99 +522,6 @@
                 } else {
                     alert("No se ha seleccionado ningún lead");
                 }
-            };
-
-            /* ================== Actualizar leads ================== */
-
-            const actualizarLeads = (lead) => {
-                let html = "";
-                leads.forEach((lead) => {
-                    html += `
-                <tr id="element" class="bg-white border-b hover:bg-gray-50">
-                    <td class="px-4 py-2 sm:px-3 sm:py-3">
-                    <div class="flex items-center">
-                        <input id=" ${
-                            lead.IDLead
-                        }" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300">
-                        <label for="${lead.IDLead}" class="sr-only">checkbox</label>
-                    </div>
-                    </td>
-                    <td class="px-4 py-2 sm:px-3 sm:py-3">
-                    <span class="cursor-pointer relative" 
-                            onmouseover="document.getElementById('popover0_${
-                                lead.IDLead
-                            }').classList.remove('hidden')"
-                            onmouseout="document.getElementById('popover0_${
-                                lead.IDLead
-                            }).classList.add('hidden')"
-                    >
-                    ${lead.Nombre.substr(0, 15) + (lead.Nombre.length > 15 ? "..." : "")}
-                        <div id="popover0_${
-                            lead.IDLead
-                        }" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-                        ${lead.Nombre}
-                        </div>
-                    </span>  
-                    </td>
-                    <td class="px-4 py-2 sm:px-3 sm:py-3">
-                    <!-- Mostrar solo el inicio del último mensaje -->
-                    <span class="cursor-pointer relative" 
-                            onmouseover="document.getElementById('popover_${
-                                lead.IDLead
-                            }').classList.remove('hidden')"
-                            onmouseout="document.getElementById('popover_${
-                                lead.IDLead
-                            }').classList.add('hidden')"
-                    >
-                        ${
-                            lead.Ultimomensaje
-                                ? lead.Ultimomensaje.substr(0, 20) +
-                                (lead.Ultimomensaje.length > 20 ? "..." : "")
-                                : ""
-                        }
-                        <div id="popover_${
-                            lead.IDLead
-                        }" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-                        ${lead.Ultimomensaje}
-                        </div>
-                    </span>
-                    </td>
-                    <td class="px-4 py-2 sm:px-3 sm:py-3">
-                    <!-- Mostrar solo el inicio del primer mensaje -->
-                    <span class="cursor-pointer relative" 
-                            onmouseover="document.getElementById('popover2_${
-                                lead.IDLead
-                            }').classList.remove('hidden')"
-                            onmouseout="document.getElementById('popover2_${
-                                lead.IDLead
-                            }').classList.add('hidden')"
-                    >
-                    ${
-                        lead.Primermensaje
-                            ? lead.Primermensaje.substr(0, 20) +
-                                (lead.Primermensaje.length > 20 ? "..." : "")
-                            : ""
-                    }
-                        <div id="popover2_${
-                            lead.IDLead
-                        }" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-                        ${lead.Primermensaje}
-                        </div>
-                    </span>
-                    </td>
-                    <td class="px-4 py-2 sm:px-3 sm:py-3">${lead.Asignadoa}</td>
-                    <td class="px-4 py-2 sm:px-3 sm:py-3">${lead.Telefono}</td>
-                    <td class="flex justify-center pt-2.5">
-                    <button onclick="showDialog('${lead.IDLead}')">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                    </button>
-                    </td>
-                </tr>
-                `;
-                });
-                document.getElementById("containerElements").innerHTML = "";
             };
         </script>
     </footer>
