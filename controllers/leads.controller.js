@@ -77,6 +77,16 @@ exports.getLeads = (req, res) => {
     }
 };
 
+/* ---------------- Paginación (Diego García) ---------------- */
+
+exports.getLeadsJSON = (req, res) => {
+
+    const test = { prueba: "prueba", prueba2: "prueba2"};
+
+    res.status(200).json(test);
+}
+
+
 /* ========================== FIN CU. 10 ==============================  */
 
 /* ========== CU. 6 CONSULTA LEAD | Sebas Colin =============== */
