@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -307,6 +307,7 @@
 
             /* ================== Seleccionar leads ================== */
 
+            // Actualiza el estilo de los botones de eliminar y descargar leads
             const updateButtonState = () => {
                 console.log("Actualizando botones...");
 
@@ -344,6 +345,7 @@
 
             /* ================== Eliminar leads ================== */
 
+            // Muestra el popup de confirmación de acción
             const confirmarAccion = (mensaje) => {
                 console.log("Confirmar acción:", mensaje);
 
@@ -368,6 +370,7 @@
                 document.body.insertAdjacentHTML("beforeend", html);
             };
 
+            // Selección de todos los checkbox
             const seleccionarTodo = () => {
                 const botonSeleccionar = document.querySelector("#seleccionar");
 
@@ -397,6 +400,7 @@
                 updateButtonState();
             };
 
+            // Obtiene los leads seleccionados
             const obtenerLeads = () => {
                 const checkboxes = document.querySelectorAll(
                     '#containerElements input[type="checkbox"]:checked'
@@ -405,6 +409,7 @@
                 return selectedLeads;
             };
 
+            // Elimina los leads seleccionados (MOVER AL CONTROLADOR!!!)
             const eliminarLeads = () => {
                 const selectedLeads = obtenerLeads();
                 console.log(selectedLeads);
@@ -448,7 +453,8 @@
                 }
             };
 
-            /* ================== Descargar leads ================== */
+            /* ================== Descargar leads (MOVER AL CONTROLADOR!!!) ================== */
+
 
             const nombrarArchivo = () => {
                 const date = new Date();
