@@ -7,7 +7,7 @@ const Usuario = require("../model/usuario.model");
 
 /* ========== CU. 10 CONSULTA DIRECTORIO | Diego Lira - Diego García - Chimali (Puro Peer Programing) =============== */
 
-exports.getLeadsByUser = (req, res) => {
+exports.getLeads = (req, res) => {
     // Se obtienen los datos de la sesión
     const { Correo, Privilegios } = req.session;
 
@@ -88,7 +88,7 @@ exports.getLeadDetails = (req, res) => {
         .then(([testLead]) => res.status(200).json(testLead[0]))
         .catch((error) => {
             console.error(error);
-            
+
             req.flash("error", "El lead no ha podido ser consultado.");
             res.redirect("/directorio");
         });

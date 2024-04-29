@@ -12,7 +12,7 @@ const { isAuth } = require("../util/privilegios/is-auth");
 
 const {
     getLeadDetails,
-    getLeadsByUser,
+    getLeads,
     postCrearLead,
     postEliminarLead,
     postDescargarLeads,
@@ -34,7 +34,7 @@ const {
 
 router.get("/:leadId", getLeadDetails);
 
-router.get("/", isAuth, consultaDirectorio, getLeadsByUser);
+router.get("/", isAuth, consultaDirectorio, getLeads);
 
 router.post("/crearLead", isAuth, creaLead, postCrearLead);
 

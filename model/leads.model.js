@@ -33,17 +33,35 @@ module.exports = class Lead {
         );
     }
 
-    
+    static fetchAllLeadsByPage(page, perPage) {
+        return db.execute(
+            "SELECT * FROM `lead` WHERE FechaHoraEliminado IS NULL LIMIT ?, ?",
+            [(page - 1) * perPage, perPage]
+        );
+    }
+
+    static async fetchAllLeadsByUserAndPage(correo, page, perPage) {
+        // Primera consulta: obtener el nombre y apellido paterno basado en el correo
+        const [rows] = await db.execute(
+            "SELECT CONCAT(Nombre, ' ', ApellidoPaterno) AS NombreCompleto FROM `usuario` WHERE Correo = ?",
+            [correo]
+        );
+
+        if (rows.length === 0) {
+            // No se encontró ningún usuario con ese correo
+            return [];
+        }
+
+        // Segunda consulta: obtener los leads donde Asignadoa es igual al nombre completo obtenido
+        const nombreCompleto = rows[0].NombreCompleto;
+        return db.execute(
+            "SELECT * FROM `lead` WHERE Asignadoa = ? AND FechaHoraEliminado IS NULL LIMIT ?, ?",
+            [nombreCompleto, (page - 1) * perPage, perPage]
+        );
+    }
 
     static fetchOne(IDLead) {
         return db.execute("SELECT * FROM `lead` WHERE IDLead = ?", [IDLead]);
-    }
-
-    static fetchLeadsByPage(page) {
-        return db.execute(
-            "SELECT * FROM `lead` WHERE FechaHoraEliminado IS NULL LIMIT 10 OFFSET ?",
-            [(page - 1) * 10]
-        );
     }
 
     static async createLead(nombre, telefono, embudo, asignadoa) {
