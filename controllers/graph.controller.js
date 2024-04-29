@@ -189,29 +189,32 @@ exports.postPDF = (req, res, next) => {
     const { csrfToken } = req.csrfToken();
   
     Reporte.insertReport(IDUsuario, "Reporte", pdfData)
-      .then(() => {
+      .then(([rows]) => {
+        reporteID = rows[0].id;
+        console.log("ID del reporte: ", reporteID);
         console.log("PDF Almacenado");
         
+        // Convert the base64 string back to a Buffer
+        const pdfBuffer = Buffer.from(pdfData, 'base64');
+    
+        // Define the path where you want to save the PDF
+        const pdfPath = path.join('public', 'uploads', 'reportes', `Reporte_${reporteID}.pdf`);
+    
+        // Write the PDF Buffer to a file
+        fs.writeFile(pdfPath, pdfBuffer, (err => {
+            if (err) {
+            console.error('Error writing PDF:', err);
+            } else {
+            console.log(`PDF saved successfully as ${pdfPath}`);
+            }
+        }));
+
         res.status(200).json({ message: "PDF Almacenado correctamente" });
       })
       .catch((error) => {
         console.log(error);
       });
 
-    // Convert the base64 string back to a Buffer
-    const pdfBuffer = Buffer.from(pdfData, 'base64');
-
-    // Define the path where you want to save the PDF
-    const pdfPath = path.join('public', 'uploads', 'reportes', 'reporte.pdf');
-
-    // Write the PDF Buffer to a file
-    fs.writeFile(pdfPath, pdfBuffer, (err => {
-        if (err) {
-        console.error('Error writing PDF:', err);
-        } else {
-        console.log(`PDF saved successfully as ${pdfPath}`);
-        }
-    }));
   };
 
 module.exports = exports;

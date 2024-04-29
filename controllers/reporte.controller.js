@@ -81,13 +81,13 @@ exports.consultaReporte = (req, res) => {
             const pdfDataURI = reporte.Liga;
             console.log("URI: ", pdfDataURI);
 
-            const fileName = `${IDReporte}.pdf`; // You can customize the file name here
+            const fileName = `Reporte_${IDReporte}.pdf`; // You can customize the file name here
 
             // Download the PDF from the data URI
             //downloadPDFFromURI(pdfDataURI, fileName);
 
               // Define the path of the PDF file
-                const pdfPath = path.join('public', 'uploads', 'reportes', `reporte.pdf`);
+                const pdfPath = path.join('public', 'uploads', 'reportes', fileName);
 
                 // Send the PDF file for download
                 res.download(pdfPath, err => {

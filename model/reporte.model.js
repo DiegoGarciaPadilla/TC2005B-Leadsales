@@ -28,6 +28,12 @@ module.exports = class Reporte {
     }
 
     static insertReport(IDUsuario, desc, liga) {
-        return db.execute('INSERT INTO `reporte` (IDUsuario, Fecha, Descripcion, Liga) VALUES (?, CURDATE(), ?, ?)', [IDUsuario, desc, liga]);
-    }
+        return db.execute('INSERT INTO reporte (IDUsuario, Fecha, Descripcion, Liga) VALUES (?, CURDATE(), ?, ?)', [IDUsuario, desc, liga])
+          .then(() => {
+            return db.execute('SELECT LAST_INSERT_ID() as id');
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
 };
