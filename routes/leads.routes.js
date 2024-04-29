@@ -32,7 +32,7 @@ const {
 
 // Rutas
 
-router.get("/:leadId", getLeadDetails);
+router.get("/:leadId", isAuth, getLeadDetails);
 
 router.get("/", isAuth, consultaDirectorio, getLeads);
 
