@@ -13,6 +13,7 @@ const reportesRoutes = require("./routes/reportes.routes");
 const app = express();
 
 app.use(express.static("public"));
+app.use('/public/uploads/reportes', express.static("reportes"));
 
 // Cookie parser
 
@@ -28,8 +29,10 @@ app.use(session({
 
 // Body parser
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 
 // Motor de plantillas
