@@ -6,8 +6,6 @@ module.exports = class Lead {
         this.tel = Utel;
     }
 
-    save() {}
-
     static fetchAll() {
         return db.execute(
             "SELECT * FROM `lead` WHERE FechaHoraEliminado IS NULL"
@@ -31,6 +29,10 @@ module.exports = class Lead {
 
   static fetchOne(IDLead) {
       return db.execute("SELECT * FROM `lead` WHERE IDLead = ?", [IDLead]);
+  }
+
+  static fetchLeadsByPage(page) {
+    return db.execute("SELECT * FROM `lead` WHERE FechaHoraEliminado IS NULL LIMIT 10 OFFSET ?", [(page - 1) * 10]);
   }
 
   static async createLead(nombre, telefono, embudo, asignadoa) {
