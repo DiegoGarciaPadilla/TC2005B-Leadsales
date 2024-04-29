@@ -55,6 +55,9 @@
             >
                 Reporte
             </h1>
+            <div id="alertas">
+
+            </div>
             <div class="flex flex-col">
                 <div class="mb-4 flex flex-row space-between">
                     <form
@@ -589,9 +592,13 @@
             const pdf = new jsPDF("landscape");
             pdf.setFontSize(20);
             pdf.addImage(imagenUno, "JPEG", 15, 15, 280, 150);
-            // pdf.save("reporte.pdf");
+            pdf.save(`reporte.pdf`);
 
             const pdfData = pdf.output('datauristring');
+            console.log("Esto es pdfData: ", pdfData);
+
+            // Convert the PDF to a base64 string
+            const pdfBase64 = pdf.output('datauristring').split(',')[1];
 
             const csrf = document.getElementById('_csrf').value;
             fetch('/reporte/save', {
@@ -600,7 +607,7 @@
                     'Content-Type': 'application/json',
                     'csrf-token': csrf,
                 },
-                body: JSON.stringify({ pdfData }),
+                body: JSON.stringify({ pdfData: pdfBase64}),
                 })
                 .then((res) => {
                     if (!res.ok) {
@@ -609,7 +616,9 @@
                     return res.json();
                 })
                 .then((data) => {
-                    alert('PDF saved successfully!');
+                    console.log("Esto es data", data);
+                    operacionExitosa(data.message);
+                    
                 })
                 .catch((error) => {
                     console.log(error);
@@ -678,5 +687,31 @@
             getData();
         });
         
+    </script>
+
+    <script>
+        function operacionExitosa(accion) {
+        const alertas = document.getElementById('alertas');
+            const alertHTML = `
+                <div id="alert-success" class="flex relative items-center p-4 mb-4 text-sm mr-24 text-green-800 border border-green-300 rounded-lg bg-green-50 w-2/3">
+                    <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarAlert()">
+                        <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                    <div>
+                        <span class="font-bold"> ¡Acción exitosa! </span> 
+                        <span id="success-message">${accion}</span>
+                    </div>
+                </div>
+            `;
+            alertas.innerHTML = alertHTML;
+            document.getElementById('alert-success').style.display = 'block';
+        }
+
+        function cerrarAlert() {
+            const successAlert = document.getElementById('alert-success');
+            successAlert.parentNode.removeChild(successAlert);
+        }
     </script>
 </html>

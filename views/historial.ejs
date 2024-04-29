@@ -34,6 +34,8 @@
 
   </style>
 
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 </head>
 <body class="bg-[#E4E8EE]">
   <%- include('partials/sidebar.ejs', {
@@ -42,6 +44,7 @@
   
   <div id="main-content" class="ml-14 mt-14 pl-8">
     <h1 class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">Historial de <span class="text-blue-600 dark:text-blue-500"><%= correo %>!</span></h1>
+    <div id="alertas"></div>
     <div id="container" class="relative overflow-auto sm:rounded-lg w-3/4">
           <table class="text-sm text-center text-gray-500 border-collapse rounded-lg w-full">
             <thead id="tableHead" class="text-xs text-white bg-gray-50">
@@ -104,74 +107,60 @@
     fetch(`/historial/${ IDReporte }`, {
       method: 'GET', 
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/pdf',
       }
     })
     .then((result) => {
       console.log('primer then');
-      return result.json();
+      return result.blob()
     })
     .then((data) => {
       console.log('segundo then');
-      console.log(data);
-      
-      console.log(data.Liga);
-      const ligaBuffer = data.Liga; // Get the Buffer object from the response
-      // Convert ArrayBuffer to Uint8Array
-      const uint8Array = new Uint8Array(ligaBuffer.data);
 
-      // Convert Uint8Array to Blob
-      const blob = new Blob([uint8Array], { type: 'application/pdf' });
+      // Create a link element
+      const link = document.createElement('a');
+      link.href = `/historial/${ IDReporte }`;
+      link.download = `reporte.pdf`; // Set the file name
 
-      // Read the Blob as data URL
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const base64String = event.target.result;
-        console.log('Base64 String:', base64String);
-        
-        const blob = dataURItoBlob(base64String);
+      // Append the link to the body
+      document.body.appendChild(link);
 
-        // Create a link element to trigger the download
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        let name = data.Descripcion;
-        link.download = name;
+      // Simulate a click on the link
+      link.click();
 
-        // Append the link to the body and trigger a click event to start the download
-        document.body.appendChild(link);
-        link.click();
+      // Remove the link from the body
+      document.body.removeChild(link);
 
-        // Remove the link from the body
-        document.body.removeChild(link);
-
-      };
-      reader.readAsDataURL(blob);
-
-      // // Arreglo de bits 
-      // const arregloBits = new Uint8Array(binaryString.length);
-      // for (let i = 0; i < binaryString.length; i++) {
-      //     arregloBits[i] = binaryString.charCodeAt(i);
-      // }
-      // // Crear Blob desde datos binarios
-      // const blob = new Blob([arregloBits], { type: 'application/pdf' });
-      // // URL del blob
-      // const url = URL.createObjectURL(blob);
-      // // Link de descarga
-      // const link = document.createElement('a');
-      // link.href = url;  
-      // link.download = item.Descripcion;
-      // // Append the link to the body and trigger a click event to start the download
-      // document.body.appendChild(link);
-      // link.click();
-      // // Remove the link from the body
-      // document.body.removeChild(link);
-      // // Revoke the URL to release memory
-      // URL.revokeObjectURL(url);
+      operacionExitosa('Descarga exitosa');
 
     })
     .catch((error) => {
       console.log(error);
     })
+  }
+
+  function operacionExitosa(accion) {
+    const alertas = document.getElementById('alertas');
+        const alertHTML = `
+            <div id="alert-success" class="flex relative items-center p-4 mb-4 text-sm mr-24 text-green-800 border border-green-300 rounded-lg bg-green-50 w-2/3">
+                <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarAlert()">
+                    <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+                <div>
+                    <span class="font-bold"> ¡Acción exitosa! </span> 
+                    <span id="success-message">${accion}</span>
+                </div>
+            </div>
+        `;
+        alertas.innerHTML = alertHTML;
+        document.getElementById('alert-success').style.display = 'block';
+  }
+
+  function cerrarAlert() {
+      const successAlert = document.getElementById('alert-success');
+      successAlert.parentNode.removeChild(successAlert);
   }
 
 </script>

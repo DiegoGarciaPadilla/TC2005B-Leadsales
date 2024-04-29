@@ -13,6 +13,7 @@ const reportesRoutes = require("./routes/reportes.routes");
 const app = express();
 
 app.use(express.static("public"));
+app.use('/public/uploads/reportes', express.static("reportes"));
 
 // Cookie parser
 

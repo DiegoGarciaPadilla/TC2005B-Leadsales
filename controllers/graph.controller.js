@@ -1,6 +1,9 @@
 const Graph = require("../model/graph.model");
 const Reporte = require("../model/reporte.model");
 
+const path = require("path");
+const fs = require("fs");
+
 exports.getReporte = (req, res) => {
     res.render('reporte', {
         csrfToken: req.csrfToken(),
@@ -181,6 +184,7 @@ exports.getReporteJSON = (req, res, next) => {
 
 exports.postPDF = (req, res, next) => {
     const { IDUsuario } = req.session;
+    console.log("Esto es body: ", req.body);
     const { pdfData } = req.body;
     const { csrfToken } = req.csrfToken();
   
@@ -188,11 +192,26 @@ exports.postPDF = (req, res, next) => {
       .then(() => {
         console.log("PDF Almacenado");
         
-        res.redirect("/historial");
+        res.status(200).json({ message: "PDF Almacenado correctamente" });
       })
       .catch((error) => {
         console.log(error);
       });
+
+    // Convert the base64 string back to a Buffer
+    const pdfBuffer = Buffer.from(pdfData, 'base64');
+
+    // Define the path where you want to save the PDF
+    const pdfPath = path.join('public', 'uploads', 'reportes', 'reporte.pdf');
+
+    // Write the PDF Buffer to a file
+    fs.writeFile(pdfPath, pdfBuffer, (err => {
+        if (err) {
+        console.error('Error writing PDF:', err);
+        } else {
+        console.log(`PDF saved successfully as ${pdfPath}`);
+        }
+    }));
   };
 
 module.exports = exports;
