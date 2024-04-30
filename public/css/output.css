@@ -891,10 +891,6 @@ video {
   height: 100vh;
 }
 
-.h-5 {
-  height: 1.25rem;
-}
-
 .max-h-20 {
   max-height: 5rem;
 }
@@ -975,10 +971,6 @@ video {
   width: 100vw;
 }
 
-.w-5 {
-  width: 1.25rem;
-}
-
 .max-w-40 {
   max-width: 10rem;
 }
@@ -995,10 +987,6 @@ video {
   max-width: 20rem;
 }
 
-.flex-auto {
-  flex: 1 1 auto;
-}
-
 .border-collapse {
   border-collapse: collapse;
 }
@@ -1013,12 +1001,6 @@ video {
 
 .list-disc {
   list-style-type: disc;
-}
-
-.appearance-none {
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
 }
 
 .grid-cols-3 {
