@@ -41,7 +41,7 @@
 </head>
 <body class="bg-[#E4E8EE]">
     <input type="hidden" id="_csrf" value="<%= csrfToken %>">
-    <nav><%- include('partials/sidebar.ejs') %></nav>
+    <%- include('partials/sidebar.ejs') %>
     <%- include('partials/aside.ejs', {
         correo: correo,
         nombre: nombre, 
