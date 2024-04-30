@@ -543,11 +543,8 @@
 
             // Fetch leads
             const getLeads = (page = 1) => {
-
-                url = page ? "/directorio/json" : `/directorio/json?page=${page}`;
-
                 // Fetch leads
-                fetch(url, {
+                fetch(`/directorio/json?page=${page}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -691,7 +688,14 @@
             const currentPageClass = "z-10 flex items-center justify-center px-4 h-10 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700"
 
             const selectPage = (page) => {
+
+                // Actualizar el page actual
                 currentPage = page;
+
+                // Limpiar los elementos
+                tableBody.innerHTML = "";
+
+                // Obtener los leads de la página
                 getLeads(page);
 
                 const pages = navigationElement.querySelectorAll("a");
@@ -704,11 +708,15 @@
             };
 
             const previousPage = () => {
-                console.log("Página anterior");
+                if (currentPage > 1) {
+                    currentPage -= 1;
+                    selectPage(currentPage);
+                }
             };
 
             const nextPage = () => {
-                console.log("Página siguiente");
+                currentPage += 1;
+                selectPage(currentPage);
             };
 
             // ================== Inicialización ==================
