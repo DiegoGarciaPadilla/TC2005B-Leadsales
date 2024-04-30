@@ -50,6 +50,7 @@ router.get("/", isAuth,  (req, res) => {
                 usuarios: usuariosFetched,
                 success: "",
                 error: error,
+                mostrarBoton: true, 
             });
         
     }).catch((error) => {

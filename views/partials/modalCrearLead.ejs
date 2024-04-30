@@ -1,4 +1,4 @@
-<div id="fondoModalCrearLead" class="fixed inset-0 flex items-center justify-center z-50 hidden bg-black bg-opacity-50"
+<div id="fondoModalCrearLead" style="display: none;" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
   onclick="toggleModal(event)">
   <div id="modalForms" class="bg-white rounded shadow-lg p-8 m-4 max-w-xs max-h-full text-center">
 
@@ -60,6 +60,7 @@
 
             <div class="flex items-center justify-between">
               <button id="crearLeadBoton"
+              onclick="toggleModal2(event)"
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                 Crear
               </button>
@@ -77,12 +78,28 @@
 
   function toggleModal(event) {
     var modal = document.getElementById('fondoModalCrearLead');
+    console.log("Este es el toggle: ", event.target.id);
     if (event.target.id == "butonCrearLead" || event.target.id == "fondoModalCrearLead") {
-      if (modal.style.display === "none" || modal.style.display === "") {
+      console.log("Entro y display: ", modal.style.display);
+      if (modal.style.display === "none") {
         modal.style.display = "flex";
       } else {
         modal.style.display = "none";
       }
+      console.log("Ahora es: ", modal.style.display);
+    }
+  }
+  function toggleModal2(event) {
+    var modal = document.getElementById('fondoModalCrearLead');
+    console.log("Este es el toggle: ", event.target.id);
+    if (event.target.id == "fondoModalCrearLead" || event.target.id == "crearLeadBoton") {
+      console.log("Entro y display: ", modal.style.display);
+      if (modal.style.display === "none") {
+        modal.style.display = "flex";
+      } else {
+        modal.style.display = "none";
+      }
+      console.log("Ahora es: ", modal.style.display);
     }
   }
 
@@ -151,7 +168,7 @@
 
           console.log('El elemento existe');
           const row = tableBody.insertRow(0);
-          row.classList.add("bg-white", "border-b", "hover:bg-gray-50");
+          row.classList.add("bg-white", "hover:bg-gray-50");
 
           const cell0 = row.insertCell(0);
           const cell1 = row.insertCell(1);
@@ -160,6 +177,7 @@
           const cell4 = row.insertCell(4);
           const cell5 = row.insertCell(5);
           const cell6 = row.insertCell(6);
+          const cell7 = row.insertCell(7);
 
           cell1.textContent = data.lead.Nombre;
           cell2.textContent = data.lead.Ultimomensaje;
@@ -179,13 +197,24 @@
           
           // Agregar estilo y funcionamiento a la celda Consulta más
           cell6.innerHTML = `
-            <button onclick="showDialog(${data.lead.IDLead})">
+            <button onclick="showDialog(${data.lead.IDLead})" class="ml-12">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
               </svg>
             </button>
           `;
-          cell6.classList.add('flex', 'justify-center', 'pt-2.5');
+          cell7.classList.add('flex', 'justify-center', 'items-center', 'pt-2.5');
+
+                    // Agregar estilo y funcionamiento a la celda Editar
+                    cell7.innerHTML = `
+                    <a href="/directorio/editarLead/${data.lead.IDLead}" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center ml-2">
+                      <svg class="w-6 h-6 text-blue-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                      </svg>
+                      <span class="sr-only">Modificar lead</span>
+                  </a>
+          `;
+          cell7.classList.add('flex', 'justify-center', 'pt-2.5');
 
           // Agregar estilo y funcionamiento a la celda Nombre
           cell1.innerHTML = `
@@ -219,14 +248,14 @@
           // Agregar estilo y funcionamiento a la celda Teléfono
           cell5.classList.add('px-4', 'py-2', 'sm:px-3', 'sm:py-3');
 
-
-
-
+          
+          
         } else {
           // Si el elemento no existe, hacer algo diferente...
           console.log('El elemento no existe');
         }
-
+        
+        
 
 
       })
@@ -234,6 +263,7 @@
         // Manejar cualquier error que ocurra durante la solicitud
       });
   }
+
 </script>
 
 <script defer>

@@ -66,6 +66,8 @@ exports.postLogin = (req, res) => {
                                                         usuario.IDUsuario;
                                                     req.session.Rol = rol;
                                                     req.session.isLoggedIn = true;
+                                                    req.session.NombreCompleto = 
+                                                        usuario.Nombre + " " + usuario.ApellidoPaterno;
                                                     console.log(req.session);
                                                     res.redirect("/");
                                                 })
@@ -131,6 +133,12 @@ exports.getUsuarios = (req, res) => {
                                 csrfToken: req.csrfToken(),
                                 success: msg,
                                 Privilegios: Privilegios,
+                                correo: req.session.Correo,
+                                rol: req.session.Rol,
+                                nombre: req.session.Nombre,
+                                apellidoPaterno: req.session.ApellidoPaterno,
+                                apellidoMaterno: req.session.apellidoMaterno,
+                                mostrarBoton: null,
                             });
                         })
                         .catch((error) => {
@@ -151,11 +159,19 @@ exports.getUsuarios = (req, res) => {
 /* ====== CU. 11 REGISTRA USUARIO | Andrea Medina - Sebastián Colín  ======= */
 
 exports.getRegistrarUsuario = (req, res) => {
+    const { privilegios } = req.session;
     Rol.fetchAll()
         .then(([rolesFetched]) => {
             res.render("registrarUsuario", {
                 csrfToken: req.csrfToken(),
                 roles: rolesFetched,
+                privilegios: privilegios,
+                correo: req.session.Correo,
+                rol: req.session.Rol,
+                nombre: req.session.Nombre,
+                apellidoPaterno: req.session.ApellidoPaterno,
+                apellidoMaterno: req.session.apellidoMaterno,
+                mostrarBoton: null,
             });
         })
         .catch((error) => {
@@ -266,11 +282,19 @@ exports.getCambiarContrasenia = (req, res) => {
     const scs = req.session.success || "";
     req.session.success = "";
 
+    const {Privilegios} = req.session;
+
     res.render("cambiarContrasenia", {
         correo: req.session.Correo,
         csrfToken: req.csrfToken(),
         error: err,
         success: scs,
+        rol: req.session.Rol,
+        nombre: req.session.Nombre,
+        apellidoPaterno: req.session.ApellidoPaterno,
+        apellidoMaterno: req.session.apellidoMaterno,
+        privilegios: Privilegios,
+        mostrarBoton: null,
     });
 };
 

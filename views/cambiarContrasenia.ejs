@@ -29,8 +29,16 @@
 </head>
 <body>
     <nav><%- include('partials/sidebar.ejs') %></nav>
+    <%- include('partials/aside.ejs', {
+        correo: correo,
+        nombre: nombre, 
+        apellidoPaterno: apellidoPaterno,
+        apellidoMaterno: apellidoMaterno,
+        rol: rol,
+        privilegios: privilegios
+        }) %>  
 
-    <div id="main-content" class="ml-14 mt-14 mr-8 pl-8 display:flex">
+    <div id="main-content" class="ml-14 mt-14 mr-8 pl-8 display:flex w-[75%]">
         <nav class="flex">
             <a href="/ajustes">
                 <h1 id="adj" class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-400 md:text-3xl lg:text-3xl">Ajustes</h1>
