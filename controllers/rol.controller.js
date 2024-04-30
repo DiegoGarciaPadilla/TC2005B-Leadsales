@@ -17,6 +17,12 @@ exports.getCrearRol = (req, res) => {
                 csrfToken: req.csrfToken(),
                 success: "",
                 error: "",
+                rol: req.session.Rol,
+                correo: req.session.Correo,
+                nombre: req.session.Nombre,
+                apellidoPaterno: req.session.ApellidoPaterno,
+                apellidoMaterno: req.session.apellidoMaterno,
+                mostrarBoton: null,
             });
         })
         .catch((error) => {
@@ -79,6 +85,12 @@ exports.getRoles = (req, res) => {
                 error: err,
                 csrfToken: req.csrfToken(),
                 privilegios: Privilegios,
+                correo: req.session.Correo,
+                rol: req.session.Rol,
+                nombre: req.session.Nombre,
+                apellidoPaterno: req.session.ApellidoPaterno,
+                apellidoMaterno: req.session.apellidoMaterno,
+                mostrarBoton: null,
             });
         })
         .catch((error) => {
@@ -121,6 +133,14 @@ exports.getEditarRol = (req, res) => {
                                 success: "",
                                 error: err,
                                 csrfToken: req.csrfToken(),
+                                correo: req.session.Correo,
+                                rol: req.session.Rol,
+                                nombre: req.session.Nombre,
+                                apellidoPaterno: req.session.ApellidoPaterno,
+                                apellidoMaterno: req.session.apellidoMaterno,
+                                mostrarBoton: null,
+                                mostrarBoton: null,
+
                             });
                         })
                         .catch((error) => {

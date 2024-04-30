@@ -45,7 +45,16 @@
 
 <body class="bg-[#E4E8EE]">
     <nav><%- include('partials/sidebar.ejs') %></nav>
-    <div id="main-content" class="ml-14 mt-14 pl-8 display:flex">
+    <%- include('partials/aside.ejs', {
+        correo: correo,
+        nombre: nombre, 
+        apellidoPaterno: apellidoPaterno,
+        apellidoMaterno: apellidoMaterno,
+        rol: rol,
+        privilegios: privilegios
+        }) %> 
+
+    <div id="main-content" class="ml-14 mt-14 pl-8 display:flex w-[75%]">
         <nav class="flex">
             <a href="/ajustes">
                 <h1
@@ -252,7 +261,7 @@
                 id="submit-button"
                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
             >
-                Registrar cuenta
+                Agregar usuario
             </button>
         </form>
     </div>
