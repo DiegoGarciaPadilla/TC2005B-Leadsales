@@ -8,82 +8,56 @@ const Usuario = require("../model/usuario.model");
 /* ========== CU. 10 CONSULTA DIRECTORIO | Diego Lira - Diego García - Chimali (Puro Peer Programing) =============== */
 
 exports.getLeads = (req, res) => {
-    // Se obtienen los datos de la sesión
-    const { Correo, Privilegios } = req.session;
-
-    // Se obtienen los mensajes flash
-    const errorFlash = req.flash("error") || "";
-    const successFlash = req.flash("success") || "";
-
-    // Si el usuario tiene el privilegio de "Consulta directorio todos." se muestran todos los leads
-    if (
-        Privilegios.some(
-            (priv) => priv.Descripcion === "Consulta directorio todos."
-        )
-    ) {
-        Lead.fetchAll()
-            .then(([leadsFetched]) => {
-                Usuario.fetchAllUsers()
-                    .then(([usuariosFetched]) => {
-                        res.render("directorio", {
-                            leads: leadsFetched,
-                            csrfToken: req.csrfToken(),
-                            correo: req.session.Correo,
-                            rol: req.session.Rol,
-                            nombre: req.session.Nombre,
-                            apellidoPaterno: req.session.ApellidoPaterno,
-                            apellidoMaterno: req.session.apellidoMaterno,
-                            usuarios: usuariosFetched,
-                            privilegios: Privilegios,
-                            error: errorFlash,
-                            success: successFlash,
-                        });
-                    })
-                    .catch((error) => {
-                        console.log(error);
-
-                        req.flash("error", "Error al cargar usuarios.");
-                        res.redirect("/inicio");
-                    });
-            })
-            .catch((error) => {
-                console.log(error);
-
-                req.flash("error", "Error al cargar leads.");
-                res.redirect("/inicio");
-            });
-    // En caso contrario, se muestran los leads asignados al usuario
-    } else {
-        Lead.fetchLeadsByUser(Correo)
-            .then(([leadsFetched]) => {
-                res.render("directorio", {
-                    leads: leadsFetched,
-                    csrfToken: req.csrfToken(),
-                    correo: req.session.Correo,
-                    rol: req.session.Rol,
-                    nombre: req.session.Nombre,
-                    apellidoPaterno: req.session.ApellidoPaterno,
-                    apellidoMaterno: req.session.apellidoMaterno,
-                    privilegios: Privilegios,
-                    error: errorFlash,
-                    success: successFlash,
-                });
-            })
-            .catch((error) => {
-                console.log(error);
-                req.flash("error", "Error al cargar leads.");
-                res.redirect("/inicio");
-            });
-    }
+    res.render("directorio", {
+        csrfToken: req.csrfToken(),
+        privilegios: req.session.Privilegios,
+        correo: req.session.Correo,
+        rol: req.session.Rol,
+        nombre: req.session.Nombre,
+        apellidoPaterno: req.session.ApellidoPaterno,
+        error: req.session.error || "",
+        success: req.session.success || "",
+    });
 };
 
 /* ---------------- Paginación (Diego García) ---------------- */
 
 exports.getLeadsJSON = (req, res) => {
 
-    const test = { prueba: "prueba", prueba2: "prueba2"};
+    // Obtiene los privilegios del usuario
+    const { Privilegios, Correo } = req.session;
 
-    res.status(200).json(test);
+    if (
+        Privilegios.some(
+            (priv) => priv.Descripcion === "Consulta directorio todos."
+        )
+    ) {
+        // Obtiene los leads de la BD
+        Lead.fetchAll()
+            .then(([leadsFetched]) => {
+                res.status(200).json(leadsFetched);
+            })
+            .catch((error) => {
+                console.error(error);
+                res.status(500).json({ message: "Error obteniendo leads" });
+            });
+    } else if (
+        Privilegios.some(
+            (priv) => priv.Descripcion === "Consulta directorio propios."
+        )
+    ) {
+        // Obtiene los leads de la BD
+        Lead.fetchAllByUser(Correo)
+            .then(([leadsFetched]) => {
+                res.status(200).json(leadsFetched);
+            })
+            .catch((error) => {
+                console.error(error);
+                res.status(500).json({ message: "Error obteniendo leads" });
+            });
+    }
+
+
 }
 
 
@@ -137,7 +111,7 @@ exports.postCrearLead = (req, res) => {
     // En caso contrario, si el usuario tiene el privilegio de "Crea lead propios." se crea el lead
     } else if (
         Privilegios.some(
-            (priv) => priv.Descripcion === "Crea lead propios."
+            (priv) => priv.Descripcion === "Crea lead."
         )
     ) {
         const nombreCompleto = `${Nombre} ${ApellidoPaterno}`;
