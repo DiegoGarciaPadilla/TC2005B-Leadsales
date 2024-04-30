@@ -27,14 +27,18 @@ exports.getLeadsJSON = (req, res) => {
     // Obtiene los privilegios del usuario
     const { Privilegios, Correo } = req.session;
 
+    // Obtiene la página actual de los parámetros de la URL
+    const page = req.query.page || 1;
+
     if (
         Privilegios.some(
             (priv) => priv.Descripcion === "Consulta directorio todos."
         )
     ) {
         // Obtiene los leads de la BD
-        Lead.fetchAll()
+        Lead.fetchAllLeadsByPage(page, 10)
             .then(([leadsFetched]) => {
+                console.log("fetchAllLeadsByPage", leadsFetched);
                 res.status(200).json(leadsFetched);
             })
             .catch((error) => {
@@ -47,8 +51,9 @@ exports.getLeadsJSON = (req, res) => {
         )
     ) {
         // Obtiene los leads de la BD
-        Lead.fetchAllByUser(Correo)
+        Lead.fetchAllLeadsByUserAndPage(Correo, page, 10)
             .then(([leadsFetched]) => {
+                console.log("fetchAllLeadsByUserAndPage", leadsFetched);
                 res.status(200).json(leadsFetched);
             })
             .catch((error) => {

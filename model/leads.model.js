@@ -34,9 +34,10 @@ module.exports = class Lead {
     }
 
     static fetchAllLeadsByPage(page, perPage) {
+        const offset = (page - 1) * perPage;
         return db.execute(
             "SELECT * FROM `lead` WHERE FechaHoraEliminado IS NULL LIMIT ?, ?",
-            [(page - 1) * perPage, perPage]
+            [offset, perPage]
         );
     }
 
@@ -54,9 +55,11 @@ module.exports = class Lead {
 
         // Segunda consulta: obtener los leads donde Asignadoa es igual al nombre completo obtenido
         const nombreCompleto = rows[0].NombreCompleto;
+        const offset = (page - 1) * perPage;
+        
         return db.execute(
             "SELECT * FROM `lead` WHERE Asignadoa = ? AND FechaHoraEliminado IS NULL LIMIT ?, ?",
-            [nombreCompleto, (page - 1) * perPage, perPage]
+            [nombreCompleto, offset, perPage]
         );
     }
 
