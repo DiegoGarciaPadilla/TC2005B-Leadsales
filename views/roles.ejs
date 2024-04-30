@@ -41,7 +41,7 @@
 </head>
 <body class="bg-[#E4E8EE]">
     <input type="hidden" id="_csrf" value="<%= csrfToken %>">
-    <nav><%- include('partials/sidebar.ejs') %></nav>
+    <%- include('partials/sidebar.ejs') %>
     <%- include('partials/aside.ejs', {
         correo: correo,
         nombre: nombre, 
@@ -51,7 +51,7 @@
         privilegios: privilegios
         }) %>  
 
-    <div id="main-content" class="ml-14 mt-14 pl-8">
+    <div id="main-content" class="ml-14 mt-8 pl-8">
         <nav class="flex">
             <a href="/ajustes">
                 <h1
@@ -83,7 +83,7 @@
             <table
                 class="text-sm text-left rtl:text-right text-gray-500 border-collapse rounded-lg w-full"
             >
-                <thead class="text-xs text-white bg-gray-50">
+                <thead class="text-xs text-white bg-gray-50 sticky top-0 z-50">
                     <tr>
                         <th scope="col" class="px-6 py-3 bg-blue-700">
                             Nombre
