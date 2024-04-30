@@ -15,6 +15,8 @@ const reporteController = require('../controllers/reporte.controller');
 
 const Usuario = require("../model/usuario.model");
 
+const Lead = require("../model/leads.model");
+
 const { isAuth } = require("../util/privilegios/is-auth");
 
 // Rutas
@@ -39,19 +41,25 @@ router.get("/", isAuth,  (req, res) => {
 
     Usuario.fetchAllUsers()
         .then(([usuariosFetched]) => {
-            res.render("inicio", {
-                csrfToken: req.csrfToken(),
-                privilegios: req.session.Privilegios,
-                correo: req.session.Correo,
-                rol: req.session.Rol,
-                nombre: req.session.Nombre,
-                apellidoPaterno: req.session.ApellidoPaterno,
-                apellidoMaterno: req.session.apellidoMaterno,
-                usuarios: usuariosFetched,
-                success: "",
-                error: error,
-                mostrarBoton: true, 
-            });
+            Lead.fetchEmbudos()
+                .then(([embudosFetched]) => {
+                    console.log('embudosFetched:', embudosFetched); // Agrega esta línea
+                    res.render("inicio", {
+                        csrfToken: req.csrfToken(),
+                        privilegios: req.session.Privilegios,
+                        correo: req.session.Correo,
+                        rol: req.session.Rol,
+                        nombre: req.session.Nombre,
+                        apellidoPaterno: req.session.ApellidoPaterno,
+                        apellidoMaterno: req.session.apellidoMaterno,
+                        usuarios: usuariosFetched,
+                        embudos: embudosFetched,
+                        success: "",
+                        error: error,
+                        mostrarBoton: true, 
+                    });
+                })
+                .catch();
         
     }).catch((error) => {
         console.log(error);
