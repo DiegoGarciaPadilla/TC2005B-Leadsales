@@ -499,17 +499,22 @@
                         let ctx4 = document
                             .getElementById("graphFour")
                             .getContext("2d");
+
+                        let labels = Object.keys(leadsPorStatus);
+                        let data = [].concat(...Object.values(leadsPorStatus));
+                        let total = data.reduce((a, b) => a + b, 0);
+
+                        let labelsWithPercentages = labels.map((label, i) => `${label} (${((data[i] / total) * 100).toFixed(2)}%)`);
+
                         chart_4 = new Chart(ctx4, {
                             type: "doughnut",
                             data: {
-                                labels: Object.keys(leadsPorStatus),
+                                labels: labelsWithPercentages, // Usar las etiquetas con porcentajes
                                 datasets: [
                                     {
-                                        label: "Leads por Etatus",
+                                        label: "Leads por Status",
                                         data: Object.values(leadsPorStatus),
-                                        backgroundColor: Object.keys(
-                                            leadsPorStatus
-                                        ).map((status) => {
+                                        backgroundColor: labels.map((status) => {
                                             return getRandomColor();
                                         }),
                                     },
@@ -558,7 +563,6 @@
                     // Gráfica por embudo
 
                     if (key === "graph5Data") {
-                        console.log('graph5Data', graphData);
 
                         let leadsPorEmbudo = {};
 
@@ -573,22 +577,29 @@
                             leadsPorEmbudo[embudo].push(cantidad);
                         });
 
+                        console.log('leadsPorEmbudo: ', leadsPorEmbudo);
+
                         let chart_5 = Chart.getChart("graphFive");
                         if (chart_5) chart_5.destroy();
 
                         let ctx5 = document.getElementById('graphFive').getContext('2d');
 
+                        let labels = Object.keys(leadsPorEmbudo);
+                        let data = [].concat(...Object.values(leadsPorEmbudo));
+                        let total = data.reduce((a, b) => a + b, 0);
+
+                        // Agregar porcentajes a las etiquetas
+                        let labelsWithPercentages = labels.map((label, i) => `${label} (${((data[i] / total) * 100).toFixed(2)}%)`);
+
                         chart_5 = new Chart(ctx5, {
                             type: 'doughnut',
                             data: {
-                                labels: Object.keys(leadsPorEmbudo),
+                                labels: labelsWithPercentages,
                                 datasets: [
                                     {    
                                         label: 'Leads por Embudo',
-                                        data: Object.values(leadsPorEmbudo),
-                                        backgroundColor: Object.keys(
-                                            leadsPorEmbudo
-                                        ).map((embudo) => {
+                                        data: data,
+                                        backgroundColor: labels.map((embudo) => {
                                             return getRandomColor();
                                         }),
                                     },
