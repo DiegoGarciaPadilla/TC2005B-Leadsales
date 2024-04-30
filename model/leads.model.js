@@ -32,7 +32,10 @@ module.exports = class Lead {
   static fetchOne(IDLead) {
       return db.execute("SELECT * FROM `lead` WHERE IDLead = ?", [IDLead]);
   }
-
+  
+  static fetchEmbudos() {
+    return db.execute("SELECT DISTINCT(Embudo) FROM `lead`");
+  }
   static async createLead(nombre, telefono, embudo, asignadoa) {
     
     await db.execute("INSERT INTO `lead` (Nombre, Telefono, Embudo, Asignadoa, Creado, Horadecreacion, Archivado, CreadoManualmente) VALUES (?, ?, ?, ?, CURDATE(), CURTIME(), 'No', 'TRUE')", [nombre, telefono, embudo, asignadoa]);

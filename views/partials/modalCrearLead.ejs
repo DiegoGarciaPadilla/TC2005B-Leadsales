@@ -16,25 +16,31 @@
           <span class="font-bold text-red-700"> * </span>
         </label>
         <input
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="nombre" type="text" placeholder="Nombre" name="nombre" required>
+          class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          id="nombre" type="text" placeholder="Enrique" name="nombre" required>
       </div>
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="telefono">
           Teléfono
         </label>
         <input
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="telefono" type="text" placeholder="Teléfono" name="telefono">
+          class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          id="telefono" type="text" placeholder="4462598702" name="telefono">
       </div>
+
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="embudo">
           Embudo
           <span class="font-bold text-red-700"> * </span>
         </label>
-        <input
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="embudo" type="text" placeholder="Embudo" name="embudo" required>
+        <input list="embudos-list" id="asignado" name="asignadoa"
+          class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          required placeholder="Erizoo">
+        <datalist id="embudos-list">
+          <% for (let i=0; i < embudos.length; i++) { %>
+            <option value="<%= embudos[i].Embudo %>">
+          <% } %>
+        </datalist>
       </div>
 
       <% if (privilegios.some(privilegio=> privilegio.Descripcion === 'Crea lead todos.')) { %>
@@ -44,9 +50,8 @@
             <span class="font-bold text-red-700"> * </span>
           </label>
           <select id="asignado" name="asignadoa"
-            class="bg-gray-50 border border-gray-300 text-gray-700 leading-tight rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             required>
-            <option selected> Elige un usuario </option>
             <% for (let i=0; i < usuarios.length; i++) { %>
               <option value="<%= usuarios[i].Nombre + ' ' + usuarios[i].ApellidoPaterno %>">
                 <%= usuarios[i].Nombre + ' ' + usuarios[i].ApellidoPaterno %>
@@ -58,10 +63,10 @@
           <input type="hidden" id="asignado" name="asignadoa" value="<%= nombre + ' ' + apellidoPaterno %>">
           <% } %>
 
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-center">
               <button id="crearLeadBoton"
               onclick="toggleModal2(event)"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
                 Crear
               </button>
             </div>
