@@ -89,9 +89,9 @@
                         <option value="graphTwo">
                             Cantidad de leads por año, por mes
                         </option>
-                        <option value="graphThree">Leads por usuario</option>
-                        <option value="graphFour">Leads por status</option>
-                        <option value="graphFive">Graph Five</option>
+                        <option value="graphThree">Leads por Usuario</option>
+                        <option value="graphFour">Leads por Status</option>
+                        <option value="graphFive">Leads por Embudo</option>
                         <option value="graphSeven">Archivados</option>
                         <option value="graphEight">Tipo de creación de leads</option>
                         <!-- Add more options for other graphs -->
@@ -354,7 +354,7 @@
                                 },
                             },
                         });
-
+                        
                         function getRandomColor() {
                             // Rango de HUES
                             let blue = Math.floor(Math.random() * 256);
@@ -374,6 +374,7 @@
 
                             return color;
                         }
+
                     }
 
                     // Leads asignados por usuario
@@ -504,7 +505,7 @@
                                 labels: Object.keys(leadsPorStatus),
                                 datasets: [
                                     {
-                                        label: "Leads por status",
+                                        label: "Leads por Etatus",
                                         data: Object.values(leadsPorStatus),
                                         backgroundColor: Object.keys(
                                             leadsPorStatus
@@ -518,7 +519,7 @@
                                 responsive: true,
                                 plugins: {
                                     legend: {
-                                        position: "top",
+                                        position: "right",
                                     },
                                     title: {
                                         display: true,
@@ -557,6 +558,80 @@
                     // Gráfica por embudo
 
                     if (key === "graph5Data") {
+                        console.log('graph5Data', graphData);
+
+                        let leadsPorEmbudo = {};
+
+                        graphData.forEach((item) => {
+                            let embudo = item.Embudo;
+                            let cantidad = item.Cantidad;
+
+                            if (!leadsPorEmbudo[embudo]) {
+                                leadsPorEmbudo[embudo] = [];
+                            }
+
+                            leadsPorEmbudo[embudo].push(cantidad);
+                        });
+
+                        let chart_5 = Chart.getChart("graphFive");
+                        if (chart_5) chart_5.destroy();
+
+                        let ctx5 = document.getElementById('graphFive').getContext('2d');
+
+                        chart_5 = new Chart(ctx5, {
+                            type: 'doughnut',
+                            data: {
+                                labels: Object.keys(leadsPorEmbudo),
+                                datasets: [
+                                    {    
+                                        label: 'Leads por Embudo',
+                                        data: Object.values(leadsPorEmbudo),
+                                        backgroundColor: Object.keys(
+                                            leadsPorEmbudo
+                                        ).map((embudo) => {
+                                            return getRandomColor();
+                                        }),
+                                    },
+                                ],
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'right',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Leads por Embudo',
+                                        font: {
+                                            size: 20,
+                                            weight: 'bold',
+                                        },
+                                        color: '#20293A'
+                                    }
+                                },
+                            },
+                        });
+
+                        function getRandomColor() {
+                            // Rango de HUES
+                            let blue = Math.floor(Math.random() * 256);
+                            let green = Math.floor(
+                                Math.random() * (blue + 1)
+                            );
+
+                            let blueHex = blue
+                                .toString(16)
+                                .padStart(2, "0");
+                            let greenHex = green
+                                .toString(16)
+                                .padStart(2, "0");
+
+                            // Construir HEX
+                            let color = "#" + "00" + greenHex + blueHex;
+
+                            return color;
+                        }
                     }
 
                     // Gráfica de leads archivados y activos
@@ -594,14 +669,14 @@
                                 datasets: [{
                                     label: 'Si',
                                     data: dataSi,
-                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    backgroundColor: 'rgba(220, 38, 38, 0.4)',
+                                    borderColor: 'rgba(220, 38, 38, 1)',
                                     borderWidth: 1
                                 }, {
                                     label: 'No',
                                     data: dataNo,
-                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                    borderColor: 'rgba(255, 99, 132, 1)',
+                                    backgroundColor: 'rgba(67, 147, 108, 0.4)',
+                                    borderColor: 'rgba(67, 147, 108, 1)',
                                     borderWidth: 1
                                 }]
                             },
@@ -644,11 +719,13 @@
                                 datasets: [{
                                     label: 'Creados Manualmente',
                                     data: dataCreadosManualmente,
+                                    backgroundColor: 'rgba(220, 38, 38, 0.4)',
                                     borderColor: 'rgba(220, 38, 38, 1)',
                                     fill: false
                                 }, {
                                     label: 'Cargados',
                                     data: dataCargados,
+                                    backgroundColor: 'rgba(67, 147, 108, 0.4)',
                                     borderColor: 'rgba(67, 147, 108, 1)',
                                     fill: false
                                 }]
