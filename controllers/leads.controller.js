@@ -23,13 +23,13 @@ exports.getLeads = (req, res) => {
 /* ---------------- Paginación (Diego García) ---------------- */
 
 exports.getLeadsJSON = (req, res) => {
-
     // Obtiene los privilegios del usuario
     const { Privilegios, Correo } = req.session;
 
     // Obtiene la página actual de los parámetros de la URL
     const page = req.query.page || 1;
 
+    // Si el usuario tiene el privilegio de "Consulta directorio todos." se obtienen todos los leads
     if (
         Privilegios.some(
             (priv) => priv.Descripcion === "Consulta directorio todos."
@@ -45,6 +45,7 @@ exports.getLeadsJSON = (req, res) => {
                 console.error(error);
                 res.status(500).json({ message: "Error obteniendo leads" });
             });
+        // En caso contrario, si el usuario tiene el privilegio de "Consulta directorio propios." se obtienen los leads propios
     } else if (
         Privilegios.some(
             (priv) => priv.Descripcion === "Consulta directorio propios."
@@ -61,10 +62,7 @@ exports.getLeadsJSON = (req, res) => {
                 res.status(500).json({ message: "Error obteniendo leads" });
             });
     }
-
-
-}
-
+};
 
 /* ========================== FIN CU. 10 ==============================  */
 
@@ -88,7 +86,6 @@ exports.getLeadDetails = (req, res) => {
 /* ========== CU. 5 CREA LEAD | Diego Lira =============== */
 
 exports.postCrearLead = (req, res) => {
-
     // Se obtienen los datos de la sesión
     const { Privilegios, Nombre, ApellidoPaterno } = req.session;
 
@@ -96,11 +93,7 @@ exports.postCrearLead = (req, res) => {
     const { nombre, telefono, embudo, asignadoa } = req.body;
 
     // Si el usuario tiene el privilegio de "Crea lead todos." se crea el lead
-    if (
-        Privilegios.some(
-            (priv) => priv.Descripcion === "Crea lead todos."
-        )
-    ) {
+    if (Privilegios.some((priv) => priv.Descripcion === "Crea lead todos.")) {
         Lead.createLead(nombre, telefono, embudo, asignadoa)
             .then(([rows]) => {
                 res.status(200).json({
@@ -113,12 +106,8 @@ exports.postCrearLead = (req, res) => {
                 res.status(500).json({ message: "Error creando lead" });
             });
 
-    // En caso contrario, si el usuario tiene el privilegio de "Crea lead propios." se crea el lead
-    } else if (
-        Privilegios.some(
-            (priv) => priv.Descripcion === "Crea lead."
-        )
-    ) {
+        // En caso contrario, si el usuario tiene el privilegio de "Crea lead propios." se crea el lead
+    } else if (Privilegios.some((priv) => priv.Descripcion === "Crea lead.")) {
         const nombreCompleto = `${Nombre} ${ApellidoPaterno}`;
         Lead.createLead(nombre, telefono, embudo, nombreCompleto)
             .then(([rows]) => {

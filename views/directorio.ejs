@@ -356,6 +356,7 @@
                                     }
                                 });
                                 cerrarModal();
+                                getLeads(currentPage);
 
                                 const accion = "Se eliminaron leads.";
                                 operacionExitosa(accion);
@@ -552,6 +553,7 @@
                 })
                     .then((response) => response.json())
                     .then((data) => {
+                        tableBody.innerHTML = "";
                         data.map((lead) => {
                             const newRow = `
                             <tr
