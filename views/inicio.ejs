@@ -82,18 +82,20 @@
               <form class="max-w-lg mx-auto flex flex-col items-start" id="uploadForm" action="/" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
       
-                <input class="block w-full text-sm text-gray-900 border 
-                border-gray-300 rounded-lg cursor-pointer bg-gray-50 
-                dark:text-gray-400 focus:outline-none dark:bg-gray-700 
-                dark:border-gray-600 dark:placeholder-gray-400 mb-4" 
-                type="file" id="file" name="file" accept=".csv"/>
-                <p class="text-sm text-gray-500">Sube un archivo .csv con los datos de tus leads.</p>
-                <br><br> 
-                <button class="text-white bg-blue-700 hover:bg-blue-800 
-                focus:ring-4 focus:ring-blue-300 font-medium rounded-lg 
-                text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 
-                dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" 
-                type="submit" value="Guardar">Subir archivo</button>
+                <div class="mt-4">
+                  <input class="block w-[75%] ml-10 text-sm text-gray-900 border 
+                  border-gray-300 rounded-lg cu rsor-pointer bg-gray-50 
+                  dark:text-gray-400 focus:outline-none dark:bg-gray-700 
+                  dark:border-gray-600 dark:placeholder-gray-400 mb-4" 
+                  type="file" id="file" name="file" accept=".csv"/>
+                  <p class="pl-6 mb-2 text-sm text-gray-500">Sube un archivo .csv con los datos de tus leads.</p>
+                  
+                  <button class="text-white bg-blue-700 hover:bg-blue-800 
+                  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg 
+                  text-sm px-5 py-2.5 me-2 ml-28 dark:bg-blue-600 
+                  dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" 
+                  type="submit" value="Guardar">Subir archivo</button>
+                </div>
               </form> 
             </div>  
           </div>
