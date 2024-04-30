@@ -59,8 +59,7 @@
           </div>
         </div>
       </li>
-      <% if (mostrarBoton) { %>
-        <li>
+      <% if (mostrarBoton && privilegios.some(privilegio => privilegio.Descripcion === 'Crea lead todos.' || privilegio.Descripcion === 'Crea lead propios')) { %>        <li>
           <button
           onclick="toggleModal(event)"
           id = "butonCrearLead"
