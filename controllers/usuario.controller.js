@@ -66,6 +66,8 @@ exports.postLogin = (req, res) => {
                                                         usuario.IDUsuario;
                                                     req.session.Rol = rol;
                                                     req.session.isLoggedIn = true;
+                                                    req.session.NombreCompleto = 
+                                                        usuario.Nombre + " " + usuario.ApellidoPaterno;
                                                     console.log(req.session);
                                                     res.redirect("/");
                                                 })
