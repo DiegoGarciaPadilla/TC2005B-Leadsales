@@ -11,7 +11,6 @@
   </li>
 </ul>
 
-
 <style>
 
   .bg-blue-500 {
@@ -24,12 +23,12 @@
     background-color: #34373b;
     color: #fff;
     transform: scale(1.1);
-  }
+  }
 </style>
 
 <a href="/FAQ">
-  <div style="position: fixed; bottom: 20px; right: 20px; z-index: 50;">
-    <button class="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+  <div style="position-fixed; bottom: 20px; right: 20px; z-index: 50;">
+    <button class="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" style="transition: background-color 0.3s ease-in-out;">
       ?
     </button>
   </div>
@@ -47,18 +46,17 @@
         <div class="flex items-center ml-8 mt-5">
           <div class="w-12 h-12 rounded-full bg-blue-500 flex flex-col items-center justify-center text-gray-700 text-xl font-normal">
             <%= nombre.charAt(0) + apellidoPaterno.charAt(0) %>
+          </div>
+          <div class="ml-4 mt-2">
+            <a><span class="block font-semibold"><%= nombre + ' ' + apellidoPaterno %></span></a>
+            <% if (rol == 1) { %>
+            <span class="text-sm">Owner</span>
+            <% } else if (rol == 2) { %>
+            <span class="text-sm">Admin</span>
+            <% } else { %>
+              <span class="text-sm">Seller</span>
+            <% } %>
           </div>
-            <div class="ml-4">
-              <a><span class="block font-semibold"><%= nombre + ' ' + apellidoPaterno %></span></a>
-              <% if (rol == 1) { %>
-              <span class="text-sm">Owner</span>
-              <% } else if (rol == 2) { %>
-              <span class="text-sm">Admin</span>
-              <% } else { %>
-                <span class="text-sm">Seller</span>
-              <% } %>
-            </div>
-        </div>
         </div>
       </li>
       <% if (mostrarBoton) { %>
