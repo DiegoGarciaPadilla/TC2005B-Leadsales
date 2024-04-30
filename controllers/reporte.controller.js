@@ -26,6 +26,7 @@ exports.getReportes = (req, res) => {
                     nombre: req.session.Nombre,
                     apellidoPaterno: req.session.ApellidoPaterno,
                     apellidoMaterno: req.session.apellidoMaterno,
+                    mostrarBoton: null,
                 });
             })
             .catch((error) => {

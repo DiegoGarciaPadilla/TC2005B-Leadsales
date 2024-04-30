@@ -35,6 +35,7 @@ exports.getLeads = (req, res) => {
                             privilegios: Privilegios,
                             error: error,
                             success: success,
+                            mostrarBoton: true,
                         });
                     })
                     .catch((error) => {

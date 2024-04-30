@@ -42,6 +42,14 @@
 <body class="bg-[#E4E8EE]">
 
     <%- include('partials/sidebar.ejs') %>
+    <%- include('partials/aside.ejs', {
+      correo: correo,
+      nombre: nombre, 
+      apellidoPaterno: apellidoPaterno,
+      apellidoMaterno: apellidoMaterno,
+      rol: rol,
+      privilegios: Privilegios
+      }) %>  
 
     <div id="main-content" class="ml-14 mt-14 pl-8">
 
