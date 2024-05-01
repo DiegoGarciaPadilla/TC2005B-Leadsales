@@ -217,11 +217,15 @@
   let idRolSeleccionado;
   function capturarIDRol(idRol) {
       idRolSeleccionado = idRol;
-      console.log('Este es el seleccionado', idRolSeleccionado);
   }
 
   function cambiarRol(IDUsuario) {
       const csrf = document.getElementById('_csrf').value;
+      if (!idRolSeleccionado) {
+          document.getElementById('rolSeleccionado').focus();
+          return;
+      }
+
       fetch(`/ajustes/usuarios/asignarRol`, {
           method: 'POST',
           headers: {

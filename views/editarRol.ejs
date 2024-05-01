@@ -73,7 +73,7 @@
                 / Editar Rol
             </h1>
         </nav>
-        <form action="/ajustes/roles/editarRol/<%= rol.IDRol %>" method="POST" onsubmit="return validateForm()">
+        <form action="/ajustes/roles/editarRol/<%= rolObtenido.IDRol %>" method="POST" onsubmit="return validateForm()">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
             <div class="mt-6">
                 <label
@@ -86,7 +86,7 @@
                     required
                     id="Nombre"
                     name="Nombre"
-                    value="<%= rol.Nombre %>"
+                    value="<%= rolObtenido.Nombre %>"
                     class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
             </div>
@@ -101,7 +101,7 @@
                     required
                     id="DescripcionRol"
                     name="DescripcionRol"
-                    value="<%= rol.DescripcionRol %>"
+                    value="<%= rolObtenido.DescripcionRol %>"
                     class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
             </div>

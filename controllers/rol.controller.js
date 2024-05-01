@@ -126,9 +126,8 @@ exports.getEditarRol = (req, res) => {
                     Privilegio.fetchPrivilegiosByIDRol(IDRol)
                         .then(([privilegiosRolFetched]) => {
                             console.log(privilegiosRolFetched);
-                            console.log("Rol: ", rolFetched[0]);
                             res.render("editarRol", {
-                                rol: rolFetched[0],
+                                rolObtenido: rolFetched[0],
                                 privilegios: privilegiosFetched,
                                 privilegiosRol: privilegiosRolFetched,
                                 success: "",
@@ -159,6 +158,7 @@ exports.getEditarRol = (req, res) => {
 
 exports.postEditarRol = async (req, res) => {
     try {
+        console.log("Editar rol post");
         // Obtiene el id del rol
         const { IDRol } = req.params;
 
@@ -169,6 +169,7 @@ exports.postEditarRol = async (req, res) => {
 
         // Obtiene los datos del formulario
         const { Nombre, DescripcionRol, Privilegios } = req.body;
+        console.log("EN POST EDITAR - Nombre: ", Nombre, "Descripcion: ", DescripcionRol, "Privilegios: ", Privilegios);
 
         // Parsear los privilegios a un array
         const PrivilegiosArray = Array.isArray(Privilegios)
