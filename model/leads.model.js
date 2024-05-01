@@ -126,4 +126,8 @@ module.exports = class Lead {
             ]
         );
     }
+
+    static fetchEmbudos() {
+        return db.execute("SELECT DISTINCT(Embudo) FROM `lead`");
+    }
 };

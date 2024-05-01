@@ -15,8 +15,10 @@ exports.getLeads = (req, res) => {
         rol: req.session.Rol,
         nombre: req.session.Nombre,
         apellidoPaterno: req.session.ApellidoPaterno,
+        apellidoMaterno: req.session.ApellidoMaterno,
         error: req.session.error || "",
         success: req.session.success || "",
+        mostrarBoton: true,
     });
 };
 
@@ -226,7 +228,6 @@ exports.getEditarLead = (req, res) => {
                         apellidoPaterno: req.session.ApellidoPaterno,
                         apellidoMaterno: req.session.apellidoMaterno,
                         privilegios: privilegios,
-                        usuarios: usuariosFetched,
                         success: "",
                         error: "",
                         mostrarBoton: null, 
