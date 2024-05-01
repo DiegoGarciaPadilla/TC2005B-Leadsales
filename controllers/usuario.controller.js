@@ -139,7 +139,6 @@ exports.getUsuarios = (req, res) => {
                                 nombre: req.session.Nombre,
                                 apellidoPaterno: req.session.ApellidoPaterno,
                                 apellidoMaterno: req.session.apellidoMaterno,
-                                mostrarBoton: null,
                             });
                         })
                         .catch((error) => {
@@ -172,7 +171,6 @@ exports.getRegistrarUsuario = (req, res) => {
                 nombre: req.session.Nombre,
                 apellidoPaterno: req.session.ApellidoPaterno,
                 apellidoMaterno: req.session.apellidoMaterno,
-                mostrarBoton: null,
             });
         })
         .catch((error) => {
@@ -295,7 +293,6 @@ exports.getCambiarContrasenia = (req, res) => {
         apellidoPaterno: req.session.ApellidoPaterno,
         apellidoMaterno: req.session.apellidoMaterno,
         privilegios: Privilegios,
-        mostrarBoton: null,
     });
 };
 

@@ -34,7 +34,6 @@ exports.post_CSV = (req, res) => {
                                     rol: req.session.Rol,   
                                     usuarios: usuariosFetched,
                                     error: "",
-                                    mostrarBoton: true
                                 });
                             })
                             .catch((error) => {
@@ -61,7 +60,6 @@ exports.post_CSV = (req, res) => {
                                     rol: req.session.Rol,   
                                     usuarios: usuariosFetched,
                                     error: "Tu archivo.csv no tiene el formato correcto!",
-                                    mostrarBoton: true
                                 });
                             })
                             .catch((error) => {

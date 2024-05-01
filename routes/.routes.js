@@ -56,7 +56,6 @@ router.get("/", isAuth,  (req, res) => {
                         embudos: embudosFetched,
                         success: "",
                         error: error,
-                        mostrarBoton: true, 
                     });
                 })
                 .catch();

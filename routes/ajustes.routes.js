@@ -100,7 +100,6 @@ router.get('/', isAuth, (req, res) => {
         usuarios: usuariosFetched,
         success: "",
         error: "",
-        mostrarBoton: null,
     });
         
     }).catch((error) => {

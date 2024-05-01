@@ -22,7 +22,6 @@ exports.getCrearRol = (req, res) => {
                 nombre: req.session.Nombre,
                 apellidoPaterno: req.session.ApellidoPaterno,
                 apellidoMaterno: req.session.apellidoMaterno,
-                mostrarBoton: null,
             });
         })
         .catch((error) => {
@@ -90,7 +89,6 @@ exports.getRoles = (req, res) => {
                 nombre: req.session.Nombre,
                 apellidoPaterno: req.session.ApellidoPaterno,
                 apellidoMaterno: req.session.apellidoMaterno,
-                mostrarBoton: null,
             });
         })
         .catch((error) => {
@@ -138,8 +136,6 @@ exports.getEditarRol = (req, res) => {
                                 nombre: req.session.Nombre,
                                 apellidoPaterno: req.session.ApellidoPaterno,
                                 apellidoMaterno: req.session.apellidoMaterno,
-                                mostrarBoton: null,
-                                mostrarBoton: null,
 
                             });
                         })
