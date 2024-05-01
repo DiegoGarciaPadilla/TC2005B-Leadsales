@@ -35,15 +35,15 @@
     <body>
         <input type="hidden" id="_csrf" value="<%= csrfToken %>" />
         <%- include('partials/sidebar.ejs') %>
-        <%- include('partials/sidebar.ejs') %>
         <%- include('partials/aside.ejs', {
             correo: correo,
             nombre: nombre, 
             apellidoPaterno: apellidoPaterno,
             apellidoMaterno: apellidoMaterno,
             rol: rol,
-            privilegios: privilegios
-        }) %>  
+            privilegios: privilegios,
+            }) %>  
+ 
         <div id="main-content" class="ml-14 mt-14 pl-8">
             <h1 class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">
                 Directorio de <span class="text-blue-600 dark:text-blue-500"><%= correo %>!</span>
@@ -562,8 +562,13 @@
                 })
                     .then((response) => response.json())
                     .then((data) => {
+                        const usuarios = data.usuariosFetched;
+                        console.log("Usuarios ", usuarios); 
+                        const embudos = data.embudosFetched;
+                        console.log("Embudos ", embudos);
+
                         tableBody.innerHTML = "";
-                        data.map((lead) => {
+                        data.leadsFetched.map((lead) => {
                             const newRow = `
                             <tr
                                 id="element"
