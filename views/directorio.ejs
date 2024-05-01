@@ -1,513 +1,734 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Directorio</title>
-  <link rel="stylesheet" href="/css/output.css"/>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Directorio</title>
+        <link rel="stylesheet" href="/css/output.css" />
 
-  <style> 
+        <style>
+            body {
+                background-color: #e4e8ee;
+            }
 
-    body {
-      background-color: #E4E8EE;
-    }
+            #container {
+                position: relative;
+                height: 500px;
+                box-shadow: 1px 4px 8px rgba(36, 37, 42, 0.2);
+            }
+            #containerElements {
+                overflow-y: auto;
+                height: 100%;
+            }
+            #element {
+                position: relative;
+            }
+            #main-content {
+                transition: padding-left 0.3s ease;
+                padding-left: 3.5rem;
+            }
+            .side:hover ~ #main-content {
+                padding-left: 10rem;
+            }
+        </style>
+    </head>
+    <body>
+        <input type="hidden" id="_csrf" value="<%= csrfToken %>" />
+        <%- include('partials/sidebar.ejs') %>
+        <div id="main-content" class="ml-14 mt-14 pl-8">
+            <h1 class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">
+                Directorio de <span class="text-blue-600 dark:text-blue-500"><%= correo %>!</span>
+            </h1>
 
-    #container {
-      position: relative;
-      height:500px;
-      box-shadow: 1px 4px 8px rgba(36, 37, 42, 0.2);
-    }
-    #containerElements {
-      overflow-y: auto; 
-      height:100%;
-    }
-    #element {
-      position: relative;
-    }
-    #main-content {
-      transition: padding-left 0.3s ease;
-      padding-left: 3.5rem;
-    } 
-    .side:hover ~ #main-content {
-      padding-left: 10rem;
-    }
+            <div id="alertas">
+                <%- include('partials/success', { success: success }) %>
+                <%- include('partials/error', { error: error }) %>
+            </div>
 
-  </style>
-
-</head>
-<body>
-  <input type="hidden" id="_csrf" value="<%= csrfToken %>">
-  <%- include('partials/sidebar.ejs') %> 
-  <%- include('partials/aside.ejs', {
-    correo: correo,
-    nombre: nombre, 
-    apellidoPaterno: apellidoPaterno,
-    apellidoMaterno: apellidoMaterno,
-    rol: rol,
-    })  %> 
-  <div id="main-content" class="ml-14 mt-8 pl-8">
-    <h1 class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">Directorio de <span class="text-blue-600 dark:text-blue-500"><%= correo %>!</span></h1>
-    
-    <div id="alertas">
-      <%- include('partials/success', {success: success}) %>
-      <%- include('partials/error', {error: error}) %>
-    </div>
-
-    <div class="bg-white sm:rounded-lg w-1/4 flex justify-center items-center space-x-2">
-        <button id="eliminar-lead" onclick="confirmarAccion('eliminación')" type="button" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
-            <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-            </svg>                                  
-            <span class="sr-only">Eliminar lead</span>
-        </button>
-        <button id="descargar-leads" onclick="confirmarAccion('descarga')" type="button" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
-            <svg class="w-6 h-6 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2m-8 1V4m0 12-4-4m4 4 4-4"/>
-            </svg>                                             
-            <span class="sr-only">Descargar leads</span>
-        </button>
-        <button id="seleccionar" onclick="seleccionarTodo()" type="button" class="text-gray-800 bg-gray-300 border border-gray-400 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
-            Seleccionar todo
-        </button>
-    </div>
-  
-  
-      <div id="container" class="relative overflow-auto sm:rounded-lg w-3/4">
-          <table class="text-sm text-left rtl:text-right text-gray-500 border-collapse rounded-lg w-full">
-            <thead id="tableHead" class="text-xs text-white bg-gray-50 sticky top-0 z-50">
-              <tr>
-                <th scope="col" class="px-6 py-3 bg-blue-700"></th>
-                <th scope="col" class="px-6 py-3 bg-blue-700">Nombre</th>
-                <th scope="col" class="px-6 py-3 bg-blue-700">Último mensaje</th>
-                <th scope="col" class="px-6 py-3 bg-blue-700">Primer mensaje</th>
-                <th scope="col" class="px-6 py-3 bg-blue-700">Asignado a:</th>
-                <th scope="col" class="px-6 py-3 bg-blue-700">Teléfono</th>
-                <th scope="col" class="px-6 py-3 bg-blue-700">Consulta más</th>
-                <th scope="col" class="px-6 py-3 bg-blue-700">Editar</th>
-              </tr>
-            </thead>
-            <tbody id="containerElements">
-              <% leads.forEach((lead) => { %>
-                <tr id="element" class="bg-white border-b hover:bg-gray-50">
-                  <td class="px-4 py-2 sm:px-3 sm:py-3">
-                    <div class="flex items-center">
-                      <input id="<%= lead.IDLead %>" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300">
-                      <label for="<%=lead.IDLead%>" class="sr-only">checkbox</label>
-                    </div>
-                  </td>
-                  <td class="px-4 py-2 sm:px-3 sm:py-3">
-                    <span class="cursor-pointer relative" 
-                          onmouseover="document.getElementById('popover0_<%= lead.IDLead %>').classList.remove('hidden')"
-                          onmouseout="document.getElementById('popover0_<%= lead.IDLead %>').classList.add('hidden')"
+            <div class="bg-white sm:rounded-lg w-1/4 flex justify-center items-center space-x-2">
+                <button
+                    id="eliminar-lead"
+                    onclick="confirmarAccion('eliminación')"
+                    type="button"
+                    class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        fill="none"
+                        viewBox="0 0 24 24"
                     >
-                      <%= lead.Nombre.substr(0, 15) + (lead.Nombre.length > 15 ? '...' : '') %>
-                      <div id="popover0_<%= lead.IDLead %>" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-                        <%= lead.Nombre %>
-                      </div>
-                    </span>  
-                  </td>
-                  <td class="px-4 py-2 sm:px-3 sm:py-3">
-                    <!-- Mostrar solo el inicio del último mensaje -->
-                      <%= lead.Ultimomensaje ? lead.Ultimomensaje.substr(0, 20) + (lead.Ultimomensaje.length > 20 ? '...' : '') : '' %>
-                  </td>
-                  <td class="px-4 py-2 sm:px-3 sm:py-3">
-                    <!-- Mostrar solo el inicio del primer mensaje -->
-                    <%= lead.Primermensaje ? lead.Primermensaje.substr(0, 20) + (lead.Primermensaje.length > 20 ? '...' : '') : '' %>
-                  </td>
-                  <td class="px-4 py-2 sm:px-3 sm:py-3"><%= lead.Asignadoa %></td>
-                  <td class="px-4 py-2 sm:px-3 sm:py-3"><%= lead.Telefono %></td>
-                  <td class="flex justify-center pt-2.5">
-                    <button onclick="showDialog('<%=lead.IDLead%>')">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                      </svg>
+                        <path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
+                        ></path>
+                    </svg>
+                    <span class="sr-only">Eliminar lead</span>
+                </button>
+                <button
+                    id="descargar-leads"
+                    onclick="confirmarAccion('descarga')"
+                    type="button"
+                    class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center"
+                >
+                    <svg
+                        class="w-6 h-6 aria-hidden=" true""
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2m-8 1V4m0 12-4-4m4 4 4-4"
+                        ></path>
+                    </svg>
+                    <span class="sr-only">Descargar leads</span>
+                </button>
+                <button
+                    id="seleccionar"
+                    onclick="seleccionarTodo()"
+                    type="button"
+                    class="text-gray-800 bg-gray-300 border border-gray-400 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center"
+                >
+                    Seleccionar todo
+                </button>
+            </div>
+
+            <div
+                id="container"
+                class="relative overflow-auto sm:rounded-lg w-3/4"
+            >
+                <table class="text-sm text-left rtl:text-right text-gray-500 border-collapse rounded-lg w-full">
+                    <thead
+                        id="tableHead"
+                        class="text-xs text-white bg-gray-50"
+                    >
+                        <tr>
+                            <th scope="col" class="px-6 py-3 bg-blue-700"></th>
+                            <th scope="col" class="px-6 py-3 bg-blue-700">Nombre</th>
+                            <th scope="col" class="px-6 py-3 bg-blue-700">Último mensaje</th>
+                            <th scope="col" class="px-6 py-3 bg-blue-700">Primer mensaje</th>
+                            <th scope="col" class="px-6 py-3 bg-blue-700">Asignado a:</th>
+                            <th scope="col" class="px-6 py-3 bg-blue-700">Teléfono</th>
+                            <th scope="col" class="px-6 py-3 bg-blue-700">Consulta más</th>
+                            <th scope="col" class="px-6 py-3 bg-blue-700">Editar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="containerElements">
+                    </tbody>
+                </table>
+            </div>
+
+            <nav class="mt-8" id="navigation">
+                <ul class="flex items-center -space-x-px h-10 text-base">
+                    <li>
+                        <a onclick="previousPage()"
+                            class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700">
+                            <span class="sr-only">Previous</span>
+                            <svg class="w-3 h-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 1 1 5l4 4" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a onclick="selectPage(1)" id="page1"
+                            class="z-10 flex items-center justify-center px-4 h-10 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700">1</a>
+                    </li>
+                    <li>
+                        <a onclick="selectPage(2)" id="page2"
+                            class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">2</a>
+                    </li>
+                    <li>
+                        <a onclick="selectPage(3)" id="page3"
+                            class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">3</a>
+                    </li>
+                    <li>
+                        <a onclick="selectPage(4)" id="page4"
+                            class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">4</a>
+                    </li>
+                    <li>
+                        <a onclick="selectPage(5)" id="page5"
+                            class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">5</a>
+                    </li>
+                    <li>
+                        <a onclick="nextPage()"
+                            class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700">
+                            <span class="sr-only">Next</span>
+                            <svg class="w-3 h-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="m1 9 4-4-4-4" />
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div
+            id="dialog"
+            class="fixed left-0 top-0 bg-black bg-opacity-50 w-screen h-screen z-50 items-center justify-center opacity-0 hidden transition-opacity duration-500"
+        >
+            <div class="bg-white rounded shadow-md w-2/3 flex gap-3 flex-col overflow-hidden relative">
+                <h1 class="flex items-start justify-start pl-8 pt-6 text-3xl font-bold dark:text-blue-700">
+                    Lead<span class="bg-blue-100 text-blue-800 text-xs font-normal me-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-1">details</span>
+                </h1>
+
+                <!-- Div for lead details -->
+                <div id="leadDetails" class="p-4 pb-8 overflow-x-auto"></div>
+
+                <div class="absolute top-0 right-0">
+                    <button
+                        onclick="hideDialog()"
+                        type="button"
+                        class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                    >
+                        <span class="sr-only">Close menu</span>
+                        <!-- Heroicon name: outline/x -->
+                        <svg
+                            class="h-6 w-6"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
                     </button>
-                  </td>
-                  <td>
-                    <a href="/directorio/editarLead/<%= lead.IDLead %>" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center ml-5">
-                      <svg class="w-6 h-6 text-blue-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
-                      </svg>
-                      <span class="sr-only">Modificar lead</span>
-                  </a>
-                  </td>
-                </tr>
-              <% }); %>
-            </tbody>
-          </table>
-        </div>
-    </div>
-
-    <div id="dialog" class="fixed left-0 top-0 bg-black bg-opacity-50 w-screen h-screen z-50 items-center justify-center
-    opacity-0 hidden transition-opacity duration-500">
-      <div class="bg-white rounded shadow-md w-2/3 flex gap-3 flex-col overflow-hidden relative">
-
-
-        <h1 class="flex items-start justify-start pl-8 pt-6 text-3xl font-bold dark:text-blue-700">Lead<span class="bg-blue-100 text-blue-800 text-xs font-normal me-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-1">details</span></h1>
-
-
-        <!-- Div for lead details -->
-        <div id="leadDetails" class="p-4 pb-8 overflow-x-auto"> </div> 
-
-        <div class="absolute top-0 right-0">
-          <button onclick="hideDialog()" type="button" class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
-            <span class="sr-only">Close menu</span>
-            <!-- Heroicon name: outline/x -->
-            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-
-<script defer>
-
-  function hideDialog() {
-    
-    let dialog = document.getElementById('dialog');
-    dialog.classList.add('opacity-0');
-    setTimeout(() => {
-      dialog.classList.add('hidden');
-      dialog.classList.remove('flex');
-    }, 500);
-  }
-  
-  function showDialog(IDLead) {
-    
-    fetch(`/directorio/${IDLead}`, {
-        method: 'GET', 
-        headers: {
-          'Content-Type': 'application/json',
-        }
-    }).then((result) => {
-        return result.json(); // Return another promise
-    }).then((data) => {
-        let dialog = document.getElementById('dialog');
-        let leadDetails = data;
-
-        let leadInfo = '<table class="rounded-lg bg-gray-300 w-full"><thead id="tableHead" class="text-xs text-white bg-gray-50"><tr>';
-
-        for (let key in leadDetails) {
-            if (leadDetails.hasOwnProperty(key) && leadDetails[key]) { // Check if value is not empty
-                leadInfo += `<th scope="col" class="px-6 py-3 bg-blue-700">${key}</th>`;
-            }
-        }
-
-        leadInfo += '</tr></thead><tbody><tr id="element" class="bg-gray-100 border-b hover:bg-gray-50">';
-
-        let cont = 0;
-        for (let key in leadDetails) {
-            if (leadDetails.hasOwnProperty(key) && leadDetails[key]) { // Check if value is not empty
-                let str = leadDetails[key];
-
-                if (typeof str === 'string' && !isNaN(Date.parse(str))) {
-                    let date = new Date(str);
-                    str = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-                }
-
-                let strShort = str.length > 20 ? str.substr(0, 20) + '...' : str;
-
-                leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3">${strShort}
-                                  <span class="cursor-pointer relative" 
-                                        onmouseover="document.getElementById('popover${cont}').classList.remove('hidden')"
-                                        onmouseout="document.getElementById('popover${cont}').classList.add('hidden')"
-                                  >
-                                    <div id="popover${cont}" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-                                      ${str} 
-                                    </div>
-                              </td>`; 
-                cont++;
-            }
-        }
-
-        leadInfo += '</tr></tbody></table>';
-
-        document.getElementById('leadDetails').innerHTML = leadInfo;
-
-        dialog.classList.remove('hidden');
-        dialog.classList.add('flex');
-        setTimeout(() => {
-            dialog.classList.add('opacity-100');
-        }, 20);
-    }).catch(error => {
-        console.error('Error fetching lead details:', error);
-    });
-}
-
-
-</script>
-
-<script>
-  
-  const eliminarLeadButton = document.getElementById('eliminar-lead');
-  const descargarLeadsButton = document.getElementById('descargar-leads');
-  const checkboxes = document.querySelectorAll('#containerElements input[type="checkbox"]');
-  
-  function updateButtonState() {
-    // Comprueba si al menos un checkbox está seleccionado
-    const isAnyCheckboxChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
-    eliminarLeadButton.disabled = !isAnyCheckboxChecked;
-    descargarLeadsButton.disabled = !isAnyCheckboxChecked;
-    
-    const eliminarSVG = eliminarLeadButton.querySelector('svg');
-    const descargarSVG = descargarLeadsButton.querySelector('svg');
-
-    // Cambio de color si están habilitados o deshabilitados
-    if (isAnyCheckboxChecked) {
-      eliminarSVG.classList.add('text-red-700');
-      eliminarSVG.classList.remove('text-gray-500');
-      descargarSVG.classList.add('text-blue-700');
-      descargarSVG.classList.remove('text-gray-500');
-    } 
-    else {
-      eliminarSVG.classList.add('text-gray-500');
-      eliminarSVG.classList.remove('text-red-700');
-      descargarSVG.classList.add('text-gray-500');
-      descargarSVG.classList.remove('text-blue-700');
-    }
-  }
-
-  // Llama a updateButtonState al inicio para establecer el estado inicial de los botones
-  updateButtonState();
-
-  // Llama a updateButtonState cada vez que un checkbox cambia
-  checkboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', updateButtonState);
-  });
-
-function confirmarAccion(mensaje) {
-    let html = `<div id="deleteModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
-            <div class="relative p-4 text-center bg-white rounded-lg shadow-md w-80 h-40">
-                <h2 class="text-lg font-semibold text-gray-800">Confirmación de ${mensaje}</h2>`;
-    
-    if (mensaje === 'eliminación') {
-        html += `<p class="mt-2 text-sm text-gray-600">¿Estás seguro de que deseas eliminar los leads seleccionados?</p>
-            <div class="mt-4 flex justify-center space-x-2">
-                <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" onclick="eliminarLeads()">Sí, eliminar</button>`;
-    } else if (mensaje === 'descarga') {
-        html += `<p class="mt-2 text-sm text-gray-600">¿Estás seguro de que deseas descargar los leads seleccionados?</p>
-            <div class="mt-4 flex justify-center space-x-2">
-                <button class="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-800" onclick="descargarCSV()">Sí, descargar</button>`;
-    }
-    html += `<button class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300" onclick="cerrarModal()">Cancelar</button>
                 </div>
             </div>
-        </div>`;
+        </div>
+    </body>
+    <footer>
+        <script defer>
+            /* ================== Variables ================== */
 
-    document.body.insertAdjacentHTML('beforeend', html);
-  }
+            const eliminarLeadButton = document.getElementById("eliminar-lead");
+            const descargarLeadsButton = document.getElementById("descargar-leads");
 
-  function seleccionarTodo() {
-    const checkboxes = document.querySelectorAll('#containerElements input[type="checkbox"]');
-    const botonSeleccionar = document.querySelector('#seleccionar');
+            /* ================== Seleccionar leads ================== */
+            
+            // Actualiza el estilo de los botones de eliminar y descargar leads
+            const updateButtonState = () => {
+                const checkboxes = document.querySelectorAll(
+                    '#containerElements input[type="checkbox"]'
+                );
 
-    let todosSeleccionados = true;
+                // Comprueba si al menos un checkbox está seleccionado
+                const isAnyCheckboxChecked = Array.from(checkboxes).some(
+                    (checkbox) => checkbox.checked
+                );
+                eliminarLeadButton.disabled = !isAnyCheckboxChecked;
+                descargarLeadsButton.disabled = !isAnyCheckboxChecked;
 
-    checkboxes.forEach(checkbox => {
-        if (!checkbox.checked) {
-            todosSeleccionados = false;
-        }
-    });
+                const eliminarSVG = eliminarLeadButton.querySelector("svg");
+                const descargarSVG = descargarLeadsButton.querySelector("svg");
 
-    if (todosSeleccionados) {
-        // Si todos los checkbox están marcados, cambiar el texto del botón y desmarcar todos los checkbox
-        botonSeleccionar.textContent = "Seleccionar todo";
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = false;
-        });
-    } else {
-        // Si no todos los checkbox están marcados, cambiar el texto del botón y marcar todos los checkbox
-        botonSeleccionar.textContent = "Deseleccionar todo";
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = true;
-        });
-    }
-}
+                // Cambio de color si están habilitados o deshabilitados
+                if (isAnyCheckboxChecked) {
+                    eliminarSVG.classList.add("text-red-700");
+                    eliminarSVG.classList.remove("text-gray-500");
+                    descargarSVG.classList.add("text-blue-700");
+                    descargarSVG.classList.remove("text-gray-500");
+                } else {
+                    eliminarSVG.classList.add("text-gray-500");
+                    eliminarSVG.classList.remove("text-red-700");
+                    descargarSVG.classList.add("text-gray-500");
+                    descargarSVG.classList.remove("text-blue-700");
+                }
+            };
 
-  function obtenerLeads() {
-    const checkboxes = document.querySelectorAll('#containerElements input[type="checkbox"]:checked');
-    const selectedLeads = Array.from(checkboxes).map(checkbox => checkbox.id);
-    return selectedLeads;
-  }
+            /* ================== Eliminar leads ================== */
 
-  function eliminarLeads() {
-    const selectedLeads = obtenerLeads();
-    console.log(selectedLeads);
-    if (selectedLeads.length > 0) {
-        const csrf = document.getElementById('_csrf').value;
-        fetch(`/directorio/eliminarLeads`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'csrf-token': csrf,
-            },
-            body: JSON.stringify({ selectedLeads: selectedLeads })
-        })
-            .then((result) => {
-                return result.json();
-            })
-            .then((data) => {
-              if (data.success) {
-                const rows = document.querySelectorAll('#containerElements tr');
-                    rows.forEach(row => {
-                        const checkbox = row.querySelector('input[type="checkbox"]');
-                        if (checkbox.checked) {
-                            row.remove();
-                        }
+            // Muestra el popup de confirmación de acción
+            const confirmarAccion = (mensaje) => {
+                console.log("Confirmar acción:", mensaje);
+
+                let html = `<div id="deleteModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+                        <div class="relative p-4 text-center bg-white rounded-lg shadow-md w-80 h-40">
+                            <h2 class="text-lg font-semibold text-gray-800">Confirmación de ${mensaje}</h2>`;
+
+                if (mensaje === "eliminación") {
+                    html += `<p class="mt-2 text-sm text-gray-600">¿Estás seguro de que deseas eliminar los leads seleccionados?</p>
+                        <div class="mt-4 flex justify-center space-x-2">
+                            <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" onclick="eliminarLeads()">Sí, eliminar</button>`;
+                } else if (mensaje === "descarga") {
+                    html += `<p class="mt-2 text-sm text-gray-600">¿Estás seguro de que deseas descargar los leads seleccionados?</p>
+                        <div class="mt-4 flex justify-center space-x-2">
+                            <button class="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-800" onclick="descargarCSV()">Sí, descargar</button>`;
+                }
+                html += `<button class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300" onclick="cerrarModal()">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>`;
+
+                document.body.insertAdjacentHTML("beforeend", html);
+            };
+
+            // Selección de todos los checkbox
+            const seleccionarTodo = () => {
+                const checkboxes = document.querySelectorAll(
+                    '#containerElements input[type="checkbox"]'
+                );
+
+                const botonSeleccionar = document.querySelector("#seleccionar");
+
+                let todosSeleccionados = true;
+
+                checkboxes.forEach((checkbox) => {
+                    if (!checkbox.checked) {
+                        todosSeleccionados = false;
+                    }
                 });
-                cerrarModal();
 
-                const accion = 'Se eliminaron leads.';
-                operacionExitosa(accion);
-              }
-              else {
-                alert('Error al eliminar los leads');
-              } 
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-    } else {
-        alert('No se ha seleccionado ningún lead');
-    }
-}
+                if (todosSeleccionados) {
+                    // Si todos los checkbox están marcados, cambiar el texto del botón y desmarcar todos los checkbox
+                    botonSeleccionar.textContent = "Seleccionar todo";
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.checked = false;
+                    });
+                } else {
+                    // Si no todos los checkbox están marcados, cambiar el texto del botón y marcar todos los checkbox
+                    botonSeleccionar.textContent = "Deseleccionar todo";
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.checked = true;
+                    });
+                }
 
-  function descargarCSV() {
-    const selectedLeads = obtenerLeads();
-    
-    if (selectedLeads.length > 0) {
-        const csrf = document.getElementById('_csrf').value;
-        fetch('/directorio/descargarLeads', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'csrf-token': csrf,
-            },
-            body: JSON.stringify({ selectedLeads: selectedLeads })
-        })
-        .then(response => response.blob())
-        .then(blob => {
-          cerrarModal();  
-          const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = nombrarArchivo(); 
-            a.click();
+                // Actualizar el estado de los botones
+                updateButtonState();
+            };
 
-            const accion = 'Se descargaron leads, consulta tus archivos.'
-            operacionExitosa(accion);
+            // Obtiene los leads seleccionados
+            const obtenerLeads = () => {
+                const checkboxes = document.querySelectorAll(
+                    '#containerElements input[type="checkbox"]:checked'
+                );
+                const selectedLeads = Array.from(checkboxes).map((checkbox) => checkbox.id);
+                return selectedLeads;
+            };
 
-            const rows = document.querySelectorAll('#containerElements tr');
-            rows.forEach(row => {
-              const checkbox = row.querySelector('input[type="checkbox"]');
-              if (checkbox.checked) {
-                checkbox.checked = false;
-              }
-            });
-        })
-        .catch(error => {
-            console.error('Error al descargar leads:', error);
-        });
-    } else {
-        alert('No se ha seleccionado ningún lead');
-    }
-  }
+            // Elimina los leads seleccionados (MOVER AL CONTROLADOR!!!)
+            const eliminarLeads = () => {
+                const selectedLeads = obtenerLeads();
+                console.log(selectedLeads);
+                if (selectedLeads.length > 0) {
+                    const csrf = document.getElementById("_csrf").value;
+                    fetch(`/directorio/eliminarLeads`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "csrf-token": csrf,
+                        },
+                        body: JSON.stringify({ selectedLeads: selectedLeads }),
+                    })
+                        .then((result) => result.json())
+                        .then((data) => {
+                            if (data.success) {
+                                const rows = document.querySelectorAll(
+                                    "#containerElements tr"
+                                );
+                                rows.forEach((row) => {
+                                    const checkbox = row.querySelector(
+                                        'input[type="checkbox"]'
+                                    );
+                                    if (checkbox.checked) {
+                                        row.remove();
+                                    }
+                                });
+                                cerrarModal();
+                                getLeads(currentPage);
 
-  function nombrarArchivo() {
-      const date = new Date(); 
-      const timestamp = date.getFullYear() + (date.getMonth() + 1).toString().padStart(2, '0') + date.getDate().toString().padStart(2, '0') + '_' + date.getHours().toString().padStart(2, '0') + date.getMinutes().toString().padStart(2, '0') + date.getSeconds().toString().padStart(2, '0');
-      return `descarga_leads_leadtics_${timestamp}.csv`;
-}
+                                const accion = "Se eliminaron leads.";
+                                operacionExitosa(accion);
+                            } else {
+                                alert("Error al eliminar los leads");
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                } else {
+                    alert("No se ha seleccionado ningún lead");
+                }
+            };
 
-  function operacionExitosa(accion) {
-      const alertas = document.getElementById('alertas');
-          const alertHTML = `
-              <div id="alert-success" class="flex relative items-center p-4 mb-4 text-sm mr-24 text-green-800 border border-green-300 rounded-lg bg-green-50 w-2/3">
-                  <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarAlert()">
-                    <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                    </svg>
-                  </button>
-                  <div>
-                      <span class="font-bold"> ¡Acción exitosa! </span> 
-                      <span id="success-message">${accion}</span>
-                  </div>
-              </div>
-          `;
-          alertas.innerHTML = alertHTML;
-          document.getElementById('alert-success').style.display = 'block';
-  }
+            /* ================== Descargar leads (MOVER AL CONTROLADOR!!!) ================== */
 
-  function cerrarModal() {
-      const deleteModal = document.getElementById('deleteModal');
-      deleteModal.parentNode.removeChild(deleteModal);
-  }
 
-</script>
+            const nombrarArchivo = () => {
+                const date = new Date();
+                const timestamp =
+                    `${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, "0")}${date.getDate().toString().padStart(2, "0")}_${date.getHours().toString().padStart(2, "0")}${date.getMinutes().toString().padStart(2, "0")}${date.getSeconds().toString().padStart(2, "0")}`;
+                return `descarga_leads_leadtics_${timestamp}.csv`;
+            };
 
-<script>
+            const operacionExitosa = (accion) => {
+                const alertas = document.getElementById("alertas");
+                const alertHTML = `
+                        <div id="alert-success" class="flex relative items-center p-4 mb-4 text-sm mr-24 text-green-800 border border-green-300 rounded-lg bg-green-50 w-2/3">
+                            <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarAlert()">
+                                <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                            <div>
+                                <span class="font-bold"> ¡Acción exitosa! </span> 
+                                <span id="success-message">${accion}</span>
+                            </div>
+                        </div>
+                    `;
+                alertas.innerHTML = alertHTML;
+                document.getElementById("alert-success").style.display = "block";
+            };
 
-  function actualizarLeads(lead){
-    let html = '';
-    leads.forEach((lead) => {
-    html += `
-      <tr id="element" class="bg-white border-b hover:bg-gray-50">
-        <td class="px-4 py-2 sm:px-3 sm:py-3">
-          <div class="flex items-center">
-            <input id=" ${lead.IDLead}" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300">
-            <label for="${lead.IDLead}" class="sr-only">checkbox</label>
-          </div>
-        </td>
-        <td class="px-4 py-2 sm:px-3 sm:py-3">
-          <span class="cursor-pointer relative" 
-                onmouseover="document.getElementById('popover0_${lead.IDLead}').classList.remove('hidden')"
-                onmouseout="document.getElementById('popover0_${lead.IDLead}).classList.add('hidden')"
-          >
-          ${ lead.Nombre.substr(0, 15) + (lead.Nombre.length > 15 ? '...' : '') }
-            <div id="popover0_${lead.IDLead}" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-              ${lead.Nombre}
-            </div>
-          </span>  
-        </td>
-        <td class="px-4 py-2 sm:px-3 sm:py-3">
-          <!-- Mostrar solo el inicio del último mensaje -->
-          <span class="cursor-pointer relative" 
-                onmouseover="document.getElementById('popover_${lead.IDLead}').classList.remove('hidden')"
-                onmouseout="document.getElementById('popover_${lead.IDLead}').classList.add('hidden')"
-          >
-            ${lead.Ultimomensaje ? lead.Ultimomensaje.substr(0, 20) + (lead.Ultimomensaje.length > 20 ? '...' : '') : ''}
-            <div id="popover_${lead.IDLead}" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-              ${lead.Ultimomensaje}
-            </div>
-          </span>
-        </td>
-        <td class="px-4 py-2 sm:px-3 sm:py-3">
-          <!-- Mostrar solo el inicio del primer mensaje -->
-          <span class="cursor-pointer relative" 
-                onmouseover="document.getElementById('popover2_${lead.IDLead}').classList.remove('hidden')"
-                onmouseout="document.getElementById('popover2_${lead.IDLead}').classList.add('hidden')"
-          >
-          ${lead.Primermensaje ? lead.Primermensaje.substr(0, 20) + (lead.Primermensaje.length > 20 ? '...' : '') : ''}
-            <div id="popover2_${lead.IDLead}" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-              ${lead.Primermensaje}
-            </div>
-          </span>
-        </td>
-        <td class="px-4 py-2 sm:px-3 sm:py-3">${lead.Asignadoa}</td>
-        <td class="px-4 py-2 sm:px-3 sm:py-3">${lead.Telefono}</td>
-        <td class="flex justify-center pt-2.5">
-          <button onclick="showDialog('${lead.IDLead}')">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-          </button>
-        </td>
-      </tr>
-    `;
-    });
-    document.getElementById('containerElements').innerHTML = '';
-  }
-</script>
+            const cerrarModal = () => {
+                const deleteModal = document.getElementById("deleteModal");
+                deleteModal.parentNode.removeChild(deleteModal);
+            };
 
+            const descargarCSV = () => {
+                const selectedLeads = obtenerLeads();
+
+                if (selectedLeads.length > 0) {
+                    const csrf = document.getElementById("_csrf").value;
+                    fetch("/directorio/descargarLeads", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "csrf-token": csrf,
+                        },
+                        body: JSON.stringify({ selectedLeads }),
+                    })
+                        .then((response) => response.blob())
+                        .then((blob) => {
+                            cerrarModal();
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement("a");
+                            a.href = url;
+                            a.download = nombrarArchivo();
+                            a.click();
+
+                            const accion = "Se descargaron leads, consulta tus archivos.";
+                            operacionExitosa(accion);
+
+                            const rows = document.querySelectorAll("#containerElements tr");
+                            rows.forEach((row) => {
+                                const checkbox = row.querySelector(
+                                    'input[type="checkbox"]'
+                                );
+                                if (checkbox.checked) {
+                                    checkbox.checked = false;
+                                }
+                            });
+                        })
+                        .catch((error) => {
+                            console.error("Error al descargar leads:", error);
+                        });
+                } else {
+                    alert("No se ha seleccionado ningún lead");
+                }
+            };
+
+            /* ================== Mostrar y ocultar diálogo de detalles de lead ================== */
+
+            const hideDialog = () => {
+                const dialog = document.getElementById("dialog");
+
+                dialog.classList.add("opacity-0");
+                setTimeout(() => {
+                    dialog.classList.add("hidden");
+                    dialog.classList.remove("flex");
+                }, 500);
+            };
+
+            const showDialog = (IDLead) => {
+                fetch(`/directorio/${IDLead}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                    .then((result) => result.json()) // Return another promise
+                    .then((data) => {
+                        const dialog = document.getElementById("dialog");
+                        const leadDetails = data;
+
+                        let leadInfo =
+                            '<table class="rounded-lg bg-gray-300 w-full"><thead id="tableHead" class="text-xs text-white bg-gray-50"><tr>';
+
+                        Object.keys(leadDetails).forEach((key) => {
+                            if (leadDetails.hasOwnProperty(key) && leadDetails[key]) {
+                                // Check if value is not empty
+                                leadInfo += `<th scope="col" class="px-6 py-3 bg-blue-700">${key}</th>`;
+                            }
+                        });
+
+                        leadInfo +=
+                            '</tr></thead><tbody><tr id="element" class="bg-gray-100 border-b hover:bg-gray-50">';
+
+                        let cont = 0;
+                        Object.keys(leadDetails).forEach((key) => {
+                            if (
+                                Object.prototype.hasOwnProperty.call(leadDetails, key) &&
+                                leadDetails[key]
+                            ) {
+                                // Check if value is not empty
+                                let str = leadDetails[key];
+
+                                if (
+                                    typeof str === "string" &&
+                                    !Number.isNaN(Date.parse(str))
+                                ) {
+                                    const date = new Date(str);
+                                    str = `${date.getFullYear()}-${
+                                        date.getMonth() + 1
+                                    }-${date.getDate()}`;
+                                }
+
+                                const strShort =
+                                    str.length > 20 ? `${str.substr(0, 20)}...` : str;
+
+                                leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3">${strShort}
+                                    <span class="cursor-pointer relative" 
+                                        onmouseover="document.getElementById('popover${cont}').classList.remove('hidden')"
+                                        onmouseout="document.getElementById('popover${cont}').classList.add('hidden')"
+                                    >
+                                        <div id="popover${cont}" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
+                                            ${str} 
+                                        </div>
+                                    </span>
+                                </td>`;
+                                cont += 1;
+                            }
+                        });
+
+                        leadInfo += "</tr></tbody></table>";
+
+                        document.getElementById("leadDetails").innerHTML = leadInfo;
+
+                        dialog.classList.remove("hidden");
+                        dialog.classList.add("flex");
+                        setTimeout(() => {
+                            dialog.classList.add("opacity-100");
+                        }, 20);
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching lead details:", error);
+                    });
+            };
+
+            /* ================== Fetch leads con AJAX ================== */
+
+            // Obtener el contenedor de los elementos
+            const tableBody = document.getElementById("containerElements");
+
+            // Fetch leads
+            const getLeads = (page = 1) => {
+                // Fetch leads
+                fetch(`/directorio/json?page=${page}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        tableBody.innerHTML = "";
+                        data.map((lead) => {
+                            const newRow = `
+                            <tr
+                                id="element"
+                                class="bg-white border-b hover:bg-gray-50"
+                            >
+                                <td class="px-4 py-2 sm:px-3 sm:py-3">
+                                    <div class="flex items-center">
+                                        <input
+                                            id="${lead.IDLead}"
+                                            type="checkbox"
+                                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                                            onchange="updateButtonState()"
+                                        />
+                                        <label
+                                            for="${lead.IDLead}"
+                                            class="sr-only"
+                                        >
+                                            checkbox
+                                        </label>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-2 sm:px-3 sm:py-3">
+                                    <span
+                                        class="cursor-pointer relative"
+                                        onmouseover="document.getElementById('popover0_${lead.IDLead}').classList.remove('hidden')"
+                                        onmouseout="document.getElementById('popover0_${lead.IDLead}').classList.add('hidden')"
+                                    ></span>
+                                        ${lead.Nombre.substr(0, 15) + (lead.Nombre.length > 15 ? '...' : '')}
+                                        <div
+                                            id="popover0_${lead.IDLead}"
+                                            class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8"
+                                        >
+                                            ${lead.Nombre}
+                                        </div>
+                                    </span>
+                                </td>
+                                <td class="px-4 py-2 sm:px-3 sm:py-3">
+                                    <span
+                                        class="cursor-pointer relative"
+                                        onmouseover="document.getElementById('popover_${lead.IDLead}').classList.remove('hidden')"
+                                        onmouseout="document.getElementById('popover_${lead.IDLead}').classList.add('hidden')"
+                                    >
+                                        ${lead.Ultimomensaje ? lead.Ultimomensaje.substr(0, 20) + (lead.Ultimomensaje.length > 20 ? '...' : '') : ''}
+                                        <div
+                                            id="popover_${lead.IDLead}"
+                                            class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8"
+                                        >
+                                            ${lead.Ultimomensaje}
+                                        </div>
+                                    </span>
+                                </td>
+                                <td class="px-4 py-2 sm:px-3 sm:py-3">
+                                    <span
+                                        class="cursor-pointer relative"
+                                        onmouseover="document.getElementById('popover2_${lead.IDLead}').classList.remove('hidden')"
+                                        onmouseout="document.getElementById('popover2_${lead.IDLead}').classList.add('hidden')"
+                                    >
+                                        ${lead.Primermensaje ? lead.Primermensaje.substr(0, 20) + (lead.Primermensaje.length > 20 ? '...' : '') : ''}
+                                        <div
+                                            id="popover2_${lead.IDLead}"
+                                            class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8"
+                                        >
+                                            ${lead.Primermensaje}
+                                        </div>
+                                    </span>
+                                </td>
+                                <td class="px-4 py-2 sm:px-3 sm:py-3">
+                                    ${lead.Asignadoa}
+                                </td>
+                                <td class="px-4 py-2 sm:px-3 sm:py-3">
+                                    ${lead.Telefono}
+                                </td>
+                                <td class="flex justify-center pt-2.5">
+                                    <button onclick="showDialog(${lead.IDLead})">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                            class="w-6 h-6"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                            />
+                                        </svg>
+                                    </button>
+                                </td>
+                                <td>
+                                    <a
+                                        href="/directorio/editarLead/${lead.IDLead}"
+                                        class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center ml-5"
+                                    >
+                                        <svg
+                                            class="w-6 h-6 text-blue-700"
+                                            aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="24"
+                                            height="24"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke="currentColor"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"
+                                            ></path>
+                                        </svg>
+                                        <span class="sr-only">Modificar lead</span>
+                                    </a>
+                                </td>
+                            </tr>`;
+
+                            tableBody.insertAdjacentHTML("beforeend", newRow);
+                        });
+                    })
+                    .catch((error) => {
+                        console.error("Error al obtener leads:", error);
+                    });
+            };
+
+            // ================== Paginación ==================
+
+            let currentPage = 1;
+
+            const navigationElement = document.getElementById("navigation")
+
+            const notCurrentPageClass = "flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700";
+            const currentPageClass = "z-10 flex items-center justify-center px-4 h-10 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700"
+
+            const selectPage = (page) => {
+
+                // Actualizar el page actual
+                currentPage = page;
+
+                // Limpiar los elementos
+                tableBody.innerHTML = "";
+
+                // Obtener los leads de la página
+                getLeads(page);
+
+                const pages = navigationElement.querySelectorAll("a");
+                pages.forEach((pageElement) => {
+                    pageElement.className = notCurrentPageClass;
+                });
+
+                const currentPageElement = document.getElementById(`page${page}`);
+                currentPageElement.className = currentPageClass;
+            };
+
+            const previousPage = () => {
+                if (currentPage > 1) {
+                    currentPage -= 1;
+                    selectPage(currentPage);
+                }
+            };
+
+            const nextPage = () => {
+                currentPage += 1;
+                selectPage(currentPage);
+            };
+
+            // ================== Inicialización ==================
+
+            // Obtener los leads al cargar la página
+            getLeads(1);
+
+            // Actualizar el estado de los botones
+            updateButtonState();
+
+        </script>
+    </footer>
 </html>

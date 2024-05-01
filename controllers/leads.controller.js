@@ -1,7 +1,5 @@
 const Lead = require("../model/leads.model");
 const Usuario = require("../model/usuario.model");
-const csv = require('csv-parser');
-const fs = require('fs');
 
 /* ========== CU. 25 CONSULTA REPORTE EN HISTORIAL | Diego García =============== */
 
@@ -10,74 +8,58 @@ const fs = require('fs');
 /* ========== CU. 10 CONSULTA DIRECTORIO | Diego Lira - Diego García - Chimali (Puro Peer Programing) =============== */
 
 exports.getLeads = (req, res) => {
-    const { Correo, Privilegios } = req.session; // Test user
-    const error = req.flash("error") || "";
-    const success = req.flash("success") || "";
+    res.render("directorio", {
+        csrfToken: req.csrfToken(),
+        privilegios: req.session.Privilegios,
+        correo: req.session.Correo,
+        rol: req.session.Rol,
+        nombre: req.session.Nombre,
+        apellidoPaterno: req.session.ApellidoPaterno,
+        error: req.session.error || "",
+        success: req.session.success || "",
+    });
+};
 
+/* ---------------- Paginación (Diego García) ---------------- */
+
+exports.getLeadsJSON = (req, res) => {
+    // Obtiene los privilegios del usuario
+    const { Privilegios, Correo } = req.session;
+
+    // Obtiene la página actual de los parámetros de la URL
+    const page = req.query.page || 1;
+
+    // Si el usuario tiene el privilegio de "Consulta directorio todos." se obtienen todos los leads
     if (
         Privilegios.some(
             (priv) => priv.Descripcion === "Consulta directorio todos."
         )
     ) {
-        Lead.fetchAll()
+        // Obtiene los leads de la BD
+        Lead.fetchAllLeadsByPage(page, 10)
             .then(([leadsFetched]) => {
-                Usuario.fetchAllUsers()
-                    .then(([usuariosFetched]) => {
-                        Lead.fetchEmbudos()
-                            .then(([embudosFetched]) => {
-                                res.render("directorio", {
-                                    leads: leadsFetched,
-                                    csrfToken: req.csrfToken(),
-                                    correo: req.session.Correo,
-                                    rol: req.session.Rol,
-                                    nombre: req.session.Nombre,
-                                    apellidoPaterno: req.session.ApellidoPaterno,
-                                    apellidoMaterno: req.session.apellidoMaterno,
-                                    usuarios: usuariosFetched,
-                                    embudos: embudosFetched,
-                                    privilegios: Privilegios,
-                                    error: error,
-                                    success: success,
-                                    mostrarBoton: true,
-                                });
-                            })
-                            .catch();
-                    })
-                    .catch((error) => {
-                        req.flash("error", "Error al cargar usuarios.");
-                        res.redirect("/inicio");
-                    });
+                console.log("fetchAllLeadsByPage", leadsFetched);
+                res.status(200).json(leadsFetched);
             })
             .catch((error) => {
-                req.flash("error", "Error al cargar leads.");
-                res.redirect("/inicio");
+                console.error(error);
+                res.status(500).json({ message: "Error obteniendo leads" });
             });
-    } else {
-        Lead.fetchLeadsByUser(Correo)
+        // En caso contrario, si el usuario tiene el privilegio de "Consulta directorio propios." se obtienen los leads propios
+    } else if (
+        Privilegios.some(
+            (priv) => priv.Descripcion === "Consulta directorio propios."
+        )
+    ) {
+        // Obtiene los leads de la BD
+        Lead.fetchAllLeadsByUserAndPage(Correo, page, 10)
             .then(([leadsFetched]) => {
-                Lead.fetchEmbudos()
-                    .then(([embudosFetched]) => {
-                        res.render("directorio", {
-                            leads: leadsFetched,
-                            csrfToken: req.csrfToken(),
-                            correo: req.session.Correo,
-                            rol: req.session.Rol,
-                            nombre: req.session.Nombre,
-                            apellidoPaterno: req.session.ApellidoPaterno,
-                            apellidoMaterno: req.session.apellidoMaterno,
-                            privilegios: Privilegios,
-                            embudos: embudosFetched,
-                            error: error,
-                            success: success,
-                            mostrarBoton: true,
-                        });
-                    })
-                    .catch();
+                console.log("fetchAllLeadsByUserAndPage", leadsFetched);
+                res.status(200).json(leadsFetched);
             })
             .catch((error) => {
-                console.log(error);
-                req.flash("error", "Error al cargar leads.");
-                res.redirect("/inicio");
+                console.error(error);
+                res.status(500).json({ message: "Error obteniendo leads" });
             });
     }
 };
@@ -91,9 +73,11 @@ exports.getLeadDetails = (req, res) => {
 
     Lead.fetchOne(leadId)
         .then(([testLead]) => res.status(200).json(testLead[0]))
-        .catch(() => {
+        .catch((error) => {
+            console.error(error);
+
             req.flash("error", "El lead no ha podido ser consultado.");
-            redirect("/directorio");
+            res.redirect("/directorio");
         });
 };
 
@@ -102,25 +86,35 @@ exports.getLeadDetails = (req, res) => {
 /* ========== CU. 5 CREA LEAD | Diego Lira =============== */
 
 exports.postCrearLead = (req, res) => {
-    const { Privilegios } = req.session;
-    const { nombre, telefono, embudo, asignadoa } = req.body;
-    if (Privilegios.some((Privilegios => Privilegios.Descripcion === 'Crea lead todos.'))) {
+    // Se obtienen los datos de la sesión
+    const { Privilegios, Nombre, ApellidoPaterno } = req.session;
 
+    // Se obtienen los datos del formulario
+    const { nombre, telefono, embudo, asignadoa } = req.body;
+
+    // Si el usuario tiene el privilegio de "Crea lead todos." se crea el lead
+    if (Privilegios.some((priv) => priv.Descripcion === "Crea lead todos.")) {
         Lead.createLead(nombre, telefono, embudo, asignadoa)
             .then(([rows]) => {
-
-                res.status(200).json({ success: "Lead creado con exito",  lead: rows[0] });
+                res.status(200).json({
+                    success: "Lead creado con exito",
+                    lead: rows[0],
+                });
             })
             .catch((error) => {
                 console.error(error);
                 res.status(500).json({ message: "Error creando lead" });
             });
-    } else if (Privilegios.some((Privilegios => Privilegios.Descripcion === 'Crea lead propios.'))){
-        const nombreCompleto = req.session.Nombre + ' ' + req.session.ApellidoPaterno;
+
+        // En caso contrario, si el usuario tiene el privilegio de "Crea lead propios." se crea el lead
+    } else if (Privilegios.some((priv) => priv.Descripcion === "Crea lead.")) {
+        const nombreCompleto = `${Nombre} ${ApellidoPaterno}`;
         Lead.createLead(nombre, telefono, embudo, nombreCompleto)
             .then(([rows]) => {
-
-                res.status(200).json({ success: "Lead creado con exito",  lead: rows[0] });
+                res.status(200).json({
+                    success: "Lead creado con exito",
+                    lead: rows[0],
+                });
             })
             .catch((error) => {
                 console.error(error);
@@ -134,72 +128,84 @@ exports.postCrearLead = (req, res) => {
 /* ========== CU. 8 ELIMINA LEAD | Chimali Nava =============== */
 
 exports.postEliminarLead = async (req, res) => {
-    const selectedLeads = req.body.selectedLeads;
-  
+    // Se obtienen los leads seleccionados
+    const { selectedLeads } = req.body;
+
+    // Se eliminan los leads seleccionados
     try {
-      for (const id of selectedLeads) {
-        await Lead.deleteLeadById(id);
-      }
-      res.status(200).json({ success: true });
+        // ELimina los leads seleccionados
+        selectedLeads.forEach(async (id) => {
+            await Lead.deleteLeadById(id);
+        });
+
+        // Respuesta exitosa
+        res.status(200).json({ success: true });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Error eliminando leads' });
+        // Respuesta de error
+        console.error(error);
+
+        res.status(500).json({ message: "Error eliminando leads" });
     }
-  };
+};
 
 /* ========================== FIN CU. 8 ==============================  */
 
 /* ========== CU. 27 Exporta datos de leads. | Chimali Nava =============== */
 
 exports.postDescargarLeads = async (req, res) => {
-    const selectedLeads = req.body.selectedLeads;
+    // Se obtienen los leads seleccionados
+    const { selectedLeads } = req.body;
 
+    // Se descargan los leads seleccionados
     try {
-        const leadsData = [];
-        for (const IDLead of selectedLeads) {
-            const lead = await Lead.fetchOne(IDLead);
-            leadsData.push(lead[0]);
-        }
-        //console.log('Leads descargados:', leadsData);
-        
-        const csvString = 'Nombre,Telefono,Correo,Compania,Asignadoa,Creado,Horadecreacion,Fechadeprimermensaje,Horadelprimermensaje,Primermensaje,Fechadeultimomensaje,Horadelultimomensaje,Ultimomensaje,Status,EstadodeLead,Embudo,Etapa,Archivado,CreadoManualmente,Valor,Ganado,Etiquetas\n' +
-        leadsData.map(lead => {
-            const values = [
-                lead[0].Nombre,
-                lead[0].Telefono,
-                lead[0].Correo,
-                lead[0].Compania,
-                lead[0].Asignadoa,
-                lead[0].Creado,
-                lead[0].Horadecreacion,
-                lead[0].Fechadeprimermensaje,
-                lead[0].Horadelprimermensaje,
-                lead[0].Primermensaje,
-                lead[0].Fechadeultimomensaje,
-                lead[0].Horadelultimomensaje,
-                lead[0].Ultimomensaje,
-                lead[0].Status,
-                lead[0].EstadodeLead,
-                lead[0].Embudo,
-                lead[0].Etapa,
-                lead[0].Archivado,
-                lead[0].CreadoManualmente,
-                lead[0].Valor,
-                lead[0].Ganado,
-                lead[0].Etiquetas
-            ].map(value => value === undefined ? '' : value);
-            return values.join(',');
-        }).join('\n');
+        let leadsData = [];
+        leadsData = await Promise.all(
+            selectedLeads.map(async (IDLead) => {
+                const lead = await Lead.fetchOne(IDLead);
+                return lead[0];
+            })
+        );
 
-        res.header('Content-Type', 'text/csv');
+        // Construye el archivo CSV
+        const csvString = `Nombre,Telefono,Correo,Compania,Asignadoa,Creado,Horadecreacion,Fechadeprimermensaje,Horadelprimermensaje,Primermensaje,Fechadeultimomensaje,Horadelultimomensaje,Ultimomensaje,Status,EstadodeLead,Embudo,Etapa,Archivado,CreadoManualmente,Valor,Ganado,Etiquetas
+            ${leadsData
+                .map((lead) => {
+                    const values = [
+                        lead[0].Nombre,
+                        lead[0].Telefono,
+                        lead[0].Correo,
+                        lead[0].Compania,
+                        lead[0].Asignadoa,
+                        lead[0].Creado,
+                        lead[0].Horadecreacion,
+                        lead[0].Fechadeprimermensaje,
+                        lead[0].Horadelprimermensaje,
+                        lead[0].Primermensaje,
+                        lead[0].Fechadeultimomensaje,
+                        lead[0].Horadelultimomensaje,
+                        lead[0].Ultimomensaje,
+                        lead[0].Status,
+                        lead[0].EstadodeLead,
+                        lead[0].Embudo,
+                        lead[0].Etapa,
+                        lead[0].Archivado,
+                        lead[0].CreadoManualmente,
+                        lead[0].Valor,
+                        lead[0].Ganado,
+                        lead[0].Etiquetas,
+                    ].map((value) => (value === undefined ? "" : value));
+                    return values.join(",");
+                })
+                .join("\n")}`;
+
+        // Descarga el archivo CSV
+        res.header("Content-Type", "text/csv");
         res.send(csvString);
     } catch (error) {
-        console.error('Error al descargar leads:', error);
-        res.status(500).send('Error al descargar leads');
+        console.error("Error al descargar leads:", error);
+        res.status(500).send("Error al descargar leads");
     }
 };
-
-//const csvString = 'Nombre,Telefono,Correo,Compania,Asignadoa,Creado,Horadecreacion,Fechadeprimermensaje,Horadelprimermensaje,Primermensaje,Fechadeultimomensaje,Horadelultimomensaje,Ultimomensaje,Status,EstadodeLead,Embudo,Etapa,Archivado,CreadoManualmente,Valor,Ganado,Etiquetas\n' + leadsData.map(lead => `${lead.Nombre},${lead.Telefono},${lead.Correo},${lead.Compania},${lead.Asignadoa},${lead.Creado},${lead.Horadecreacion},${lead.Fechadeprimermensaje},${lead.Horadelprimermensaje},${lead.Primermensaje},${lead.Fechadeultimomensaje},${lead.Horadelultimomensaje},${lead.Ultimomensaje},${lead.Status},${lead.EstadodeLead},${lead.Embudo},${lead.Etapa},${lead.Archivado},${lead.CreadoManualmente},${lead.Valor},${lead.Ganado},${lead.Etiquetas}`).join('\n');
 
 /* ========== CU. 7 MODIFICA LEAD | Andrea Medina - Diego Lira ========== */
 exports.getEditarLead = (req, res) => {
@@ -209,16 +215,16 @@ exports.getEditarLead = (req, res) => {
         .then(([leadFetched]) => {
             Usuario.fetchAllUsers()
                 .then(([usuariosFetched]) => {
-                    res.render('editarLead', {
+                    res.render("editarLead", {
                         lead: leadFetched[0],
                         csrfToken: req.csrfToken(),
                         usuarios: usuariosFetched,
                     });
                 })
-                .catch()
+                .catch();
         })
         .catch();
-}
+};
 
 exports.postEditarLead = (req, res) => {
     const { leadId } = req.params;
@@ -246,8 +252,12 @@ exports.postEditarLead = (req, res) => {
     correo = correo === undefined ? null : correo;
     compania = compania === undefined ? null : compania;
     asignadoa = asignadoa === undefined ? null : asignadoa;
-    fechadelultimomensaje = fechadelultimomensaje === undefined ? null : new Date(fechadelultimomensaje).toISOString().split('T')[0];
-    horadelultimomensaje = horadelultimomensaje === undefined ? null : horadelultimomensaje;
+    fechadelultimomensaje =
+        fechadelultimomensaje === undefined
+            ? null
+            : new Date(fechadelultimomensaje).toISOString().split("T")[0];
+    horadelultimomensaje =
+        horadelultimomensaje === undefined ? null : horadelultimomensaje;
     ultimomensaje = ultimomensaje === undefined ? null : ultimomensaje;
     status = status === undefined ? null : status;
     estado = estado === undefined ? null : estado;
@@ -257,14 +267,32 @@ exports.postEditarLead = (req, res) => {
     valor = valor === undefined ? null : valor;
     ganado = ganado === undefined ? null : ganado;
     etiquetas = etiquetas === undefined ? null : etiquetas;
-    
-    Lead.updateLeadById(leadId, nombre, telefono, correo, compania, asignadoa, fechadelultimomensaje, horadelultimomensaje, ultimomensaje, status, estado, embudo, etapa, archivado, valor, ganado, etiquetas)
+
+    Lead.updateLeadById(
+        leadId,
+        nombre,
+        telefono,
+        correo,
+        compania,
+        asignadoa,
+        fechadelultimomensaje,
+        horadelultimomensaje,
+        ultimomensaje,
+        status,
+        estado,
+        embudo,
+        etapa,
+        archivado,
+        valor,
+        ganado,
+        etiquetas
+    )
         .then(() => {
-            req.flash('success', 'Lead actualizado correctamente.');
-            res.redirect('/directorio');
+            req.flash("success", "Lead actualizado correctamente.");
+            res.redirect("/directorio");
         })
         .catch();
-}
+};
 
 /* ========================== FIN CU. 7 ==============================  */
 
