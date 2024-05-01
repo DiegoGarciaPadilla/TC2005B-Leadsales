@@ -36,9 +36,17 @@
 
 </head>
 <body class="bg-[#E4E8EE]">
-    <nav><%- include('partials/sidebar.ejs') %></nav>
+    <%- include('partials/sidebar.ejs') %>
+    <%- include('partials/aside.ejs', {
+        correo: correo,
+        nombre: nombre, 
+        apellidoPaterno: apellidoPaterno,
+        apellidoMaterno: apellidoMaterno,
+        rol: rol,
+        privilegios: privilegios
+        }) %>  
 
-    <div id="main-content" class="ml-14 mt-14 pl-8">
+    <div id="main-content" class="ml-14 mt-14 pl-8 w-[75%]">
         <div>
             <header class="text-left">
                 <nav class="flex">
