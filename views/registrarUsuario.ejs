@@ -161,7 +161,9 @@
                         name="correo"
                         class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="martharoco@gmail.com"
+                        maxlength="64"
                         required
+                        autocomplete="email"
                     />
                 </div>
                 <div>
@@ -178,9 +180,14 @@
                         name="password"
                         class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="•••••••••"
-                        required
                         maxlength="32"
+                        required
+                        autocomplete="new-password"
                     />
+                    <div class="flex items-center mt-2">
+                        <input type="checkbox" id="mostrar" onchange="visibilidadPassword()" class="mr-2">
+                        <label for="mostrar" class="text-sm text-gray-700 cursor-pointer">Mostrar contraseña</label>
+                    </div>
                 </div>
                 <div>
                     <label
@@ -214,6 +221,7 @@
                         name="telefono"
                         class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="4425189756"
+                        maxlength="16"
                     />
                 </div>
                 <div class="mb-4">
@@ -230,9 +238,11 @@
                         required
                     >
                         <% for (let i=0; i < roles.length; i++) { %>
+                            <% if (roles[i].Nombre !== 'Owner') { %>
                         <option value="<%= roles[i].IDRol %>" <%= roles[i].Nombre === 'Seller' ? 'selected' : '' %>>
                             <%= roles[i].Nombre %>
                         </option>
+                            <% } %>
                         <% } %>
                     </select>
                 </div>
@@ -276,6 +286,15 @@
 
         const errorDiv = document.getElementById("div-error");
         const errorMessage = document.getElementById("error-message");
+
+        function visibilidadPassword() {
+        const inputPassword = document.getElementById('password');
+        const inputConfirmPassword = document.getElementById('confirmarPassword');
+        const mostrarPassword = document.getElementById('mostrar');
+
+        inputPassword.type = mostrarPassword.checked ? 'text' : 'password';
+        inputConfirmPassword.type = mostrarPassword.checked ? 'text' : 'password';
+        }
 
         function checkPasswords() {
             if (password.value !== confirmPassword.value) {
