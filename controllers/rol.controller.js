@@ -126,6 +126,7 @@ exports.getEditarRol = (req, res) => {
                     Privilegio.fetchPrivilegiosByIDRol(IDRol)
                         .then(([privilegiosRolFetched]) => {
                             console.log(privilegiosRolFetched);
+                            console.log("Rol: ", rolFetched[0]);
                             res.render("editarRol", {
                                 rol: rolFetched[0],
                                 privilegios: privilegiosFetched,

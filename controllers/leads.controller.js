@@ -210,6 +210,7 @@ exports.postDescargarLeads = async (req, res) => {
 /* ========== CU. 7 MODIFICA LEAD | Andrea Medina - Diego Lira ========== */
 exports.getEditarLead = (req, res) => {
     const { leadId } = req.params;
+    const { privilegios } = req.session;
 
     Lead.fetchOne(leadId)
         .then(([leadFetched]) => {
@@ -219,6 +220,16 @@ exports.getEditarLead = (req, res) => {
                         lead: leadFetched[0],
                         csrfToken: req.csrfToken(),
                         usuarios: usuariosFetched,
+                        correo: req.session.Correo,
+                        rol: req.session.Rol,
+                        nombre: req.session.Nombre,
+                        apellidoPaterno: req.session.ApellidoPaterno,
+                        apellidoMaterno: req.session.apellidoMaterno,
+                        privilegios: privilegios,
+                        usuarios: usuariosFetched,
+                        success: "",
+                        error: "",
+                        mostrarBoton: null, 
                     });
                 })
                 .catch();
