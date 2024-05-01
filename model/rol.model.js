@@ -42,8 +42,8 @@ module.exports = class Rol {
         // Insertar los nuevos privilegios
         const queries = PrivilegiosArray.map((IDPrivilegio) =>
             db.execute(
-                "INSERT INTO privilegio_rol (IDRol, IDPrivilegio) VALUES (?, ?)",
-                [IDRol, IDPrivilegio]
+            "INSERT INTO privilegio_rol (IDRol, IDPrivilegio, Activo) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE Activo = IF(Activo = 0, 1, Activo)",
+            [IDRol, IDPrivilegio]
             )
         );
 
