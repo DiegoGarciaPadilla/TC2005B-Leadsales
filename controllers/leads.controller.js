@@ -8,6 +8,7 @@ const Usuario = require("../model/usuario.model");
 /* ========== CU. 10 CONSULTA DIRECTORIO | Diego Lira - Diego García - Chimali (Puro Peer Programing) =============== */
 
 exports.getLeads = (req, res) => {
+    const sucessMessage = req.flash("editado") || '';
     res.render("directorio", {
         csrfToken: req.csrfToken(),
         privilegios: req.session.Privilegios,
@@ -17,7 +18,7 @@ exports.getLeads = (req, res) => {
         apellidoPaterno: req.session.ApellidoPaterno,
         apellidoMaterno: req.session.ApellidoMaterno,
         error: req.session.error || "",
-        success: req.session.success || "",
+        success:sucessMessage,
     });
 };
 
@@ -304,7 +305,7 @@ exports.postEditarLead = (req, res) => {
         etiquetas
     )
         .then(() => {
-            req.flash("success", "Lead actualizado correctamente.");
+            req.flash("editado", "Lead actualizado correctamente.");
             res.redirect("/directorio");
         })
         .catch();
