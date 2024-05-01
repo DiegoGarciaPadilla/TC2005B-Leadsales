@@ -15,8 +15,10 @@ exports.getLeads = (req, res) => {
         rol: req.session.Rol,
         nombre: req.session.Nombre,
         apellidoPaterno: req.session.ApellidoPaterno,
+        apellidoMaterno: req.session.ApellidoMaterno,
         error: req.session.error || "",
         success: req.session.success || "",
+        mostrarBoton: null,
     });
 };
 
@@ -38,8 +40,14 @@ exports.getLeadsJSON = (req, res) => {
         // Obtiene los leads de la BD
         Lead.fetchAllLeadsByPage(page, 10)
             .then(([leadsFetched]) => {
-                console.log("fetchAllLeadsByPage", leadsFetched);
-                res.status(200).json(leadsFetched);
+                Usuario.fetchAllUsers()
+                    .then(([usuariosFetched]) => {
+                        Lead.fetchEmbudos()
+                            .then(([embudosFetched]) => {
+                                console.log("fetchAllLeadsByPage", leadsFetched);
+                                res.status(200).json({leadsFetched, usuariosFetched, embudosFetched});
+                            })
+                    })
             })
             .catch((error) => {
                 console.error(error);
@@ -226,7 +234,6 @@ exports.getEditarLead = (req, res) => {
                         apellidoPaterno: req.session.ApellidoPaterno,
                         apellidoMaterno: req.session.apellidoMaterno,
                         privilegios: privilegios,
-                        usuarios: usuariosFetched,
                         success: "",
                         error: "",
                         mostrarBoton: null, 
