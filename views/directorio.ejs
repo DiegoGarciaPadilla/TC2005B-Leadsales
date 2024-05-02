@@ -147,7 +147,7 @@
             </div>
 
             <nav class="mt-8" id="navigation">
-                <ul class="flex items-center -space-x-px h-10 text-base">
+                <ul class="flex items-center -space-x-px h-10 text-base" id="navigation-list">
                     <li>
                         <a onclick="previousPage()"
                             class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700">
@@ -163,22 +163,7 @@
                         <a onclick="selectPage(1)" id="page1"
                             class="z-10 flex items-center justify-center px-4 h-10 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700">1</a>
                     </li>
-                    <li>
-                        <a onclick="selectPage(2)" id="page2"
-                            class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">2</a>
-                    </li>
-                    <li>
-                        <a onclick="selectPage(3)" id="page3"
-                            class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">3</a>
-                    </li>
-                    <li>
-                        <a onclick="selectPage(4)" id="page4"
-                            class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">4</a>
-                    </li>
-                    <li>
-                        <a onclick="selectPage(5)" id="page5"
-                            class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">5</a>
-                    </li>
+                    <div class="flex items-center -space-x-px h-10 text-base" id="new-pages"></div>
                     <li>
                         <a onclick="nextPage()"
                             class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700">
@@ -583,9 +568,14 @@
                         const leads = data.leadsFetched;
                         const usuarios = data.usuariosFetched;
                         const embudos = data.embudosFetched;
+                        const pages = data.pages;
 
+                        globalThis.pages = pages;
+
+                        // Limpiar los elementos de la tabla
                         tableBody.innerHTML = "";
 
+                        // Crear las filas de la tabla
                         leads.map((lead) => {
                             const newRow = `
                             <tr
@@ -704,7 +694,35 @@
                                 </td>
                             </tr>`;
 
+                            // Insertar la fila en la tabla
                             tableBody.insertAdjacentHTML("beforeend", newRow);
+
+                            // Obtener el contenedor de la barra de navegación
+                            const navigationElement = document.getElementById("new-pages");
+
+                            // Limpiar los elementos
+                            navigationElement.innerHTML = "";
+
+                            // Crear los botones de página
+                            for (let i = 2; i <= pages; i++) {
+                                const newPage = `
+                                <li>
+                                    <a onclick="selectPage(${i})" 
+                                        id="page${i}"
+                                        class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+                                    >
+                                        ${i}
+                                    </a>
+                                </li>
+                                `;
+
+                                // Insertar el botón en la barra de navegación
+                                navigationElement.insertAdjacentHTML("beforeend", newPage);
+                            }
+
+                            // Actualizar el estado de las páginas
+                            document.getElementById(`page${currentPage}`).className = "z-10 flex items-center justify-center px-4 h-10 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700";
+                            
 
                             const success = JSON.parse('<%- JSON.stringify(success) %>');
                             if (success!= '') {
@@ -719,15 +737,14 @@
 
             // ================== Paginación ==================
 
+            // Página actual
             let currentPage = 1;
-
-            const navigationElement = document.getElementById("navigation")
-
-            const notCurrentPageClass = "flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700";
-            const currentPageClass = "z-10 flex items-center justify-center px-4 h-10 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700"
-
+            
+            // Seleccionar página (esta función al presionar un botón de página)
             const selectPage = (page) => {
-
+                const notCurrentPageClass = "flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700";
+                const currentPageClass = "z-10 flex items-center justify-center px-4 h-10 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700"
+                
                 // Actualizar el page actual
                 currentPage = page;
 
@@ -737,8 +754,13 @@
                 // Obtener los leads de la página
                 getLeads(page);
 
-                const pages = navigationElement.querySelectorAll("a");
-                pages.forEach((pageElement) => {
+                // Obtener los elementos de la barra de navegación
+                const navigationElement = document.getElementById("navigation")
+                const pagesButtons = navigationElement.querySelectorAll("a");
+
+                console.log(pagesButtons);
+
+                pagesButtons.forEach((pageElement) => {
                     pageElement.className = notCurrentPageClass;
                 });
 
@@ -746,6 +768,7 @@
                 currentPageElement.className = currentPageClass;
             };
 
+            // Página anterior
             const previousPage = () => {
                 if (currentPage > 1) {
                     currentPage -= 1;
@@ -753,9 +776,12 @@
                 }
             };
 
+            // Página siguiente
             const nextPage = () => {
-                currentPage += 1;
-                selectPage(currentPage);
+                if (currentPage < pages) {
+                    currentPage += 1;
+                    selectPage(currentPage);
+                }
             };
 
             // ================== Inicialización ==================
