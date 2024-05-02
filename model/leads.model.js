@@ -8,13 +8,13 @@ module.exports = class Lead {
 
     static fetchAll() {
         return db.execute(
-            "SELECT * FROM `lead` WHERE FechaHoraEliminado IS NULL"
+            "SELECT * FROM `lead` WHERE FechaHoraEliminado IS NULL ORDER BY Creado DESC, Horadecreacion DESC"
         );
     }
 
     static fetchAllCount() {
         return db.execute(
-            "SELECT COUNT(*) AS total FROM `lead` WHERE FechaHoraEliminado IS NULL"
+            "SELECT COUNT(*) AS total FROM `lead` WHERE FechaHoraEliminado IS NULL ORDER BY Creado DESC, Horadecreacion DESC"
         );
     }
 
@@ -62,7 +62,7 @@ module.exports = class Lead {
     static fetchAllLeadsByPage(page, perPage) {
         const offset = (page - 1) * perPage;
         return db.execute(
-            `SELECT * FROM \`lead\` WHERE FechaHoraEliminado IS NULL LIMIT ${offset}, ${perPage}`
+            `SELECT * FROM \`lead\` WHERE FechaHoraEliminado IS NULL ORDER BY Creado DESC, Horadecreacion DESC LIMIT ${offset}, ${perPage}`
         );
     }
 
@@ -83,7 +83,7 @@ module.exports = class Lead {
         const offset = (page - 1) * perPage;
 
         return db.execute(
-            `SELECT * FROM \`lead\` WHERE Asignadoa = ? AND FechaHoraEliminado IS NULL LIMIT ${offset}, ${perPage}`,
+            `SELECT * FROM \`lead\` WHERE Asignadoa = ? AND FechaHoraEliminado ORDER BY Creado DESC, Horadecreacion DESC IS NULL LIMIT ${offset}, ${perPage}`,
             [nombreCompleto]
         );
     }
