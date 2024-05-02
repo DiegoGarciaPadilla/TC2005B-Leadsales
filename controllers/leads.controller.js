@@ -8,7 +8,7 @@ const Usuario = require("../model/usuario.model");
 /* ========== CU. 10 CONSULTA DIRECTORIO | Diego Lira - Diego García - Chimali (Puro Peer Programing) =============== */
 
 exports.getLeads = (req, res) => {
-    const sucessMessage = req.flash("editado") || '';
+    const sucessMessage = req.flash("editado") || "";
     res.render("directorio", {
         csrfToken: req.csrfToken(),
         privilegios: req.session.Privilegios,
@@ -18,13 +18,13 @@ exports.getLeads = (req, res) => {
         apellidoPaterno: req.session.ApellidoPaterno,
         apellidoMaterno: req.session.ApellidoMaterno,
         error: req.session.error || "",
-        success:sucessMessage,
+        success: sucessMessage,
     });
 };
 
 /* ---------------- Paginación (Diego García) ---------------- */
 
-exports.getLeadsJSON = (req, res) => {
+exports.getLeadsJSON = async (req, res) => {
     // Obtiene los privilegios del usuario
     const { Privilegios, Correo } = req.session;
 
@@ -38,21 +38,29 @@ exports.getLeadsJSON = (req, res) => {
         )
     ) {
         // Obtiene los leads de la BD
-        Lead.fetchAllLeadsByPage(page, 10)
-            .then(([leadsFetched]) => {
-                Usuario.fetchAllUsers()
-                    .then(([usuariosFetched]) => {
-                        Lead.fetchEmbudos()
-                            .then(([embudosFetched]) => {
-                                console.log("fetchAllLeadsByPage", leadsFetched);
-                                res.status(200).json({leadsFetched, usuariosFetched, embudosFetched});
-                            })
-                    })
-            })
-            .catch((error) => {
-                console.error(error);
-                res.status(500).json({ message: "Error obteniendo leads" });
-            });
+        const [leadsFetched] = await Lead.fetchAllLeadsByPage(page, 10);
+        console.log("leadsFetched", leadsFetched);
+
+        // Obtiene el conteo de leads de la BD
+        const [leadsCount] = await Lead.fetchAllCount();
+        console.log("leadsCount", leadsCount);
+
+        // Obtiene los usuarios de la BD
+        const [usuariosFetched] = await Usuario.fetchAllUsers();
+        console.log("usuariosFetched", usuariosFetched);
+
+        // Obtiene los embudos de la BD
+        const [embudosFetched] = await Lead.fetchEmbudos();
+        console.log("embudosFetched", embudosFetched);
+
+        // Envía la respuesta con los leads, usuarios y embudos
+        res.status(200).json({
+            leadsFetched,
+            leadsCount,
+            usuariosFetched,
+            embudosFetched,
+        });
+
         // En caso contrario, si el usuario tiene el privilegio de "Consulta directorio propios." se obtienen los leads propios
     } else if (
         Privilegios.some(
@@ -60,15 +68,22 @@ exports.getLeadsJSON = (req, res) => {
         )
     ) {
         // Obtiene los leads de la BD
-        Lead.fetchAllLeadsByUserAndPage(Correo, page, 10)
-            .then(([leadsFetched]) => {
-                console.log("fetchAllLeadsByUserAndPage", leadsFetched);
-                res.status(200).json(leadsFetched);
-            })
-            .catch((error) => {
-                console.error(error);
-                res.status(500).json({ message: "Error obteniendo leads" });
-            });
+        const [leadsFetched] = await Lead.fetchAllLeadsByUserAndPage(
+            Correo,
+            page,
+            10
+        );
+
+        // Obtiene el conteo de leads de la BD
+        const [leadsCount] = await Lead.fetchLeadsByUserCount(Correo);
+
+        // Envía la respuesta con los leads
+        res.status(200).json({
+            leadsFetched,
+            leadsCount,
+            usuariosFetched: [],
+            embudosFetched: [],
+        });
     }
 };
 

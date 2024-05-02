@@ -12,6 +12,12 @@ module.exports = class Lead {
         );
     }
 
+    static fetchAllCount() {
+        return db.execute(
+            "SELECT COUNT(*) AS total FROM `lead` WHERE FechaHoraEliminado IS NULL"
+        );
+    }
+
     static async fetchLeadsByUser(correo) {
         // Primera consulta: obtener el nombre y apellido paterno basado en el correo
         const [rows] = await db.execute(
@@ -29,6 +35,26 @@ module.exports = class Lead {
         const nombreCompleto = rows[0].NombreCompleto;
         return db.execute(
             "SELECT * FROM `lead` WHERE Asignadoa = ? AND FechaHoraEliminado IS NULL",
+            [nombreCompleto]
+        );
+    }
+
+    static async fetchLeadsByUserCount(correo) {
+        // Primera consulta: obtener el nombre y apellido paterno basado en el correo
+        const [rows] = await db.execute(
+            "SELECT CONCAT(Nombre, ' ', ApellidoPaterno) AS NombreCompleto FROM `usuario` WHERE Correo = ?",
+            [correo]
+        );
+
+        if (rows.length === 0) {
+            // No se encontró ningún usuario con ese correo
+            return [];
+        }
+
+        // Segunda consulta: obtener los leads donde Asignadoa es igual al nombre completo obtenido
+        const nombreCompleto = rows[0].NombreCompleto;
+        return db.execute(
+            "SELECT COUNT(*) AS total FROM `lead` WHERE Asignadoa = ? AND FechaHoraEliminado IS NULL",
             [nombreCompleto]
         );
     }

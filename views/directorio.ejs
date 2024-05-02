@@ -562,13 +562,15 @@
                 })
                     .then((response) => response.json())
                     .then((data) => {
+
+                        // Obtener los datos
+                        const leads = data.leadsFetched;
                         const usuarios = data.usuariosFetched;
-                        console.log("Usuarios ", usuarios); 
                         const embudos = data.embudosFetched;
-                        console.log("Embudos ", embudos);
 
                         tableBody.innerHTML = "";
-                        data.leadsFetched.map((lead) => {
+
+                        leads.map((lead) => {
                             const newRow = `
                             <tr
                                 id="element"
@@ -689,7 +691,6 @@
                             tableBody.insertAdjacentHTML("beforeend", newRow);
 
                             const success = JSON.parse('<%- JSON.stringify(success) %>');
-                            console.log("Esto es success: ", success);
                             if (success!= '') {
                                 operacionExitosa(success);
                             }
