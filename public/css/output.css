@@ -735,10 +735,6 @@ video {
   margin-left: 7rem;
 }
 
-.ml-32 {
-  margin-left: 8rem;
-}
-
 .ml-4 {
   margin-left: 1rem;
 }
@@ -825,6 +821,34 @@ video {
 
 .mt-8 {
   margin-top: 2rem;
+}
+
+.ml-32 {
+  margin-left: 8rem;
+}
+
+.mr-1 {
+  margin-right: 0.25rem;
+}
+
+.-mr-14 {
+  margin-right: -3.5rem;
+}
+
+.-mr-10 {
+  margin-right: -2.5rem;
+}
+
+.-mr-2 {
+  margin-right: -0.5rem;
+}
+
+.-mr-28 {
+  margin-right: -7rem;
+}
+
+.-mr-24 {
+  margin-right: -6rem;
 }
 
 .block {
