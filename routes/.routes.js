@@ -53,7 +53,7 @@ router.get("/", isAuth,  (req, res) => {
                         apellidoPaterno: req.session.ApellidoPaterno,
                         apellidoMaterno: req.session.apellidoMaterno,
                         usuarios: usuariosFetched,
-                        embudos: embudosFetched || {Embudo: "No hay embudos"},
+                        embudos: "No hay embudos",
                         success: "",
                         error: error,
                     });
