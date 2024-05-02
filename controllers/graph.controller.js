@@ -206,12 +206,9 @@ exports.postPDF = (req, res, next) => {
     console.log("Esto es body: ", req.body);
     const { pdfData } = req.body;
     const { csrfToken } = req.csrfToken();
-
-    console.log("a punto de entrar");
   
     Reporte.insertReport(IDUsuario, "Reporte", pdfData)
       .then(([rows]) => {
-        console.log("Entré");
         reporteID = rows[0].id;
         console.log("ID del reporte: ", reporteID);
         console.log("PDF Almacenado");
@@ -231,7 +228,6 @@ exports.postPDF = (req, res, next) => {
             }
         }));
 
-        console.log("traka sí llego");
         res.status(200).json({ message: "PDF Almacenado correctamente" });
       })
       .catch((error) => {
