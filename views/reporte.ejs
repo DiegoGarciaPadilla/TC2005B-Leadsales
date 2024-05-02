@@ -35,6 +35,11 @@
         .side:hover~#main-content {
             padding-left: 10rem;
         }
+        #descargarBoton:disabled {
+            background-color: #a4a4a4;
+            color: #ffffff;
+            cursor: not-allowed;
+        }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -52,6 +57,7 @@
             <h1 class="mb-6 text-4xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">
                 Reporte
             </h1>
+            <p class="mb-4 font-bold text-red-700">* Obligatorio</p>
             <div id="alertas">
 
             </div>
@@ -78,10 +84,11 @@
                                 class="h-10 text-blue-700 bg-white hover:bg-gray-200 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none border border-blue-700">
                                 Limpiar fechas
                             </button>
-                            <button onclick="descargarPDF()" type="button"  
+                            <button id="descargarBoton" onclick="descargarPDF()" type="button"  
                                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm ml-28 px-5 py-2.5 me-2 mb-2 focus:outline-none">
                                 Generar PDF
-                            </button>   
+                            </button>  
+                            <input id="_csrf" type="hidden" name="_csrf" value="<%= csrfToken %>" > 
                         </div>
                     </form>
                 </div>
@@ -89,6 +96,7 @@
                     <label for="graphSelector" class="mr-2">Selecciona gráfica:</label>
                     <select id="graphSelector" class="px-2 py-1 border border-gray-300 rounded-md"
                         onchange="selectGraph()">
+                        <option selected value="allGraphs"> Todas las gráficas</option>
                         <option value="graphOne">Leads por día</option>
                         <option value="graphTwo">
                             Cantidad de leads por año, por mes
@@ -115,34 +123,81 @@
                         <li>Puedes consultar más información sobre un punto específico de la gráfica colocando el cursor sobre este.</li>
                     </div>
                 </div>
+                <div class="mb-4">
+                    <label for="descripcion" class="mr-2">Descripción de tu reporte:
+                        <span class="font-bold text-red-700"> * </span>
+                    </label>
+                    <input id="descripcion" name="descripcion" class="px-2 py-1 border border-gray-300 rounded-md" maxlength="32" required>
+                </div>
             </div>
 
+            <div class="items-center ps-2 mb-5 hidden">
+                <canvas id="logo"></canvas>
+                <span class="sidebar-text self-center text-xl font-semibold whitespace-nowrap text-gray-800 pl-2">Leadtics</span>
+             </div>
+
             <div id="graphOneContainer" class="graph-container w-3/4 px-4 py-8 ml-32">
+                <p class="text-center font-bold text-2xl"> Leads promedio por día </p>
                 <canvas id="graphOne" width="400" height="200"></canvas>
             </div>
             <div id="graphTwoContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
+                <p class="text-center font-bold text-2xl"> Cantidad de leads por año, por mes </p>
                 <canvas id="graphTwo" width="400" height="200"></canvas>
             </div>
             <div id="graphThreeContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
+                <p class="text-center font-bold text-2xl"> Leads por usuarios </p>
                 <canvas id="graphThree" width="400" height="200"></canvas>
             </div>
-            <div id="graphFourContainer" class="graph-container w-3/4 px-4 py-8 ml-32"
+            <div id="graphFourContainer" class="graph-container px-4 py-8 ml-32"
                 style="display: none; width: 50%; height: 50%">
-                <canvas id="graphFour" width="400" height="200"></canvas>
+                <p class="text-center font-bold text-2xl"> Leads por status </p>
+                <canvas id="graphFour" width="200" height="100"></canvas>
             </div>
-            <div id="graphFiveContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
+            <div id="graphFiveContainer" class="graph-container w-3/4 px-4 py-8 ml-32" 
+                style="display: none; width: 50%; height: 50%">
+                <p class="text-center font-bold text-2xl"> Leads por Embudo </p>
                 <canvas id="graphFive" width="400" height="200"></canvas>
             </div>
             <div id="graphSevenContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
+                <p class="text-center font-bold text-2xl"> Archivados </p>
                 <canvas id="graphSeven" width="400" height="200"></canvas>
             </div>
             <div id="graphEightContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
+                <p class="text-center font-bold text-2xl"> Tipo de creación de leads </p>
                 <canvas id="graphEight" width="400" height="200"></canvas>
             </div>
         </div>
 </body>
 
 <script defer>
+    // Cada reload, regresar a todas las gráficas
+    window.onload = function() {
+        const selectElement = document.getElementById('graphSelector');
+        selectElement.selectedIndex = 0;
+
+        const contenedorGraficas =
+            document.querySelectorAll(".graph-container");
+
+        contenedorGraficas.forEach((container) => {
+            container.style.display = "block"; // Show all graph containers
+        });
+
+    }
+    // Select tomado en cuenta desde recarga
+    document.addEventListener('DOMContentLoaded', (event) => {
+        selectGraph();
+    });
+
+    // Descripción obligatoria
+    const descripcion = document.getElementById('descripcion');
+    const pdfButton = document.getElementById('descargarBoton');
+
+    pdfButton.disabled = true;
+    descripcion.addEventListener('input', function() {
+        pdfButton.disabled = !descripcion.value;
+    });
+
+
     const getData = (dateStart = '', dateEnd = '') => {
 
         const url = dateStart && dateEnd ? `/reporte/json?dateStart=${dateStart}&dateEnd=${dateEnd}` : `/reporte/json`;
@@ -225,20 +280,6 @@
                                 ],
                             },
                             options: {
-                                plugins: {
-                                    title: {
-                                        display: true,
-                                        text: 'Leads promedio por día',
-                                        font: {
-                                            size: 20,
-                                            weight: 'bold',
-                                        },
-                                        color: '#20293A',
-                                    },
-                                    legend: {
-                                        display: false
-                                    }
-                                },
                                 scales: {
                                     y: {
                                         ticks: {
@@ -257,6 +298,7 @@
                                     },
                                 },
                             },
+                            plugins: [colorFondo],
                         });
                     }
 
@@ -339,17 +381,6 @@
                                 datasets: datasets,
                             },
                             options: {
-                                plugins: {
-                                    title: {
-                                        display: true,
-                                        text: 'Leads por Mes y Año',
-                                        font: {
-                                            size: 20,
-                                            weight: 'bold',
-                                        },
-                                        color: '#20293A'
-                                    }
-                                },
                                 scales: {
                                     x: {
                                         stacked: true,
@@ -364,7 +395,8 @@
                                         },
                                     },
                                 },
-                            }, 
+                            },
+                            plugins: [colorFondo], 
                         });
                         
                         function getRandomColor() {
@@ -448,23 +480,10 @@
                                 ],
                             },
                             options: {
-                                plugins: {
-                                    title: {
-                                        display: true,
-                                        text: 'Leads por Usuario',
-                                        font: {
-                                            size: 20,
-                                            weight: 'bold',
-                                        },
-                                        color: '#20293A'
-                                    },
-                                    legend: {
-                                        display: false
-                                    }
-                                },
                                 indexAxis: "y",
                                 responsive: true,
                             },
+                            plugins: [colorFondo],
                         });
 
                         function getRandomColor() {
@@ -534,21 +553,8 @@
                             },
                             options: {
                                 responsive: true,
-                                plugins: {
-                                    legend: {
-                                        position: "right",
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Leads por Status',
-                                        font: {
-                                            size: 20,
-                                            weight: 'bold',
-                                        },
-                                        color: '#20293A'
-                                    }
-                                },
                             },
+                            plugins: [colorFondo],
                         });
 
                         function getRandomColor() {
@@ -619,21 +625,8 @@
                             },
                             options: {
                                 responsive: true,
-                                plugins: {
-                                    legend: {
-                                        position: 'right',
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Leads por Embudo',
-                                        font: {
-                                            size: 20,
-                                            weight: 'bold',
-                                        },
-                                        color: '#20293A'
-                                    }
-                                },
                             },
+                            plugins: [colorFondo],
                         });
 
                         function getRandomColor() {
@@ -704,24 +697,13 @@
                                 }]
                             },
                             options: {
-                                plugins: {
-                                    colorFondo,
-                                    title: {
-                                        display: true,
-                                        text: 'Leads Activos vs Archivados',
-                                        font: {
-                                            size: 20,
-                                            weight: 'bold',
-                                        },
-                                        color: '#20293A'
-                                    }
-                                },
                                 scales: {
                                     y: {
                                         beginAtZero: true
                                     }
-                                }
-                            }
+                                },
+                            },
+                            plugins: [colorFondo],
                         });
 
                     }
@@ -754,17 +736,6 @@
                                 }]
                             },
                             options: {
-                                plugins: {
-                                    title: {
-                                        display: true,
-                                        text: 'Leads Creados Manualmente vs Cargados mediante CSV',
-                                        font: {
-                                            size: 20,
-                                            weight: 'bold',
-                                        },
-                                        color: '#20293A'
-                                    }
-                                },
                                 scales: {
                                     x: {
                                         display: true,
@@ -785,7 +756,8 @@
                                         }
                                     }
                                 }
-                            }
+                            },
+                            plugins: [colorFondo],
                         });
                     }
                 });
@@ -798,23 +770,162 @@
         const contenedorGraficas =
             document.querySelectorAll(".graph-container");
 
-        contenedorGraficas.forEach((container) => {
-            container.style.display = "none"; // Hide all graph containers
-        });
+        if (graficaSeleccionada === "allGraphs") {
+            contenedorGraficas.forEach((container) => {
+                container.style.display = "block"; // Show all graph containers
+            });
 
-        const contenedorSeleccionado = document.getElementById(
-            graficaSeleccionada + "Container"
-        );
-        contenedorSeleccionado.style.display = "block"; // Show the selected graph container
+        } else {
+            contenedorGraficas.forEach((container) => {
+                container.style.display = "none"; // Hide all graph containers
+            });
+    
+            const contenedorSeleccionado = document.getElementById(
+                graficaSeleccionada + "Container"
+            );
+            contenedorSeleccionado.style.display = "block"; // Show the selected graph container
+        }
+        
     };
 
     const descargarPDF = () => {
-        const canvas = document.getElementById("graphOne");
+        
+        const canvasUno = document.getElementById("graphOne");
+        const canvasDos = document.getElementById("graphTwo");
+        const canvasTres = document.getElementById("graphThree");
+        const canvasCuatro = document.getElementById("graphFour");
+        const canvasCinco = document.getElementById("graphFive");
+        const canvasSiete = document.getElementById("graphSeven");
+        const canvasOcho = document.getElementById("graphEight");
+        
+        const imagenUno = canvasUno.toDataURL("image/jpeg", 1.0);
+        const imagenDos = canvasDos.toDataURL("image/jpeg", 1.0);
+        const imagenTres = canvasTres.toDataURL("image/jpeg", 1.0);
+        const imagenCuatro = canvasCuatro.toDataURL("image/jpeg", 1.0);
+        const imagenCinco = canvasCinco.toDataURL("image/jpeg", 1.0);
+        const imagenSiete = canvasSiete.toDataURL("image/jpeg", 1.0);
+        const imagenOcho = canvasOcho.toDataURL("image/jpeg", 1.0);
+        
+        const descripcion = document.getElementById('descripcion').value; 
 
-            const imagenUno = canvas.toDataURL("image/jpeg", 1.0);
-            const pdf = new jsPDF("landscape");
+        // Crear PDF
+        const pdf = new jsPDF("portrait");
+        
+        // const canvasLogo = document.getElementById("logo");
+        // const ctxLogo = canvasLogo.getContext("2d");
+        // const logo = new Image();
+        // logo.src = "./uploads/magGlass.jpg";
+        // logo.onload = function() {
+        //     ctxLogo.drawImage(logo, 0, 0);
+        //     const imagenLogo = canvasLogo.toDataURL("image/png", 1.0);
+        //     pdf.addImage(imagenLogo, "PNG", 10, 10, 30, 15);
+        // }
+
+        // const imgLogo = "./uploads/magGlass.jpg";
+        // pdf.addImage(imgLogo, "JPG", 10, 10, 30, 15);
+
+            // Página 1
+                // Título del reporte
+            pdf.setTextColor(37, 99, 235);
+            pdf.setFont("helvetica", "bold");
             pdf.setFontSize(20);
-            pdf.addImage(imagenUno, "JPEG", 15, 15, 280, 150);
+            pdf.text(
+                `REPORTE - ${descripcion}`,
+                pdf.internal.pageSize.width / 2,
+                15,
+                null,
+                null,
+                "center"
+            );
+
+            pdf.setTextColor(37, 99, 235);
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(14);
+            pdf.text(
+                "Leads por día",
+                pdf.internal.pageSize.width / 2,
+                28,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenUno, "JPEG", 10, 35, 190, 110);
+            pdf.text(
+                "Cantidad de leads por año, por mes",
+                pdf.internal.pageSize.width / 2,
+                158,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenDos, "JPEG", 10, 165, 190, 110);
+
+            // Página 2
+            pdf.addPage()
+            pdf.text(
+                "Leads por usuarios",
+                pdf.internal.pageSize.width / 2,
+                28,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenTres, "JPEG", 10, 35, 190, 110);
+            pdf.text(
+                "Leads por status",
+                pdf.internal.pageSize.width / 2,
+                158,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenCuatro, "JPEG", 50, 165, 110, 110);
+            
+            // Página 3
+            pdf.addPage()
+            pdf.text(
+                "Leads por embudo",
+                pdf.internal.pageSize.width / 2,
+                28,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenCinco, "JPEG", 50, 35, 110, 110);
+            pdf.text(
+                "Leads archivados",
+                pdf.internal.pageSize.width / 2,
+                158,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenSiete, "JPEG", 10, 165, 190, 110);
+
+            // Página 4
+            pdf.addPage()
+            pdf.text(
+                "Tipo de creación de leads",
+                pdf.internal.pageSize.width / 2,
+                28,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenOcho, "JPEG", 10, 35, 190, 110);
+
+            // Número de página
+            const pageCount = pdf.internal.getNumberOfPages();
+
+            for(let i = 1; i <= pageCount; i++) {
+                pdf.setPage(i);
+                pdf.setTextColor(0, 0, 0);
+                pdf.setFont("helvetica", "normal");
+                pdf.setFontSize(10);
+                pdf.text(`${i}`, 195, 285);
+            }
+
+            // Generar PDF 
             pdf.save(`reporte.pdf`);
 
             const pdfData = pdf.output('datauristring');
@@ -830,7 +941,9 @@
                     'Content-Type': 'application/json',
                     'csrf-token': csrf,
                 },
-                body: JSON.stringify({ pdfData: pdfBase64}),
+                body: JSON.stringify({ 
+                    pdfData: pdfBase64, 
+                    descripcion: descripcion}),
                 })
                 .then((res) => {
                     if (!res.ok) {
