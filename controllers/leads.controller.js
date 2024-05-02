@@ -49,6 +49,9 @@ exports.getLeadsJSON = async (req, res) => {
     // Obtiene la página actual de los parámetros de la URL
     const page = req.query.page || 1;
 
+    // Entradas por página
+    const entriesPerPage = 100;
+
     // Si el usuario tiene el privilegio de "Consulta directorio todos." se obtienen todos los leads
     if (
         Privilegios.some(
@@ -56,7 +59,7 @@ exports.getLeadsJSON = async (req, res) => {
         )
     ) {
         // Obtiene los leads de la BD
-        const [leadsFetched] = await Lead.fetchAllLeadsByPage(page, 10);
+        const [leadsFetched] = await Lead.fetchAllLeadsByPage(page, entriesPerPage);
 
         // Obtiene el conteo de leads de la BD
         const [leadsCount] = await Lead.fetchAllCount();
@@ -67,7 +70,7 @@ exports.getLeadsJSON = async (req, res) => {
         // Obtiene los embudos de la BD
         const [embudosFetched] = await Lead.fetchEmbudos();
 
-        const pages = Math.ceil(leadsCount[0].total / 10);
+        const pages = Math.ceil(leadsCount[0].total / entriesPerPage);
 
         // Envía la respuesta con los leads, usuarios y embudos
         res.status(200).json({
@@ -88,7 +91,7 @@ exports.getLeadsJSON = async (req, res) => {
         const [leadsFetched] = await Lead.fetchAllLeadsByUserAndPage(
             Correo,
             page,
-            10
+            entriesPerPage
         );
 
         // Obtiene el conteo de leads de la BD
@@ -101,7 +104,7 @@ exports.getLeadsJSON = async (req, res) => {
         const [embudosFetched] = await Lead.fetchEmbudos();
 
         // Calcula el número de páginas
-        const pages = Math.ceil(leadsCount[0].total / 10);
+        const pages = Math.ceil(leadsCount[0].total / entriesPerPage);
 
         // Envía la respuesta con los leads
         res.status(200).json({
