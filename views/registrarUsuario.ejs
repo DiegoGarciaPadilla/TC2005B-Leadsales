@@ -78,7 +78,8 @@
                 / Agregar Usuario
             </h1>
         </nav>
-
+        <p class="mt-2 mb-6 font-bold text-red-700">* Obligatorio</p>
+    
         <form
             action="/ajustes/usuarios/agregarUsuario"
             method="POST"
@@ -288,12 +289,12 @@
         const errorMessage = document.getElementById("error-message");
 
         function visibilidadPassword() {
-        const inputPassword = document.getElementById('password');
-        const inputConfirmPassword = document.getElementById('confirmarPassword');
-        const mostrarPassword = document.getElementById('mostrar');
+            const inputPassword = document.getElementById('password');
+            const inputConfirmPassword = document.getElementById('confirmarPassword');
+            const mostrarPassword = document.getElementById('mostrar');
 
-        inputPassword.type = mostrarPassword.checked ? 'text' : 'password';
-        inputConfirmPassword.type = mostrarPassword.checked ? 'text' : 'password';
+            inputPassword.type = mostrarPassword.checked ? 'text' : 'password';
+            inputConfirmPassword.type = mostrarPassword.checked ? 'text' : 'password';
         }
 
         function checkPasswords() {

@@ -132,6 +132,10 @@
                         class="shadow bg-gray-50 border border-gray-300 text-gray-700 leading-tight rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-3/4 p-2.5" 
                         required
                     />
+                    <div class="flex items-center mt-2">
+                        <input type="checkbox" id="mostrar" onchange="visibilidadPassword()" class="mr-2">
+                        <label for="mostrar" class="text-sm text-gray-700 cursor-pointer">Mostrar contraseñas</label>
+                    </div>
                 </div>
             </div>
             <button
@@ -147,7 +151,18 @@
 </body>
 
 <script>
-    // AJAX para cambiar contraseña
+
+    function visibilidadPassword() {
+        const actualPassword = document.getElementById('ContraseniaActual');
+        const newPassword = document.getElementById('NuevaContrasenia');
+        const confirmPassword = document.getElementById('ConfirmarNuevaContrasenia');
+        const mostrarPassword = document.getElementById('mostrar'); // Asegúrate de tener un elemento con este id
+
+        actualPassword.type = mostrarPassword.checked ? 'text' : 'password';
+        newPassword.type = mostrarPassword.checked ? 'text' : 'password';
+        confirmPassword.type = mostrarPassword.checked ? 'text' : 'password';
+    }
+
     document
         .getElementById("NuevaContrasenia")
         .addEventListener("input", function () {
