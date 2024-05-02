@@ -57,19 +57,17 @@ exports.getLeadsJSON = async (req, res) => {
     ) {
         // Obtiene los leads de la BD
         const [leadsFetched] = await Lead.fetchAllLeadsByPage(page, 10);
-        console.log("leadsFetched", leadsFetched);
 
         // Obtiene el conteo de leads de la BD
         const [leadsCount] = await Lead.fetchAllCount();
-        console.log("leadsCount", leadsCount);
 
         // Obtiene los usuarios de la BD
         const [usuariosFetched] = await Usuario.fetchAllUsers();
-        console.log("usuariosFetched", usuariosFetched);
 
         // Obtiene los embudos de la BD
         const [embudosFetched] = await Lead.fetchEmbudos();
-        console.log("embudosFetched", embudosFetched);
+
+        const pages = Math.ceil(leadsCount[0].total / 10);
 
         // Envía la respuesta con los leads, usuarios y embudos
         res.status(200).json({
@@ -77,6 +75,7 @@ exports.getLeadsJSON = async (req, res) => {
             leadsCount,
             usuariosFetched,
             embudosFetched,
+            pages
         });
 
         // En caso contrario, si el usuario tiene el privilegio de "Consulta directorio propios." se obtienen los leads propios
@@ -95,12 +94,23 @@ exports.getLeadsJSON = async (req, res) => {
         // Obtiene el conteo de leads de la BD
         const [leadsCount] = await Lead.fetchLeadsByUserCount(Correo);
 
+        // Obtiene los usuarios de la BD
+        const [usuariosFetched] = await Usuario.fetchAllUsers();
+
+        // Obtiene los embudos de la BD
+        const [embudosFetched] = await Lead.fetchEmbudos();
+
+        // Calcula el número de páginas
+        const pages = Math.ceil(leadsCount[0].total / 10);
+
         // Envía la respuesta con los leads
         res.status(200).json({
             leadsFetched,
             leadsCount,
-            usuariosFetched: [],
-            embudosFetched: [],
+            usuariosFetched,
+            embudosFetched,
+            pages
+
         });
     }
 };
@@ -292,7 +302,7 @@ exports.getEditarLead = (req, res) => {
                         nombre: req.session.Nombre,
                         apellidoPaterno: req.session.ApellidoPaterno,
                         apellidoMaterno: req.session.apellidoMaterno,
-                        privilegios: privilegios,
+                        privilegios,
                         success: "",
                         error: "",
                     });
