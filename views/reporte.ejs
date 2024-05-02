@@ -35,6 +35,11 @@
         .side:hover~#main-content {
             padding-left: 10rem;
         }
+        #descargarBoton:disabled {
+            background-color: #a4a4a4;
+            color: #ffffff;
+            cursor: not-allowed;
+        }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -52,6 +57,7 @@
             <h1 class="mb-6 text-4xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">
                 Reporte
             </h1>
+            <p class="mb-4 font-bold text-red-700">* Obligatorio</p>
             <div id="alertas">
 
             </div>
@@ -78,7 +84,7 @@
                                 class="h-10 text-blue-700 bg-white hover:bg-gray-200 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none border border-blue-700">
                                 Limpiar fechas
                             </button>
-                            <button onclick="descargarPDF()" type="button"  
+                            <button id="descargarBoton" onclick="descargarPDF()" type="button"  
                                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm ml-28 px-5 py-2.5 me-2 mb-2 focus:outline-none">
                                 Generar PDF
                             </button>  
@@ -102,6 +108,12 @@
                         <option value="graphEight">Tipo de creación de leads</option>
                         <!-- Add more options for other graphs -->
                     </select>
+                </div>
+                <div class="mb-4">
+                    <label for="descripcion" class="mr-2">Descripción de tu reporte:
+                        <span class="font-bold text-red-700"> * </span>
+                    </label>
+                    <input id="descripcion" name="descripcion" class="px-2 py-1 border border-gray-300 rounded-md" maxlength="32" required>
                 </div>
             </div>
 
@@ -161,6 +173,17 @@
     document.addEventListener('DOMContentLoaded', (event) => {
         selectGraph();
     });
+
+    // Descripción obligatoria
+    const descripcion = document.getElementById('descripcion');
+    const pdfButton = document.getElementById('descargarBoton');
+
+    pdfButton.disabled = true;
+    descripcion.addEventListener('input', function() {
+        pdfButton.disabled = !descripcion.value;
+    });
+
+
     const getData = (dateStart = '', dateEnd = '') => {
 
         const url = dateStart && dateEnd ? `/reporte/json?dateStart=${dateStart}&dateEnd=${dateEnd}` : `/reporte/json`;
@@ -769,6 +792,8 @@
         const imagenSiete = canvasSiete.toDataURL("image/jpeg", 1.0);
         const imagenOcho = canvasOcho.toDataURL("image/jpeg", 1.0);
         
+        const descripcion = document.getElementById('descripcion').value; 
+
         // Crear PDF
         const pdf = new jsPDF("portrait");
         
@@ -791,7 +816,7 @@
             pdf.setFont("helvetica", "bold");
             pdf.setFontSize(20);
             pdf.text(
-                "REPORTE - Descripción",
+                `REPORTE - ${descripcion}`,
                 pdf.internal.pageSize.width / 2,
                 15,
                 null,
@@ -902,7 +927,9 @@
                     'Content-Type': 'application/json',
                     'csrf-token': csrf,
                 },
-                body: JSON.stringify({ pdfData: pdfBase64}),
+                body: JSON.stringify({ 
+                    pdfData: pdfBase64, 
+                    descripcion: descripcion}),
                 })
                 .then((res) => {
                     if (!res.ok) {

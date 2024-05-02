@@ -204,10 +204,10 @@ exports.getReporteJSON = (req, res, next) => {
 exports.postPDF = (req, res, next) => {
     const { IDUsuario } = req.session;
     console.log("Esto es body: ", req.body);
-    const { pdfData } = req.body;
+    const { pdfData, descripcion } = req.body;
     const { csrfToken } = req.csrfToken();
   
-    Reporte.insertReport(IDUsuario, "Reporte", pdfData)
+    Reporte.insertReport(IDUsuario, descripcion, pdfData)
       .then(([rows]) => {
         reporteID = rows[0].id;
         console.log("ID del reporte: ", reporteID);
