@@ -39,12 +39,14 @@ router.get("/", isAuth,  (req, res) => {
     const error = req.flash("falla") || "4";
     console.log(req.flash("error"));
 
+
     Usuario.fetchAllUsers()
         .then(([usuariosFetched]) => {
             Lead.fetchEmbudos()
                 .then(([embudosFetched, fieldData]) => {
                     console.log('embudosFetched:', embudosFetched); // Agrega esta línea
                     res.render("inicio", {
+                        embudos: "No hay embudos",
                         csrfToken: req.csrfToken(),
                         privilegios: req.session.Privilegios,
                         correo: req.session.Correo,
@@ -53,7 +55,6 @@ router.get("/", isAuth,  (req, res) => {
                         apellidoPaterno: req.session.ApellidoPaterno,
                         apellidoMaterno: req.session.apellidoMaterno,
                         usuarios: usuariosFetched,
-                        embudos: "No hay embudos",
                         success: "",
                         error: error,
                     });
