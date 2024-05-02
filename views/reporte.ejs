@@ -104,6 +104,11 @@
                 </div>
             </div>
 
+            <div class="items-center ps-2 mb-5 hidden">
+                <canvas id="logo"></canvas>
+                <span class="sidebar-text self-center text-xl font-semibold whitespace-nowrap text-gray-800 pl-2">Leadtics</span>
+             </div>
+
             <div id="graphOneContainer" class="graph-container w-3/4 px-4 py-8 ml-32">
                 <p class="text-center font-bold text-2xl"> Leads promedio por día </p>
                 <canvas id="graphOne" width="400" height="200"></canvas>
@@ -732,25 +737,39 @@
     };
 
     const descargarPDF = () => {
-            const canvasUno = document.getElementById("graphOne");
-            const canvasDos = document.getElementById("graphTwo");
-            const canvasTres = document.getElementById("graphThree");
-            const canvasCuatro = document.getElementById("graphFour");
-            const canvasCinco = document.getElementById("graphFive");
-            const canvasSiete = document.getElementById("graphSeven");
-            const canvasOcho = document.getElementById("graphEight");
+        
+        const canvasUno = document.getElementById("graphOne");
+        const canvasDos = document.getElementById("graphTwo");
+        const canvasTres = document.getElementById("graphThree");
+        const canvasCuatro = document.getElementById("graphFour");
+        const canvasCinco = document.getElementById("graphFive");
+        const canvasSiete = document.getElementById("graphSeven");
+        const canvasOcho = document.getElementById("graphEight");
+        
+        const imagenUno = canvasUno.toDataURL("image/jpeg", 1.0);
+        const imagenDos = canvasDos.toDataURL("image/jpeg", 1.0);
+        const imagenTres = canvasTres.toDataURL("image/jpeg", 1.0);
+        const imagenCuatro = canvasCuatro.toDataURL("image/jpeg", 1.0);
+        const imagenCinco = canvasCinco.toDataURL("image/jpeg", 1.0);
+        const imagenSiete = canvasSiete.toDataURL("image/jpeg", 1.0);
+        const imagenOcho = canvasOcho.toDataURL("image/jpeg", 1.0);
+        
+        // Crear PDF
+        const pdf = new jsPDF("portrait");
+        
+        // const canvasLogo = document.getElementById("logo");
+        // const ctxLogo = canvasLogo.getContext("2d");
+        // const logo = new Image();
+        // logo.src = "./uploads/magGlass.jpg";
+        // logo.onload = function() {
+        //     ctxLogo.drawImage(logo, 0, 0);
+        //     const imagenLogo = canvasLogo.toDataURL("image/png", 1.0);
+        //     pdf.addImage(imagenLogo, "PNG", 10, 10, 30, 15);
+        // }
 
-            const imagenUno = canvasUno.toDataURL("image/jpeg", 1.0);
-            const imagenDos = canvasDos.toDataURL("image/jpeg", 1.0);
-            const imagenTres = canvasTres.toDataURL("image/jpeg", 1.0);
-            const imagenCuatro = canvasCuatro.toDataURL("image/jpeg", 1.0);
-            const imagenCinco = canvasCinco.toDataURL("image/jpeg", 1.0);
-            const imagenSiete = canvasSiete.toDataURL("image/jpeg", 1.0);
-            const imagenOcho = canvasOcho.toDataURL("image/jpeg", 1.0);
+        // const imgLogo = "./uploads/magGlass.jpg";
+        // pdf.addImage(imgLogo, "JPG", 10, 10, 30, 15);
 
-            // Crear PDF
-            const pdf = new jsPDF("portrait");
-            
             // Página 1
                 // Título del reporte
             pdf.setTextColor(37, 99, 235);
@@ -840,6 +859,17 @@
                 "center"
             );
             pdf.addImage(imagenOcho, "JPEG", 10, 35, 190, 110);
+
+            // Número de página
+            const pageCount = pdf.internal.getNumberOfPages();
+
+            for(let i = 1; i <= pageCount; i++) {
+                pdf.setPage(i);
+                pdf.setTextColor(0, 0, 0);
+                pdf.setFont("helvetica", "normal");
+                pdf.setFontSize(10);
+                pdf.text(`${i}`, 195, 285);
+            }
 
             // Generar PDF 
             pdf.save(`reporte.pdf`);
