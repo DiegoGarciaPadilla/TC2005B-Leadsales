@@ -42,7 +42,7 @@ router.get("/", isAuth,  (req, res) => {
     Usuario.fetchAllUsers()
         .then(([usuariosFetched]) => {
             Lead.fetchEmbudos()
-                .then(([embudosFetched]) => {
+                .then(([embudosFetched, fieldData]) => {
                     console.log('embudosFetched:', embudosFetched); // Agrega esta línea
                     res.render("inicio", {
                         csrfToken: req.csrfToken(),
