@@ -144,6 +144,20 @@
 </body>
 
 <script defer>
+    // Cada reload, regresar a todas las gráficas
+    window.onload = function() {
+        const selectElement = document.getElementById('graphSelector');
+        selectElement.selectedIndex = 0;
+
+        const contenedorGraficas =
+            document.querySelectorAll(".graph-container");
+
+        contenedorGraficas.forEach((container) => {
+            container.style.display = "block"; // Show all graph containers
+        });
+
+    }
+    // Select tomado en cuenta desde recarga
     document.addEventListener('DOMContentLoaded', (event) => {
         selectGraph();
     });
