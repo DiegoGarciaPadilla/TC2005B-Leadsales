@@ -84,7 +84,7 @@ module.exports = class CSV {
                             // console.log(header);
                             headings.push(header)
                         });
-                        console.log('CACA');
+                        console.log('Checando CSV');
                         for (let i = 0; i < headings.length; i++) {
                             if (!nombres.includes(headings[i])) {
                                 console.log(`Missing heading: ${headings[i]}`);

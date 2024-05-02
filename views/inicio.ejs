@@ -26,29 +26,19 @@
 </head>
 <body class="bg-[#E4E8EE]">
   <%- include('partials/sidebar.ejs') %>
-  <%- include('partials/asideBoton.ejs', {
-    correo,
-    nombre,
-    apellidoPaterno,
-    apellidoMaterno,
-    rol,
-    privilegios,
-    usuarios,
-    embudos
-  }) %> 
-
-
+  <%- include('partials/asideBoton.ejs') %>
   
-    <div id="main-content" class="w-full ml-14 mt-8 pl-20 display:flex">
-      <div class="flex">
-        <h1 class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">Bienvenidx <span class="text-blue-600 dark:text-blue-500"><%= correo %>!</span></h1>
-        <p id="p1" style="position: absolute; top: 25px; right: 350px;" class="text-lg font-bold leading-none tracking-tight text-gray-900 md:text-lg lg:text-lg dark:text-blue-500 underline underline-offset-4 decoration-1 decoration-blue-400 dark:decoration-blue-600"></p>
-      </div>
-
-      <div id="alertas">
-        <%- include('partials/success', {success: success}) %>
-        <%- include('partials/error', {error: error}) %>
-      </div>
+  
+  
+  
+  <div id="main-content" class="w-full ml-14 mt-8 pl-20 display:flex">
+    <div class="flex">
+      <h1 class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">Bienvenidx <span class="text-blue-600 dark:text-blue-500"><%= correo %>!</span></h1>
+      <p id="p1" style="position: absolute; top: 25px; right: 350px;" class="text-lg font-bold leading-none tracking-tight text-gray-900 md:text-lg lg:text-lg dark:text-blue-500 underline underline-offset-4 decoration-1 decoration-blue-400 dark:decoration-blue-600"></p>
+    </div>
+    
+    <div id="alertas">
+    </div>
 
       <div id="rocket" class="flex">
         <img src="/uploads/rocket.png" width="300px">
@@ -98,11 +88,10 @@
                   type="file" id="file" name="file" accept=".csv"/>
                   <p class="pl-6 mb-2 text-sm text-gray-500">Sube un archivo .csv con los datos de tus leads.</p>
                   
-                  <button class="text-white bg-blue-700 hover:bg-blue-800 
+                  <button class="text-whit text-white
                   focus:ring-4 focus:ring-blue-300 font-medium rounded-lg 
-                  text-sm px-5 py-2.5 me-2 ml-28 dark:bg-blue-600 
-                  dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" 
-                  type="submit" value="Guardar">Subir archivo</button>
+                  text-sm px-5 py-2.5 me-2 ml-28" 
+                  type="submit" value="Guardar" id="Subir">Subir archivo</button>
                 </div>
               </form> 
             </div>  
@@ -113,6 +102,86 @@
     </div>
 
     <script>
+      window.onload = function() {
+        const inputCSV = document.getElementById('file');
+        const subirBoton = document.getElementById('Subir');
+
+        function updateButton() {
+            if (inputCSV.files.length > 0) {
+                subirBoton.disabled = false;
+                subirBoton.classList.remove("bg-gray-500");
+                subirBoton.classList.add("bg-blue-700");
+                subirBoton.classList.add("hover:bg-blue-800");
+                subirBoton.style.cursor = "pointer";
+            } else {
+                subirBoton.disabled = true;
+                subirBoton.classList.add("bg-gray-500");
+                subirBoton.classList.remove("bg-blue-700");
+                subirBoton.classList.remove("hover:bg-blue-800");
+                subirBoton.style.cursor = "not-allowed";
+            }
+        }
+        updateButton();
+        inputCSV.addEventListener('change', updateButton);
+      }
+
+      const success = '<%= success %>';
+      const error = '<%= error %>';
+      if (success) {
+        operacionExitosa(success);
+      }
+      if (error) {
+        operacionFallida(error);
+      }
+
+      function operacionExitosa(accion) {
+          const alertas = document.getElementById('alertas');
+              const alertHTML = `
+                  <div id="alert-success" class="flex relative items-center p-4 mb-4 text-sm mr-24 text-green-800 border border-green-300 rounded-lg bg-green-50 w-2/3">
+                      <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarAlert()">
+                          <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
+                              <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                          </svg>
+                      </button>
+                      <div>
+                          <span class="font-bold"> ¡Acción exitosa! </span> 
+                          <span id="success-message">${accion}</span>
+                      </div>
+                  </div>
+              `;
+              alertas.innerHTML = alertHTML;
+              document.getElementById('alert-success').style.display = 'block';
+
+              function cerrarAlert() {
+                  const successAlert = document.getElementById('alert-success');
+                  successAlert.parentNode.removeChild(successAlert);
+              }
+        }
+
+        function operacionFallida(accion) {
+          const alertas = document.getElementById('alertas');
+              const alertHTML = `
+              <div id="alert-error" class="flex relative items-center p-4 mb-4 text-sm mr-24 text-red-800 border border-red-300 rounded-lg bg-red-50" role="alert" style="display: none; max-width: 75em">
+                <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarAlertError()">
+                  <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                  </svg>
+                </button>
+                <div>
+                  <span class="font-bold"> ¡Error! </span> 
+                  <span id="error-message">${accion}</span>
+                </div>
+              </div>
+              `;
+              alertas.innerHTML = alertHTML;
+              document.getElementById('alert-error').style.display = 'block';
+
+            }
+            function cerrarAlertError() {
+                const errorAlert = document.getElementById('alert-error');
+                document.getElementById('alert-error').style.display = 'none';
+            }
+
       let date = new Date();
       let strDate = date.getDate() + ' ';
       const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 
