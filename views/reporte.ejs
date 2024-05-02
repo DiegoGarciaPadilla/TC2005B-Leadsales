@@ -874,6 +874,12 @@
             // Generar PDF 
             pdf.save(`reporte.pdf`);
 
+            const pdfData = pdf.output('datauristring');
+            console.log("Esto es pdfData: ", pdfData);
+
+            // Convert the PDF to a base64 string
+            const pdfBase64 = pdf.output('datauristring').split(',')[1];
+
             const csrf = document.getElementById('_csrf').value;
             fetch('/reporte/save', {
                 method: 'POST',
@@ -881,6 +887,7 @@
                     'Content-Type': 'application/json',
                     'csrf-token': csrf,
                 },
+                body: JSON.stringify({ pdfData: pdfBase64}),
                 })
                 .then((res) => {
                     if (!res.ok) {
