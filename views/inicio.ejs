@@ -27,6 +27,11 @@
 <body class="bg-[#E4E8EE]">
   <%- include('partials/sidebar.ejs') %>
   <%- include('partials/asideBoton.ejs') %>
+  
+        <div id="alertas">
+          <%- include('partials/success', {success: success}) %>
+          <%- include('partials/error', {error: error}) %>
+        </div>
 
 
   
@@ -34,11 +39,6 @@
       <div class="flex">
         <h1 class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">Bienvenidx <span class="text-blue-600 dark:text-blue-500"><%= correo %>!</span></h1>
         <p id="p1" style="position: absolute; top: 25px; right: 350px;" class="text-lg font-bold leading-none tracking-tight text-gray-900 md:text-lg lg:text-lg dark:text-blue-500 underline underline-offset-4 decoration-1 decoration-blue-400 dark:decoration-blue-600"></p>
-      </div>
-
-      <div id="alertas">
-        <%- include('partials/success', {success: success}) %>
-        <%- include('partials/error', {error: error}) %>
       </div>
 
       <div id="rocket" class="flex">
@@ -89,11 +89,10 @@
                   type="file" id="file" name="file" accept=".csv"/>
                   <p class="pl-6 mb-2 text-sm text-gray-500">Sube un archivo .csv con los datos de tus leads.</p>
                   
-                  <button class="text-white bg-blue-700 hover:bg-blue-800 
+                  <button class="text-whit text-white
                   focus:ring-4 focus:ring-blue-300 font-medium rounded-lg 
-                  text-sm px-5 py-2.5 me-2 ml-28 dark:bg-blue-600 
-                  dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" 
-                  type="submit" value="Guardar">Subir archivo</button>
+                  text-sm px-5 py-2.5 me-2 ml-28" 
+                  type="submit" value="Guardar" id="Subir">Subir archivo</button>
                 </div>
               </form> 
             </div>  
@@ -103,7 +102,30 @@
       
     </div>
 
-    <script>
+    <script defer>
+      window.onload = function() {
+        const inputCSV = document.getElementById('file');
+        const subirBoton = document.getElementById('Subir');
+
+        function updateButton() {
+            if (inputCSV.files.length > 0) {
+                subirBoton.disabled = false;
+                subirBoton.classList.remove("bg-gray-500");
+                subirBoton.classList.add("bg-blue-700");
+                subirBoton.classList.add("hover:bg-blue-800");
+                subirBoton.style.cursor = "pointer";
+            } else {
+                subirBoton.disabled = true;
+                subirBoton.classList.add("bg-gray-500");
+                subirBoton.classList.remove("bg-blue-700");
+                subirBoton.classList.remove("hover:bg-blue-800");
+                subirBoton.style.cursor = "not-allowed";
+            }
+        }
+        updateButton();
+        inputCSV.addEventListener('change', updateButton);
+      }
+
       let date = new Date();
       let strDate = date.getDate() + ' ';
       const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 

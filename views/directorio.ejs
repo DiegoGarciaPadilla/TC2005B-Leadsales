@@ -256,13 +256,17 @@
                 if (isAnyCheckboxChecked) {
                     eliminarSVG.classList.add("text-red-700");
                     eliminarSVG.classList.remove("text-gray-500");
+                    eliminarSVG.style.cursor = "pointer";
                     descargarSVG.classList.add("text-blue-700");
                     descargarSVG.classList.remove("text-gray-500");
+                    descargarSVG.style.cursor = "pointer";
                 } else {
                     eliminarSVG.classList.add("text-gray-500");
                     eliminarSVG.classList.remove("text-red-700");
+                    eliminarSVG.style.cursor = "not-allowed";
                     descargarSVG.classList.add("text-gray-500");
                     descargarSVG.classList.remove("text-blue-700");
+                    descargarSVG.style.cursor = "not-allowed";
                 }
             };
 
@@ -409,6 +413,11 @@
                 alertas.innerHTML = alertHTML;
                 document.getElementById("alert-success").style.display = "block";
             };
+
+            function cerrarAlert() {
+                const successAlert = document.getElementById('alert-success');
+                successAlert.parentNode.removeChild(successAlert);
+            }
 
             const cerrarModal = () => {
                 const deleteModal = document.getElementById("deleteModal");
