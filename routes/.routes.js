@@ -44,9 +44,8 @@ router.get("/", isAuth,  (req, res) => {
         .then(([usuariosFetched]) => {
             Lead.fetchEmbudos()
                 .then(([embudosFetched, fieldData]) => {
-                    console.log('Rendering inicio with embudos:', "No hay embudos");
                     res.render("inicio", {
-                        embudos: "No hay embudos",
+                        embudos: embudosFetched,
                         csrfToken: req.csrfToken(),
                         privilegios: req.session.Privilegios,
                         correo: req.session.Correo,
