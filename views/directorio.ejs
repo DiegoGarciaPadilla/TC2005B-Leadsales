@@ -561,6 +561,8 @@
                         const embudos = data.embudosFetched;
                         const pages = data.pages;
 
+                        globalThis.pages = pages;
+
                         // Limpiar los elementos de la tabla
                         tableBody.innerHTML = "";
 
@@ -767,8 +769,10 @@
 
             // Página siguiente
             const nextPage = () => {
-                currentPage += 1;
-                selectPage(currentPage);
+                if (currentPage < pages) {
+                    currentPage += 1;
+                    selectPage(currentPage);
+                }
             };
 
             // ================== Inicialización ==================
