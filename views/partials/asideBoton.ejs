@@ -90,15 +90,17 @@
                 </div>
             </li>
             <li>
-                <div class="flex items-center z-50 mt-2">
-                    <button
-                        onclick="showPopup(event)"
-                        id="butonCrearLead"
-                        class="ml-8 mt-5 inline-block px-4 py-1 text-xs font-medium leading-6 text-center text-purple-700 border border-purple-700 transition bg-white rounded shadow ripple hover:shadow-lg hover:bg-purple-700 hover:text-white focus:outline-none"
-                    >
-                        Crear Lead
-                    </button>
-                </div>
+                <% if (privilegios.some((privilegio) => privilegio.Descripcion == 'Crea lead todos.' || privilegio.Descripcion == 'Crea lead propio.')) { %>
+                    <div class="flex items-center z-50 mt-2">
+                        <button
+                            onclick="showPopup(event)"
+                            id="butonCrearLead"
+                            class="ml-8 mt-5 inline-block px-4 py-1 text-xs font-medium leading-6 text-center text-purple-700 border border-purple-700 transition bg-white rounded shadow ripple hover:shadow-lg hover:bg-purple-700 hover:text-white focus:outline-none"
+                        >
+                            Crear Lead
+                        </button>
+                    </div>
+                <% } %>
             </li>
             <%- include('modalCrearLead', { correo, nombre, apellidoPaterno,
             apellidoMaterno, rol, privilegios, usuarios, embudos }) %>
