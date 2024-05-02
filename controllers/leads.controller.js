@@ -7,18 +7,36 @@ const Usuario = require("../model/usuario.model");
 
 /* ========== CU. 10 CONSULTA DIRECTORIO | Diego Lira - Diego García - Chimali (Puro Peer Programing) =============== */
 
-exports.getLeads = (req, res) => {
+exports.getLeads = async (req, res) => {
     const sucessMessage = req.flash("editado") || "";
+
+    const {
+        Nombre,
+        ApellidoPaterno,
+        ApellidoMaterno,
+        Correo,
+        Privilegios,
+        Rol,
+    } = req.session;
+
+    // Obtiene todos los usuarios
+    const [usuariosFetched] = await Usuario.fetchAllUsers();
+
+    // Obtiene los embudos
+    const [embudosFetched] = await Lead.fetchEmbudos();
+
     res.render("directorio", {
         csrfToken: req.csrfToken(),
-        privilegios: req.session.Privilegios,
-        correo: req.session.Correo,
-        rol: req.session.Rol,
-        nombre: req.session.Nombre,
-        apellidoPaterno: req.session.ApellidoPaterno,
-        apellidoMaterno: req.session.ApellidoMaterno,
+        privilegios: Privilegios,
+        correo: Correo,
+        rol: Rol,
+        nombre: Nombre,
+        apellidoPaterno: ApellidoPaterno,
+        apellidoMaterno: ApellidoMaterno,
         error: req.session.error || "",
         success: sucessMessage,
+        usuarios: usuariosFetched,
+        embudos: embudosFetched,
     });
 };
 
@@ -108,9 +126,15 @@ exports.getLeadDetails = (req, res) => {
 
 /* ========== CU. 5 CREA LEAD | Diego Lira =============== */
 
-exports.postCrearLead = (req, res) => {
+exports.postCrearLead = async (req, res) => {
     // Se obtienen los datos de la sesión
-    const { Privilegios, Nombre, ApellidoPaterno } = req.session;
+    const { Nombre, ApellidoPaterno, ApellidoMaterno, Correo, Rol, Privilegios } = req.session;
+
+    // Obtiene todos los usuarios
+    const [usuariosFetched] = await Usuario.fetchAllUsers();
+
+    // Obtiene los embudos
+    const [embudosFetched] = await Lead.fetchEmbudos();
 
     // Se obtienen los datos del formulario
     const { nombre, telefono, embudo, asignadoa } = req.body;
@@ -118,11 +142,22 @@ exports.postCrearLead = (req, res) => {
     // Si el usuario tiene el privilegio de "Crea lead todos." se crea el lead
     if (Privilegios.some((priv) => priv.Descripcion === "Crea lead todos.")) {
         Lead.createLead(nombre, telefono, embudo, asignadoa)
-            .then(([rows]) => {
-                res.status(200).json({
+            .then(() => {
+                // Respuesta exitosa
+                res.render("directorio", {
+                    csrfToken: req.csrfToken(),
+                    privilegios: Privilegios,
+                    correo: Correo,
+                    rol: Rol,
+                    nombre: Nombre,
+                    apellidoPaterno: ApellidoPaterno,
+                    apellidoMaterno: ApellidoMaterno,
+                    error: "",
                     success: "Lead creado con exito",
-                    lead: rows[0],
+                    usuarios: usuariosFetched,
+                    embudos: embudosFetched,
                 });
+                    
             })
             .catch((error) => {
                 console.error(error);
@@ -130,13 +165,22 @@ exports.postCrearLead = (req, res) => {
             });
 
         // En caso contrario, si el usuario tiene el privilegio de "Crea lead propios." se crea el lead
-    } else if (Privilegios.some((priv) => priv.Descripcion === "Crea lead.")) {
+    } else if (Privilegios.some((priv) => priv.Descripcion === "Crea lead propios.")) {
         const nombreCompleto = `${Nombre} ${ApellidoPaterno}`;
         Lead.createLead(nombre, telefono, embudo, nombreCompleto)
-            .then(([rows]) => {
-                res.status(200).json({
+            .then(() => {
+                res.render("directorio", {
+                    csrfToken: req.csrfToken(),
+                    privilegios: Privilegios,
+                    correo: Correo,
+                    rol: Rol,
+                    nombre: Nombre,
+                    apellidoPaterno: ApellidoPaterno,
+                    apellidoMaterno: ApellidoMaterno,
+                    error: "",
                     success: "Lead creado con exito",
-                    lead: rows[0],
+                    usuarios: usuariosFetched,
+                    embudos: embudosFetched,
                 });
             })
             .catch((error) => {

@@ -92,14 +92,10 @@ module.exports = class Lead {
         return db.execute("SELECT * FROM `lead` WHERE IDLead = ?", [IDLead]);
     }
 
-    static async createLead(nombre, telefono, embudo, asignadoa) {
-        await db.execute(
+    static createLead(nombre, telefono, embudo, asignadoa) {
+        return db.execute(
             "INSERT INTO `lead` (Nombre, Telefono, Embudo, Asignadoa, Creado, Horadecreacion, Archivado, CreadoManualmente) VALUES (?, ?, ?, ?, CURDATE(), CURTIME(), 'No', 'TRUE')",
             [nombre, telefono, embudo, asignadoa]
-        );
-
-        return db.execute(
-            "SELECT * FROM `lead` WHERE IDLead = LAST_INSERT_ID()"
         );
     }
 

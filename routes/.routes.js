@@ -8,10 +8,14 @@ const router = express.Router();
 
 const { post_CSV } = require("../controllers/CSV.controller");
 
-const { getReporte, getReporteJSON, postPDF } = require("../controllers/graph.controller");
+const {
+    getReporte,
+    getReporteJSON,
+    postPDF,
+} = require("../controllers/graph.controller");
 
 // Importamos el middleware isAuth (para verificar si el usuario está autenticado)
-const reporteController = require('../controllers/reporte.controller');
+const reporteController = require("../controllers/reporte.controller");
 
 const Usuario = require("../model/usuario.model");
 
@@ -25,20 +29,29 @@ router.get("/FAQ", isAuth, (req, res) => {
     res.render("FAQ");
 });
 
-router.get('/reporte/json', isAuth, getReporteJSON);
+router.get("/reporte/json", isAuth, getReporteJSON);
 
-router.get('/reporte', isAuth, getReporte);
+router.get("/reporte", isAuth, getReporte);
 
-router.post('/reporte/save', isAuth, postPDF);
+router.post("/reporte/save", isAuth, postPDF);
 
 router.post("/", isAuth, post_CSV); // ANTES de router,use("/")
 
-router.get("/", isAuth,  (req, res) => {
+router.get("/", isAuth, (req, res) => {
     const success = req.flash("success") || "4";
     console.log("success", success, "type", typeof success);
     const error = req.flash("falla") || "4";
     console.log(req.flash("error"));
 
+    // Obtiene datos de la sesion
+    const {
+        Nombre,
+        ApellidoPaterno,
+        ApellidoMaterno,
+        Correo,
+        Privilegios,
+        Rol,
+    } = req.session;
 
     Usuario.fetchAllUsers()
         .then(([usuariosFetched]) => {
@@ -47,22 +60,22 @@ router.get("/", isAuth,  (req, res) => {
                     res.render("inicio", {
                         embudos: embudosFetched,
                         csrfToken: req.csrfToken(),
-                        privilegios: req.session.Privilegios,
-                        correo: req.session.Correo,
-                        rol: req.session.Rol,
-                        nombre: req.session.Nombre,
-                        apellidoPaterno: req.session.ApellidoPaterno,
-                        apellidoMaterno: req.session.apellidoMaterno,
+                        privilegios: Privilegios,
+                        correo: Correo,
+                        rol: Rol,
+                        nombre: Nombre,
+                        apellidoPaterno: ApellidoPaterno,
+                        apellidoMaterno: ApellidoMaterno,
                         usuarios: usuariosFetched,
                         success: "",
                         error: error,
                     });
                 })
                 .catch();
-        
-    }).catch((error) => {
-        console.log(error);
-    });
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 });
 
 // Exportamos el router

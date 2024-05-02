@@ -43,14 +43,16 @@
     <body>
         <input type="hidden" id="_csrf" value="<%= csrfToken %>" />
         <%- include('partials/sidebar.ejs') %>
-        <%- include('partials/aside.ejs', {
-            correo: correo,
-            nombre: nombre, 
-            apellidoPaterno: apellidoPaterno,
-            apellidoMaterno: apellidoMaterno,
-            rol: rol,
-            privilegios: privilegios,
-            }) %>  
+        <%- include('partials/asideBoton.ejs', {
+            correo,
+            nombre,
+            apellidoPaterno,
+            apellidoMaterno,
+            rol,
+            privilegios,
+            usuarios,
+            embudos
+          }) %>  
  
         <div id="main-content" class="ml-14 mt-14 pl-8">
             <h1 class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">

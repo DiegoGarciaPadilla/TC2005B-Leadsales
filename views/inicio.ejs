@@ -26,7 +26,16 @@
 </head>
 <body class="bg-[#E4E8EE]">
   <%- include('partials/sidebar.ejs') %>
-  <%- include('partials/asideBoton.ejs') %>
+  <%- include('partials/asideBoton.ejs', {
+    correo,
+    nombre,
+    apellidoPaterno,
+    apellidoMaterno,
+    rol,
+    privilegios,
+    usuarios,
+    embudos
+  }) %> 
 
 
   
