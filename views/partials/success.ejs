@@ -7,12 +7,13 @@
     </button>
     <div>
       <span class="font-bold"> ¡Acción exitosa! </span> 
-      <span id="success-message"></span>
+      <span id="success-message"> <%= success %> </span>
     </div>
   </div>
 
   <script>      
     const success = '<%= success %>';
+    console.log("Esto es success", success);
     if (success) {
       document.getElementById('alert-success').style.display = 'block';
       document.getElementById('success-message').innerHTML = success;

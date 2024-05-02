@@ -18,6 +18,7 @@ exports.post_CSV = (req, res) => {
         .then((isValid) => {
             if (isValid) {
                 csv.save();
+                console.log("CSV guardado");
                 Usuario.fetchAllUsers()
                     .then(([usuariosFetched]) => {
                         Lead.fetchEmbudos()
@@ -33,6 +34,7 @@ exports.post_CSV = (req, res) => {
                                     apellidoMaterno: req.session.ApellidoMaterno,
                                     rol: req.session.Rol,   
                                     usuarios: usuariosFetched,
+                                    embudos: embudosFetched,
                                     error: "",
                                 });
                             })
@@ -59,6 +61,7 @@ exports.post_CSV = (req, res) => {
                                     apellidoMaterno: req.session.ApellidoMaterno,
                                     rol: req.session.Rol,   
                                     usuarios: usuariosFetched,
+                                    embudos: embudosFetched,
                                     error: "Tu archivo.csv no tiene el formato correcto!",
                                 });
                             })

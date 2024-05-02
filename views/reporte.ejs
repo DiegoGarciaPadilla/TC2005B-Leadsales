@@ -131,40 +131,43 @@
                 </div>
             </div>
 
-            <div class="items-center ps-2 mb-5 hidden">
-                <canvas id="logo"></canvas>
-                <span class="sidebar-text self-center text-xl font-semibold whitespace-nowrap text-gray-800 pl-2">Leadtics</span>
-             </div>
+            <div class="flex flex-col items-center justify-center mr-24">
+                <div class="items-center ps-2 mb-5 hidden">
+                    <canvas id="logo"></canvas>
+                    <span class="sidebar-text self-center text-xl font-semibold whitespace-nowrap text-gray-800 pl-2">Leadtics</span>
+                 </div>
+    
+                <div id="graphOneContainer" class="graph-container w-3/4 px-4 py-8">
+                    <p class="text-center font-bold text-2xl"> Leads promedio por día </p>
+                    <canvas id="graphOne" width="400" height="200"></canvas>
+                </div>
+                <div id="graphTwoContainer" class="graph-container w-3/4 px-4 py-8" style="display: none">
+                    <p class="text-center font-bold text-2xl"> Cantidad de leads por año, por mes </p>
+                    <canvas id="graphTwo" width="400" height="200"></canvas>
+                </div>
+                <div id="graphThreeContainer" class="graph-container w-3/4 px-4 py-8" style="display: none">
+                    <p class="text-center font-bold text-2xl"> Leads por usuarios </p>
+                    <canvas id="graphThree" width="400" height="200"></canvas>
+                </div>
+                <div id="graphFourContainer" class="graph-container px-4 py-8"
+                    style="display: none; width: 50%; height: 50%">
+                    <p class="text-center font-bold text-2xl"> Leads por status </p>
+                    <canvas id="graphFour" width="200" height="100"></canvas>
+                </div>
+                <div id="graphFiveContainer" class="graph-container w-3/4 px-4 py-8" 
+                    style="display: none; width: 50%; height: 50%">
+                    <p class="text-center font-bold text-2xl"> Leads por Embudo </p>
+                    <canvas id="graphFive" width="400" height="200"></canvas>
+                </div>
+                <div id="graphSevenContainer" class="graph-container w-3/4 px-4 py-8" style="display: none">
+                    <p class="text-center font-bold text-2xl"> Archivados </p>
+                    <canvas id="graphSeven" width="400" height="200"></canvas>
+                </div>
+                <div id="graphEightContainer" class="graph-container w-3/4 px-4 py-8" style="display: none">
+                    <p class="text-center font-bold text-2xl"> Tipo de creación de leads </p>
+                    <canvas id="graphEight" width="400" height="200"></canvas>
+                </div>
 
-            <div id="graphOneContainer" class="graph-container w-3/4 px-4 py-8 ml-32">
-                <p class="text-center font-bold text-2xl"> Leads promedio por día </p>
-                <canvas id="graphOne" width="400" height="200"></canvas>
-            </div>
-            <div id="graphTwoContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
-                <p class="text-center font-bold text-2xl"> Cantidad de leads por año, por mes </p>
-                <canvas id="graphTwo" width="400" height="200"></canvas>
-            </div>
-            <div id="graphThreeContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
-                <p class="text-center font-bold text-2xl"> Leads por usuarios </p>
-                <canvas id="graphThree" width="400" height="200"></canvas>
-            </div>
-            <div id="graphFourContainer" class="graph-container px-4 py-8 ml-32"
-                style="display: none; width: 50%; height: 50%">
-                <p class="text-center font-bold text-2xl"> Leads por status </p>
-                <canvas id="graphFour" width="200" height="100"></canvas>
-            </div>
-            <div id="graphFiveContainer" class="graph-container w-3/4 px-4 py-8 ml-32" 
-                style="display: none; width: 50%; height: 50%">
-                <p class="text-center font-bold text-2xl"> Leads por Embudo </p>
-                <canvas id="graphFive" width="400" height="200"></canvas>
-            </div>
-            <div id="graphSevenContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
-                <p class="text-center font-bold text-2xl"> Archivados </p>
-                <canvas id="graphSeven" width="400" height="200"></canvas>
-            </div>
-            <div id="graphEightContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
-                <p class="text-center font-bold text-2xl"> Tipo de creación de leads </p>
-                <canvas id="graphEight" width="400" height="200"></canvas>
             </div>
         </div>
 </body>
@@ -182,6 +185,8 @@
             container.style.display = "block"; // Show all graph containers
         });
 
+        // Descripción vacía
+        document.getElementById('descripcion').value = '';
     }
     // Select tomado en cuenta desde recarga
     document.addEventListener('DOMContentLoaded', (event) => {
@@ -808,43 +813,32 @@
         
         const descripcion = document.getElementById('descripcion').value; 
 
+        let logo = new Image();
+        logo.src = "./uploads/Logo_Leadtics.png";
+
         // Crear PDF
         const pdf = new jsPDF("portrait");
-        
-        // const canvasLogo = document.getElementById("logo");
-        // const ctxLogo = canvasLogo.getContext("2d");
-        // const logo = new Image();
-        // logo.src = "./uploads/magGlass.jpg";
-        // logo.onload = function() {
-        //     ctxLogo.drawImage(logo, 0, 0);
-        //     const imagenLogo = canvasLogo.toDataURL("image/png", 1.0);
-        //     pdf.addImage(imagenLogo, "PNG", 10, 10, 30, 15);
-        // }
-
-        // const imgLogo = "./uploads/magGlass.jpg";
-        // pdf.addImage(imgLogo, "JPG", 10, 10, 30, 15);
 
             // Página 1
                 // Título del reporte
-            pdf.setTextColor(37, 99, 235);
+            pdf.setTextColor(76, 75, 220);
             pdf.setFont("helvetica", "bold");
             pdf.setFontSize(20);
             pdf.text(
                 `REPORTE - ${descripcion}`,
                 pdf.internal.pageSize.width / 2,
-                15,
+                20,
                 null,
                 null,
                 "center"
             );
 
-            pdf.setTextColor(37, 99, 235);
             pdf.setFont("helvetica", "bold");
             pdf.setFontSize(14);
             pdf.text(
                 "Leads por día",
                 pdf.internal.pageSize.width / 2,
-                28,
+                30,
                 null,
                 null,
                 "center"
@@ -918,15 +912,31 @@
             const pageCount = pdf.internal.getNumberOfPages();
 
             for(let i = 1; i <= pageCount; i++) {
+                // Paginación
                 pdf.setPage(i);
-                pdf.setTextColor(0, 0, 0);
+                pdf.setTextColor(98, 105, 233);
                 pdf.setFont("helvetica", "normal");
                 pdf.setFontSize(10);
                 pdf.text(`${i}`, 195, 285);
+
+                // Fecha
+                let fechaActual = new Date();
+                let fechaFormateada = fechaActual.getDate() + '/' + (fechaActual.getMonth() + 1) + '/' + fechaActual.getFullYear();
+                pdf.text('Fecha: ' + fechaFormateada, 175, 7);
+
+                // Generado por 
+                let nombreCompleto = '<%= nombre %>' + ' ' + '<%= apellidoPaterno %>';
+                pdf.text('Generado por: ' + nombreCompleto, 155, 12);
             }
 
-            // Generar PDF 
-            pdf.save(`reporte.pdf`);
+            logo.onload = function() {
+                for (let i = 1; i <= pageCount; i++) {
+                    pdf.setPage(i);
+                    pdf.addImage(logo, "PNG", 10, 4, 20, 8);
+                }
+                // Generar PDF 
+                pdf.save(`reporte.pdf`);
+            }
 
             const pdfData = pdf.output('datauristring');
             console.log("Esto es pdfData: ", pdfData);
