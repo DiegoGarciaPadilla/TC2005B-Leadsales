@@ -8,7 +8,13 @@ module.exports = class Lead {
 
     static fetchAll() {
         return db.execute(
-            "SELECT * FROM `lead` WHERE FechaHoraEliminado IS NULL"
+            "SELECT * FROM `lead` WHERE FechaHoraEliminado IS NULL ORDER BY Creado DESC, Horadecreacion DESC"
+        );
+    }
+
+    static fetchAllCount() {
+        return db.execute(
+            "SELECT COUNT(*) AS total FROM `lead` WHERE FechaHoraEliminado IS NULL ORDER BY Creado DESC, Horadecreacion DESC"
         );
     }
 
@@ -33,10 +39,30 @@ module.exports = class Lead {
         );
     }
 
+    static async fetchLeadsByUserCount(correo) {
+        // Primera consulta: obtener el nombre y apellido paterno basado en el correo
+        const [rows] = await db.execute(
+            "SELECT CONCAT(Nombre, ' ', ApellidoPaterno) AS NombreCompleto FROM `usuario` WHERE Correo = ?",
+            [correo]
+        );
+
+        if (rows.length === 0) {
+            // No se encontró ningún usuario con ese correo
+            return [];
+        }
+
+        // Segunda consulta: obtener los leads donde Asignadoa es igual al nombre completo obtenido
+        const nombreCompleto = rows[0].NombreCompleto;
+        return db.execute(
+            "SELECT COUNT(*) AS total FROM `lead` WHERE Asignadoa = ? AND FechaHoraEliminado IS NULL",
+            [nombreCompleto]
+        );
+    }
+
     static fetchAllLeadsByPage(page, perPage) {
         const offset = (page - 1) * perPage;
         return db.execute(
-            `SELECT * FROM \`lead\` WHERE FechaHoraEliminado IS NULL LIMIT ${offset}, ${perPage}`
+            `SELECT * FROM \`lead\` WHERE FechaHoraEliminado IS NULL ORDER BY Creado DESC, Horadecreacion DESC LIMIT ${offset}, ${perPage}`
         );
     }
 
@@ -57,7 +83,7 @@ module.exports = class Lead {
         const offset = (page - 1) * perPage;
 
         return db.execute(
-            `SELECT * FROM \`lead\` WHERE Asignadoa = ? AND FechaHoraEliminado IS NULL LIMIT ${offset}, ${perPage}`,
+            `SELECT * FROM \`lead\` WHERE Asignadoa = ? AND FechaHoraEliminado ORDER BY Creado DESC, Horadecreacion DESC IS NULL LIMIT ${offset}, ${perPage}`,
             [nombreCompleto]
         );
     }
@@ -66,14 +92,10 @@ module.exports = class Lead {
         return db.execute("SELECT * FROM `lead` WHERE IDLead = ?", [IDLead]);
     }
 
-    static async createLead(nombre, telefono, embudo, asignadoa) {
-        await db.execute(
+    static createLead(nombre, telefono, embudo, asignadoa) {
+        return db.execute(
             "INSERT INTO `lead` (Nombre, Telefono, Embudo, Asignadoa, Creado, Horadecreacion, Archivado, CreadoManualmente) VALUES (?, ?, ?, ?, CURDATE(), CURTIME(), 'No', 'TRUE')",
             [nombre, telefono, embudo, asignadoa]
-        );
-
-        return db.execute(
-            "SELECT * FROM `lead` WHERE IDLead = LAST_INSERT_ID()"
         );
     }
 

@@ -1,375 +1,149 @@
-<div id="fondoModalCrearLead" style="display: none;" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
-  onclick="toggleModal(event)">
-  <div id="modalForms" class="bg-white rounded shadow-lg p-8 m-4 max-w-xs max-h-full text-center">
-
-    <p class="mt-2 mb-2 font-bold text-red-700 text-left" style="font-size: 12px;"> * Obligatorio </p>
-    <div id="div-error" class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert" style="display: none;">
-      <span class="font-bold"> Cuidado: </span>
-      <span id="error-message"> </span>
-    </div>
-
-    <form id="crearLeadModal">
-      <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>">
-      <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="nombre">
-          Nombre
-          <span class="font-bold text-red-700"> * </span>
-        </label>
-        <input
-          class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          id="nombre" type="text" placeholder="Enrique" name="nombre" required>
-      </div>
-      <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="telefono">
-          Teléfono
-        </label>
-        <input
-          class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          id="telefono" type="text" placeholder="4462598702" name="telefono">
-      </div>
-
-      <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="embudo">
-          Embudo
-          <span class="font-bold text-red-700"> * </span>
-        </label>
-        <input list="embudos-list" id="asignado" name="asignadoa"
-          class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          required placeholder="Erizoo">
-        <datalist id="embudos-list">
-          <% for (let i=0; i < embudos.length; i++) { %>
-            <option value="<%= embudos[i].Embudo %>">
-          <% } %>
-        </datalist>
-      </div>
-
-      <% if (privilegios.some(privilegio=> privilegio.Descripcion === 'Crea lead todos.')) { %>
-        <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="asignadoa">
-            Asignado a
-            <span class="font-bold text-red-700"> * </span>
-          </label>
-          <select id="asignado" name="asignadoa"
-            class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            required>
-            <% for (let i=0; i < usuarios.length; i++) { %>
-              <option value="<%= usuarios[i].Nombre + ' ' + usuarios[i].ApellidoPaterno %>">
-                <%= usuarios[i].Nombre + ' ' + usuarios[i].ApellidoPaterno %>
-              </option>
-              <% } %>
-          </select>
+<div
+    id="fondoModalCrearLead"
+    style="display: none"
+    class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
+    onclick="toggleModal(event)"
+>
+    <div
+        id="modalForms"
+        class="bg-white rounded shadow-lg p-8 m-4 max-w-xs max-h-full text-center"
+    >
+        
+        <p
+            class="mt-2 mb-2 font-bold text-red-700 text-left"
+            style="font-size: 12px"
+        >
+            * Obligatorio
+        </p>
+        <div
+            id="div-error"
+            class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50"
+            role="alert"
+            style="display: none"
+        >
+            <span class="font-bold"> Cuidado: </span>
+            <span id="error-message"> </span>
         </div>
-        <% } else { %>
-          <input type="hidden" id="asignado" name="asignadoa" value="<%= nombre + ' ' + apellidoPaterno %>">
-          <% } %>
+
+        <form id="crearLeadModal" action="directorio/crearLead" method="POST">
+            <input
+                type="hidden"
+                id="_csrf"
+                name="_csrf"
+                value="<%= csrfToken %>"
+            />
+            <div class="mb-4">
+                <label
+                    class="block text-gray-700 text-sm font-bold mb-2"
+                    for="nombre"
+                >
+                    Nombre
+                    <span class="font-bold text-red-700"> * </span>
+                </label>
+                <input
+                    class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    id="nombre"
+                    type="text"
+                    placeholder="Enrique"
+                    name="nombre"
+                    required
+                />
+            </div>
+            <div class="mb-4">
+                <label
+                    class="block text-gray-700 text-sm font-bold mb-2"
+                    for="telefono"
+                >
+                    Teléfono
+                </label>
+                <input
+                    class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    id="telefono"
+                    type="text"
+                    placeholder="4462598702"
+                    name="telefono"
+                />
+            </div>
+
+            <div class="mb-4">
+                <label
+                    class="block text-gray-700 text-sm font-bold mb-2"
+                    for="embudo"
+                >
+                    Embudo
+                    <span class="font-bold text-red-700"> * </span>
+                </label>
+                <input
+                    list="embudos-list"
+                    id="embudo"
+                    name="embudo"
+                    class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    required
+                    placeholder="Embudo"
+                />
+                <datalist id="embudos-list">
+                    <% for (let i=0; i < embudos.length; i++) { %>
+                    <option value="<%= embudos[i].Embudo %>"><% } %></option>
+                </datalist>
+            </div>
+
+            <% if (privilegios.some(privilegio => privilegio.Descripcion === 'Crea lead todos.')) { %>
+            <div class="mb-4">
+                <label
+                    class="block text-gray-700 text-sm font-bold mb-2"
+                    for="asignadoa"
+                >
+                    Asignado a
+                    <span class="font-bold text-red-700"> * </span>
+                </label>
+                <select
+                    id="asignadoa"
+                    name="asignadoa"
+                    class="shadow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    required
+                >
+                    <% for (let i=0; i < usuarios.length; i++) { %>
+                    <option
+                        value="<%= usuarios[i].Nombre + ' ' + usuarios[i].ApellidoPaterno %>"
+                    >
+                        <%= usuarios[i].Nombre + ' ' +
+                        usuarios[i].ApellidoPaterno %>
+                    </option>
+                    <% } %>
+                </select>
+            </div>
+            <% } else { %>
+            <input
+                type="hidden"
+                id="asignadoa"
+                name="asignadoa"
+                value="<%= nombre + ' ' + apellidoPaterno %>"
+            />
+            <% } %>
 
             <div class="flex items-center justify-center">
-              <button id="crearLeadBoton"
-              onclick="toggleModal2(event)"
-              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
-                Crear
-              </button>
+                <button
+                    id="crearLeadBoton"
+                    type="submit"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+                >
+                    Crear
+                </button>
             </div>
-    </form>
-  </div>
+        </form>
+    </div>
 </div>
-
-<script>
-  const telefono = document.getElementById('telefono');
-  const submitButton = document.getElementById('submit-button');
-
-  const errorDiv = document.getElementById('div-error');
-  const errorMessage = document.getElementById('error-message');
-
-  function toggleModal(event) {
-    var modal = document.getElementById('fondoModalCrearLead');
-    console.log("Este es el toggle: ", event.target.id);
-    if (event.target.id == "butonCrearLead" || event.target.id == "fondoModalCrearLead") {
-      console.log("Entro y display: ", modal.style.display);
-      if (modal.style.display === "none") {
-        modal.style.display = "flex";
-      } else {
-        modal.style.display = "none";
-      }
-      console.log("Ahora es: ", modal.style.display);
-    }
-  }
-  function toggleModal2(event) {
-    var modal = document.getElementById('fondoModalCrearLead');
-    console.log("Este es el toggle: ", event.target.id);
-    if (event.target.id == "fondoModalCrearLead" || event.target.id == "crearLeadBoton") {
-      console.log("Entro y display: ", modal.style.display);
-      if (modal.style.display === "none") {
-        modal.style.display = "flex";
-      } else {
-        modal.style.display = "none";
-      }
-      console.log("Ahora es: ", modal.style.display);
-    }
-  }
-
-  function checkTelefono() {
-    const phoneRegex = /^[0-9]*$/;
-    if (!phoneRegex.test(telefono.value)) {
-      errorMessage.textContent = 'El teléfono solo debe contener números.';
-      submitButton.disabled = true;
-      errorDiv.style.display = 'block';
-    } else {
-      errorMessage.textContent = '';
-      submitButton.disabled = false;
-      errorDiv.style.display = 'none';
-    }
-  }
-
-  telefono.addEventListener('input', checkTelefono);
-</script>
-
-<script>
-
-  document.addEventListener('DOMContentLoaded', function () {
-    // Obtén el botón por su ID
-    const button = document.getElementById('crearLeadBoton');
-
-    // Agrega el controlador de eventos 'click' al botón
-    button.addEventListener('click', function (event) {
-      // Prevenir el comportamiento predeterminado del botón
-      event.preventDefault();
-
-      // Llama a la función crearLead
-      crearLead();
-      operacionExitosa("Lead creado con éxito.");
-    });
-  });
-
-  function crearLead() {
-    const nombre = document.getElementById('nombre').value;
-    const telefono = document.getElementById('telefono').value;
-    const embudo = document.getElementById('embudo').value;
-    const asignadoa = document.getElementById('asignado').value;
-    const csrf = document.getElementById('_csrf').value;
-
-    // Realiza la validación de los campos aquí, si es necesario
-
-
-    fetch('/directorio/crearLead', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'csrf-token': csrf,
-      },
-      body: JSON.stringify({
-        nombre: nombre,
-        telefono: telefono,
-        embudo: embudo,
-        asignadoa: asignadoa
-      })
-    })
-      .then(response => response.json()) // Convertir la respuesta en JSON
-      .then(data => {
-        console.log(data);
-
-        const tableBody = document.getElementById('containerElements');
-
-        if (tableBody) {
-
-          console.log('El elemento existe');
-          const row = tableBody.insertRow(0);
-          row.classList.add("bg-white", "hover:bg-gray-50");
-
-          const cell0 = row.insertCell(0);
-          const cell1 = row.insertCell(1);
-          const cell2 = row.insertCell(2);
-          const cell3 = row.insertCell(3);
-          const cell4 = row.insertCell(4);
-          const cell5 = row.insertCell(5);
-          const cell6 = row.insertCell(6);
-          const cell7 = row.insertCell(7);
-
-          cell1.textContent = data.lead.Nombre;
-          cell2.textContent = data.lead.Ultimomensaje;
-          cell3.textContent = data.lead.Primermensaje;
-          cell4.textContent = data.lead.Asignadoa;
-          cell5.textContent = data.lead.Telefono;
-
-
-          // Agregar estilo y funcionamiento a el checkbox
-          cell0.innerHTML = `
-            <div class="flex items-center">
-              <input id="${data.lead.IDLead}" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300">
-              <label for="${data.lead.IDLead}" class="sr-only">checkbox</label>
-            </div>
-          `;
-          cell0.classList.add("px-4", "py-2", "sm:px-3", "sm:py-3");
-          
-          // Agregar estilo y funcionamiento a la celda Consulta más
-          cell6.innerHTML = `
-            <button onclick="showDialog(${data.lead.IDLead})" class="ml-12">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-              </svg>
-            </button>
-          `;
-          cell7.classList.add('flex', 'justify-center', 'items-center', 'pt-2.5');
-
-                    // Agregar estilo y funcionamiento a la celda Editar
-                    cell7.innerHTML = `
-                    <a href="/directorio/editarLead/${data.lead.IDLead}" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center ml-2">
-                      <svg class="w-6 h-6 text-blue-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
-                      </svg>
-                      <span class="sr-only">Modificar lead</span>
-                  </a>
-          `;
-          cell7.classList.add('flex', 'justify-center', 'pt-2.5');
-
-          // Agregar estilo y funcionamiento a la celda Nombre
-          cell1.innerHTML = `
-            <span class="cursor-pointer relative" 
-                  onmouseover="document.getElementById('popover0_${data.lead.IDLead}').classList.remove('hidden')"
-                  onmouseout="document.getElementById('popover0_${data.lead.IDLead}').classList.add('hidden')"
-            >
-              ${data.lead.Nombre.substr(0, 15) + (data.lead.Nombre.length > 15 ? '...' : '')}
-              <div id="popover0_${data.lead.IDLead}" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-                ${data.lead.Nombre}
-              </div>
-            </span>
-          `;
-          cell1.classList.add("px-4", "py-2", "sm:px-3", "sm:py-3");
-
-          // Agregar estilo y funcionamiento a la celda Último mensaje
-          cell2.innerHTML = `
-            <p></p>
-          `;
-          cell2.classList.add('px-4', 'py-2', 'sm:px-3', 'sm:py-3');
-
-          // Agregar estilo y funcionamiento a la celda Primer mensaje
-          cell3.innerHTML = `
-            <p></p>
-          `;
-          cell3.classList.add("px-4", "py-2", "sm:px-3", "sm:py-3");
-
-          // Agregar estilo y funcionamiento a la celda Asignado a
-          cell4.classList.add('px-4', 'py-2', 'sm:px-3', 'sm:py-3');
-
-          // Agregar estilo y funcionamiento a la celda Teléfono
-          cell5.classList.add('px-4', 'py-2', 'sm:px-3', 'sm:py-3');
-
-          
-          
-        } else {
-          // Si el elemento no existe, hacer algo diferente...
-          console.log('El elemento no existe');
-        }
-        
-        
-
-
-      })
-      .catch(error => {
-        // Manejar cualquier error que ocurra durante la solicitud
-      });
-  }
-
-</script>
 
 <script defer>
 
-  function hideDialog() {
+    const showPopup = (event) => {
+        document.getElementById('fondoModalCrearLead').style.display = 'flex';
+    }
+
+    const toggleModal = (event) => {
+        if (event.target.id === 'fondoModalCrearLead') {
+            document.getElementById('fondoModalCrearLead').style.display = 'none';
+        }
+    }
     
-    let dialog = document.getElementById('dialog');
-    dialog.classList.add('opacity-0');
-    setTimeout(() => {
-      dialog.classList.add('hidden');
-      dialog.classList.remove('flex');
-    }, 500);
-  }
-  
-  function showDialog(IDLead) {
-    
-    fetch(`/directorio/${IDLead}`, {
-        method: 'GET', 
-        headers: {
-          'Content-Type': 'application/json',
-        }
-    }).then((result) => {
-        return result.json(); // Return another promise
-    }).then((data) => {
-        let dialog = document.getElementById('dialog');
-        let leadDetails = data;
-
-        let leadInfo = '<table class="rounded-lg bg-gray-300 w-full"><thead id="tableHead" class="text-xs text-white bg-gray-50"><tr>';
-
-        for (let key in leadDetails) {
-            if (leadDetails.hasOwnProperty(key) && leadDetails[key]) { // Check if value is not empty
-                leadInfo += `<th scope="col" class="px-6 py-3 bg-blue-700">${key}</th>`;
-            }
-        }
-
-        leadInfo += '</tr></thead><tbody><tr id="element" class="bg-gray-100 border-b hover:bg-gray-50">';
-
-        let cont = 0;
-        for (let key in leadDetails) {
-            if (leadDetails.hasOwnProperty(key) && leadDetails[key]) { // Check if value is not empty
-                let str = leadDetails[key];
-
-                if (typeof str === 'string' && !isNaN(Date.parse(str))) {
-                    let date = new Date(str);
-                    str = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-                }
-
-                let strShort = str.length > 20 ? str.substr(0, 20) + '...' : str;
-
-                leadInfo += `<td class="px-4 py-2 sm:px-3 sm:py-3">${strShort}
-                                  <span class="cursor-pointer relative" 
-                                        onmouseover="document.getElementById('popover${cont}').classList.remove('hidden')"
-                                        onmouseout="document.getElementById('popover${cont}').classList.add('hidden')"
-                                  >
-                                    <div id="popover${cont}" class="hidden absolute bg-white border border-gray-300 shadow-lg p-2 z-10 -ml-10 top-8">
-                                      ${str} 
-                                    </div>
-                              </td>`; 
-                cont++;
-            }
-        }
-
-        leadInfo += '</tr></tbody></table>';
-
-        document.getElementById('leadDetails').innerHTML = leadInfo;
-
-        dialog.classList.remove('hidden');
-        dialog.classList.add('flex');
-        setTimeout(() => {
-            dialog.classList.add('opacity-100');
-        }, 20);
-    }).catch(error => {
-        console.error('Error fetching lead details:', error);
-    });
-}
-
-
-</script>
-
-<script>
-    function operacionExitosa(accion) {
-      const alertas = document.getElementById('alertas');
-          const alertHTML = `
-              <div id="alert-success" class="flex relative items-center p-4 mb-4 text-sm mr-24 text-green-800 border border-green-300 rounded-lg bg-green-50 w-2/3">
-                  <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarAlert()">
-                    <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                    </svg>
-                  </button>
-                  <div>
-                      <span class="font-bold"> ¡Acción exitosa! </span> 
-                      <span id="success-message">${accion}</span>
-                  </div>
-              </div>
-          `;
-          alertas.innerHTML = alertHTML;
-          document.getElementById('alert-success').style.display = 'block';
-  };
-  const cerrarAlert = () => {
-    const successAlert = document.getElementById("alert-success");
-    successAlert.parentNode.removeChild(successAlert);
-  };
 </script>

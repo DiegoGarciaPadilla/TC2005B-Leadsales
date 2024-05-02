@@ -7,24 +7,42 @@ const Usuario = require("../model/usuario.model");
 
 /* ========== CU. 10 CONSULTA DIRECTORIO | Diego Lira - Diego García - Chimali (Puro Peer Programing) =============== */
 
-exports.getLeads = (req, res) => {
-    const sucessMessage = req.flash("editado") || '';
+exports.getLeads = async (req, res) => {
+    const sucessMessage = req.flash("editado") || "";
+
+    const {
+        Nombre,
+        ApellidoPaterno,
+        ApellidoMaterno,
+        Correo,
+        Privilegios,
+        Rol,
+    } = req.session;
+
+    // Obtiene todos los usuarios
+    const [usuariosFetched] = await Usuario.fetchAllUsers();
+
+    // Obtiene los embudos
+    const [embudosFetched] = await Lead.fetchEmbudos();
+
     res.render("directorio", {
         csrfToken: req.csrfToken(),
-        privilegios: req.session.Privilegios,
-        correo: req.session.Correo,
-        rol: req.session.Rol,
-        nombre: req.session.Nombre,
-        apellidoPaterno: req.session.ApellidoPaterno,
-        apellidoMaterno: req.session.ApellidoMaterno,
+        privilegios: Privilegios,
+        correo: Correo,
+        rol: Rol,
+        nombre: Nombre,
+        apellidoPaterno: ApellidoPaterno,
+        apellidoMaterno: ApellidoMaterno,
         error: req.session.error || "",
-        success:sucessMessage,
+        success: sucessMessage,
+        usuarios: usuariosFetched,
+        embudos: embudosFetched,
     });
 };
 
 /* ---------------- Paginación (Diego García) ---------------- */
 
-exports.getLeadsJSON = (req, res) => {
+exports.getLeadsJSON = async (req, res) => {
     // Obtiene los privilegios del usuario
     const { Privilegios, Correo } = req.session;
 
@@ -38,21 +56,29 @@ exports.getLeadsJSON = (req, res) => {
         )
     ) {
         // Obtiene los leads de la BD
-        Lead.fetchAllLeadsByPage(page, 10)
-            .then(([leadsFetched]) => {
-                Usuario.fetchAllUsers()
-                    .then(([usuariosFetched]) => {
-                        Lead.fetchEmbudos()
-                            .then(([embudosFetched]) => {
-                                console.log("fetchAllLeadsByPage", leadsFetched);
-                                res.status(200).json({leadsFetched, usuariosFetched, embudosFetched});
-                            })
-                    })
-            })
-            .catch((error) => {
-                console.error(error);
-                res.status(500).json({ message: "Error obteniendo leads" });
-            });
+        const [leadsFetched] = await Lead.fetchAllLeadsByPage(page, 10);
+        console.log("leadsFetched", leadsFetched);
+
+        // Obtiene el conteo de leads de la BD
+        const [leadsCount] = await Lead.fetchAllCount();
+        console.log("leadsCount", leadsCount);
+
+        // Obtiene los usuarios de la BD
+        const [usuariosFetched] = await Usuario.fetchAllUsers();
+        console.log("usuariosFetched", usuariosFetched);
+
+        // Obtiene los embudos de la BD
+        const [embudosFetched] = await Lead.fetchEmbudos();
+        console.log("embudosFetched", embudosFetched);
+
+        // Envía la respuesta con los leads, usuarios y embudos
+        res.status(200).json({
+            leadsFetched,
+            leadsCount,
+            usuariosFetched,
+            embudosFetched,
+        });
+
         // En caso contrario, si el usuario tiene el privilegio de "Consulta directorio propios." se obtienen los leads propios
     } else if (
         Privilegios.some(
@@ -60,15 +86,22 @@ exports.getLeadsJSON = (req, res) => {
         )
     ) {
         // Obtiene los leads de la BD
-        Lead.fetchAllLeadsByUserAndPage(Correo, page, 10)
-            .then(([leadsFetched]) => {
-                console.log("fetchAllLeadsByUserAndPage", leadsFetched);
-                res.status(200).json(leadsFetched);
-            })
-            .catch((error) => {
-                console.error(error);
-                res.status(500).json({ message: "Error obteniendo leads" });
-            });
+        const [leadsFetched] = await Lead.fetchAllLeadsByUserAndPage(
+            Correo,
+            page,
+            10
+        );
+
+        // Obtiene el conteo de leads de la BD
+        const [leadsCount] = await Lead.fetchLeadsByUserCount(Correo);
+
+        // Envía la respuesta con los leads
+        res.status(200).json({
+            leadsFetched,
+            leadsCount,
+            usuariosFetched: [],
+            embudosFetched: [],
+        });
     }
 };
 
@@ -93,9 +126,15 @@ exports.getLeadDetails = (req, res) => {
 
 /* ========== CU. 5 CREA LEAD | Diego Lira =============== */
 
-exports.postCrearLead = (req, res) => {
+exports.postCrearLead = async (req, res) => {
     // Se obtienen los datos de la sesión
-    const { Privilegios, Nombre, ApellidoPaterno } = req.session;
+    const { Nombre, ApellidoPaterno, ApellidoMaterno, Correo, Rol, Privilegios } = req.session;
+
+    // Obtiene todos los usuarios
+    const [usuariosFetched] = await Usuario.fetchAllUsers();
+
+    // Obtiene los embudos
+    const [embudosFetched] = await Lead.fetchEmbudos();
 
     // Se obtienen los datos del formulario
     const { nombre, telefono, embudo, asignadoa } = req.body;
@@ -103,11 +142,22 @@ exports.postCrearLead = (req, res) => {
     // Si el usuario tiene el privilegio de "Crea lead todos." se crea el lead
     if (Privilegios.some((priv) => priv.Descripcion === "Crea lead todos.")) {
         Lead.createLead(nombre, telefono, embudo, asignadoa)
-            .then(([rows]) => {
-                res.status(200).json({
+            .then(() => {
+                // Respuesta exitosa
+                res.render("directorio", {
+                    csrfToken: req.csrfToken(),
+                    privilegios: Privilegios,
+                    correo: Correo,
+                    rol: Rol,
+                    nombre: Nombre,
+                    apellidoPaterno: ApellidoPaterno,
+                    apellidoMaterno: ApellidoMaterno,
+                    error: "",
                     success: "Lead creado con exito",
-                    lead: rows[0],
+                    usuarios: usuariosFetched,
+                    embudos: embudosFetched,
                 });
+                    
             })
             .catch((error) => {
                 console.error(error);
@@ -115,13 +165,22 @@ exports.postCrearLead = (req, res) => {
             });
 
         // En caso contrario, si el usuario tiene el privilegio de "Crea lead propios." se crea el lead
-    } else if (Privilegios.some((priv) => priv.Descripcion === "Crea lead.")) {
+    } else if (Privilegios.some((priv) => priv.Descripcion === "Crea lead propios.")) {
         const nombreCompleto = `${Nombre} ${ApellidoPaterno}`;
         Lead.createLead(nombre, telefono, embudo, nombreCompleto)
-            .then(([rows]) => {
-                res.status(200).json({
+            .then(() => {
+                res.render("directorio", {
+                    csrfToken: req.csrfToken(),
+                    privilegios: Privilegios,
+                    correo: Correo,
+                    rol: Rol,
+                    nombre: Nombre,
+                    apellidoPaterno: ApellidoPaterno,
+                    apellidoMaterno: ApellidoMaterno,
+                    error: "",
                     success: "Lead creado con exito",
-                    lead: rows[0],
+                    usuarios: usuariosFetched,
+                    embudos: embudosFetched,
                 });
             })
             .catch((error) => {

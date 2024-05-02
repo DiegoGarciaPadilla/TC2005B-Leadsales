@@ -328,9 +328,7 @@ exports.postCambiarContrasenia = (req, res) => {
         Correo,
         Privilegios,
     } = req.session;
-
-    console.log(req.session);
-
+    
     // Obtener los datos del formulario
     const { ContraseniaActual, NuevaContrasenia, ConfirmarNuevaContrasenia } =
         req.body;
