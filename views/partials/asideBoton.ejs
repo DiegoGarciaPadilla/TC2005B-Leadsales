@@ -1,0 +1,107 @@
+<ul class="space-y-2 font-medium">
+    <li>
+        <a
+            href="/usuarios/logout"
+            class="flex items-center p-2 text-gray-900 rounded-lg"
+        >
+            <div
+                style="
+                    position: fixed;
+                    bottom: 90px;
+                    right: 120px;
+                    z-index: 50;
+                    display: flex;
+                "
+                class="hover:bg-gray-100 group"
+            >
+                <svg
+                    width="30"
+                    height="22"
+                    viewBox="0 0 30 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        d="M15 16.5V19C15 20.1046 14.1046 21 13 21H6C4.89543 21 4 20.1046 4 19V5C4 3.89543 4.89543 3 6 3H13C14.1046 3 15 3.89543 15 5V8.0625M11 12H21M21 12L18.5 9.5M21 12L18.5 14.5"
+                        stroke="#000000"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </svg>
+                <span class="aside-text ms-3"> Cerrar sesión </span>
+            </div>
+        </a>
+    </li>
+</ul>
+
+<style>
+    .bg-blue-500 {
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        color: #fff;
+        transform: scale(1);
+    }
+
+    .bg-blue-500:hover {
+        background-color: #34373b;
+        color: #fff;
+        transform: scale(1.1);
+    }
+</style>
+
+<a href="/FAQ">
+    <div style="position: fixed; bottom: 20px; right: 20px; z-index: 50">
+        <button
+            class="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+            ?
+        </button>
+    </div>
+</a>
+
+<aside
+    id="logo-sidebar"
+    class="fixed top-0 right-0 z-40 w-1/5"
+    aria-label="Sidebar"
+>
+    <div class="h-screen px-3 py-4 overflow-y-auto bg-white flex flex-col">
+        <ul>
+            <li>
+                <div class="flex items-center ml-8 mt-5">
+                    <div
+                        class="w-12 h-12 rounded-full bg-blue-500 flex flex-col items-center justify-center text-gray-700 text-xl font-normal"
+                    >
+                        <%= nombre.charAt(0) + apellidoPaterno.charAt(0) %>
+                    </div>
+                    <div class="ml-4">
+                        <a
+                            ><span class="block font-semibold">
+                                <%= nombre + ' ' + apellidoPaterno %>
+                            </span></a
+                        >
+                        <% if (rol==1) { %>
+                        <span class="text-sm">Owner</span>
+                        <% } else if (rol==2) { %>
+                        <span class="text-sm">Admin</span>
+                        <% } else { %>
+                        <span class="text-sm">Seller</span>
+                        <% } %>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="flex items-center z-50 mt-2">
+                    <button
+                        onclick="showPopup(event)"
+                        id="butonCrearLead"
+                        class="ml-8 mt-5 inline-block px-4 py-1 text-xs font-medium leading-6 text-center text-purple-700 border border-purple-700 transition bg-white rounded shadow ripple hover:shadow-lg hover:bg-purple-700 hover:text-white focus:outline-none"
+                    >
+                        Crear Lead
+                    </button>
+                </div>
+            </li>
+            <%- include('modalCrearLead', { correo, nombre, apellidoPaterno,
+            apellidoMaterno, rol, privilegios, usuarios, embudos }) %>
+        </ul>
+    </div>
+</aside>

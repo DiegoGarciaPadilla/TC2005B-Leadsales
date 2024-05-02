@@ -1,10 +1,14 @@
-exports.isAuth = (request, response, next) => {
+exports.isAuth = (req, res, next) => {
+
+    // Si el usuario no está autenticado, redirigimos a la página de login
     if (
-        request.session.isLoggedIn === undefined ||
-        request.session.isLoggedIn === false
+        req.session.isLoggedIn === undefined ||
+        req.session.isLoggedIn === false
     ) {
-        return response.redirect("/usuarios/login");
+        return res.redirect("/usuarios/login");
     }
+
+    // Si el usuario está autenticado, continuamos con la petición
     next();
 };
 

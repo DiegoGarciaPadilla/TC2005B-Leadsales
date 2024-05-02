@@ -34,23 +34,34 @@
 
   </style>
 
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 </head>
 <body class="bg-[#E4E8EE]">
   <%- include('partials/sidebar.ejs', {
     correo: correo
   }) %>
+  <%- include('partials/aside.ejs', {
+    correo,
+    nombre,
+    apellidoPaterno,
+    apellidoMaterno,
+    rol,
+    privilegios
+  }) %>  
   
-  <div id="main-content" class="ml-14 mt-14 pl-8">
+  <div id="main-content" class="ml-14 mt-8 pl-8">
     <h1 class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">Historial de <span class="text-blue-600 dark:text-blue-500"><%= correo %>!</span></h1>
+    <div id="alertas"></div>
     <div id="container" class="relative overflow-auto sm:rounded-lg w-3/4">
-          <table class="text-sm text-left rtl:text-right text-gray-500 border-collapse rounded-lg w-full">
-            <thead id="tableHead" class="text-xs text-white bg-gray-50">
+          <table class="text-sm text-center text-gray-500 border-collapse rounded-lg w-full">
+            <thead id="tableHead" class="text-xs text-white bg-gray-50 sticky top-0 z-50">
               <tr>
-                <th scope="col" class="px-6 py-3 bg-blue-700">Descripción</th>
-                <th scope="col" class="px-6 py-3 bg-blue-700">Fecha</th>
-                <th scope="col" class="px-6 py-3 bg-blue-700">Generado por:</th>
-                <th scope="col" class="px-6 py-3 bg-blue-700">Periodo</th>
-                <th scope="col" class="px-6 py-3 bg-blue-700"> </th>
+                <th scope="col" class="px-6 py-3 bg-blue-700 text-center">Descripción</th>
+                <th scope="col" class="px-6 py-3 bg-blue-700 text-center">Fecha</th>
+                <th scope="col" class="px-6 py-3 bg-blue-700 text-center">Generado por:</th>
+                <th scope="col" class="px-6 py-3 bg-blue-700 text-center">Descarga</th>
+                <!-- <th scope="col" class="px-6 py-3 bg-blue-700"> </th> -->
               </tr>
             </thead>
             <tbody id="containerElements">
@@ -59,8 +70,13 @@
                 <td class="px-4 py-2 sm:px-3 sm:py-3"><%= reporte.Descripcion %></td>
                 <td class="px-4 py-2 sm:px-3 sm:py-3"><%= reporte.Fecha.toLocaleDateString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'}) %></td>
                 <td class="px-4 py-2 sm:px-3 sm:py-3"><%= reporte.NombreCompleto %></td>
-                <td class="px-4 py-2 sm:px-3 sm:py-3">''</td>
-                <td class="px-4 py-2 sm:px-3 sm:py-3">''</td>
+                <td class="px-4 py-2 sm:px-3 sm:py-3 flex items-center justify-center">
+                  <button onclick="descargaPDF('<%=reporte.IDReporte%>')">
+                    <svg class="w-4 h-4 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2m-8 1V4m0 12-4-4m4 4 4-4"/>
+                    </svg> 
+                  </button>
+                </td>
               </tr>
             <% }); %>
           </tbody>
@@ -68,4 +84,93 @@
     </div>
   </div>
 </body>
+
+<script>
+
+  function dataURItoBlob(dataURI) {
+
+    // Convert base64 to raw binary data held in a string
+    const byteString = atob(dataURI.split(',')[1]);
+
+    // Separate the MIME type from the data
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    // Write the bytes of the string to an ArrayBuffer
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const intArray = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+        intArray[i] = byteString.charCodeAt(i);
+    }
+
+    // Create a Blob object from the ArrayBuffer and the MIME type
+    return new Blob([arrayBuffer], { type: mimeString });
+    
+}
+
+
+  function descargaPDF(IDReporte) {
+
+    console.log(IDReporte);
+
+    fetch(`/historial/${ IDReporte }`, {
+      method: 'GET', 
+      headers: {
+        'Content-Type': 'application/pdf',
+      }
+    })
+    .then((result) => {
+      console.log('primer then');
+      return result.blob()
+    })
+    .then((data) => {
+      console.log('segundo then');
+
+      // Create a link element
+      const link = document.createElement('a');
+      link.href = `/historial/${ IDReporte }`;
+      link.download = `Reporte_${ IDReporte }.pdf`; // Set the file name
+
+      // Append the link to the body
+      document.body.appendChild(link);
+
+      // Simulate a click on the link
+      link.click();
+
+      // Remove the link from the body
+      document.body.removeChild(link);
+
+      operacionExitosa('Descarga exitosa');
+
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  }
+
+  function operacionExitosa(accion) {
+    const alertas = document.getElementById('alertas');
+        const alertHTML = `
+            <div id="alert-success" class="flex relative items-center p-4 mb-4 text-sm mr-24 text-green-800 border border-green-300 rounded-lg bg-green-50 w-2/3">
+                <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarAlert()">
+                    <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+                <div>
+                    <span class="font-bold"> ¡Acción exitosa! </span> 
+                    <span id="success-message">${accion}</span>
+                </div>
+            </div>
+        `;
+        alertas.innerHTML = alertHTML;
+        document.getElementById('alert-success').style.display = 'block';
+  }
+
+  function cerrarAlert() {
+      const successAlert = document.getElementById('alert-success');
+      successAlert.parentNode.removeChild(successAlert);
+  }
+
+</script>
+
 </html>

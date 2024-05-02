@@ -1,80 +1,98 @@
 <!DOCTYPE html>
 <head>
-  <title> Usuarios </title>
-  <link rel="stylesheet" href="/css/output.css" />
+    <title> Usuarios </title>
+    <link rel="stylesheet" href="/css/output.css" />
+    <style> 
 
-  <style> 
+        body {
+        background-color: #E4E8EE;
+        }
 
-    body {
-      background-color: #E4E8EE;
-    }
+        #container {
+        position: relative;
+        height:500px;
+        box-shadow: 1px 4px 8px rgba(36, 37, 42, 0.2);
+        }
+        #containerElements {
+        overflow-y: auto; 
+        height:100%;
+        }
+        #element {
+        position: relative;
+        }
+        #main-content {
+        transition: padding-left 0.3s ease;
+        padding-left: 3.5rem;
+        } 
+        .side:hover ~ #main-content {
+        padding-left: 10rem;
+        }
+        #adj {
+        transition: color 0.3s ease, transform 0.3s ease; 
+        }
 
-    #container {
-      position: relative;
-      height:500px;
-      box-shadow: 1px 4px 8px rgba(36, 37, 42, 0.2);
-    }
-    #containerElements {
-      overflow-y: auto; 
-      height:100%;
-    }
-    #element {
-      position: relative;
-    }
-    #main-content {
-      transition: padding-left 0.3s ease;
-      padding-left: 3.5rem;
-    } 
-    .side:hover ~ #main-content {
-      padding-left: 10rem;
-    }
-    #adj {
-      transition: color 0.3s ease, transform 0.3s ease; 
-    }
-
-    #adj:hover {
-      color: #2563eb; 
-      transform: scale(1.05); 
-    }
+        #adj:hover {
+        color: #2563eb; 
+        transform: scale(1.05); 
+        }
 
 
-  </style>
-
+    </style>
 </head>
 <body class="bg-[#E4E8EE]">
-    <%- include('partials/sidebar.ejs') %> 
 
-    <div id="main-content" class="ml-14 mt-14 pl-8">
-      <nav class="flex">
-        <a href="/ajustes">
-          <h1 id="adj" class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-400 md:text-3xl lg:text-3xl">Ajustes</h1>
+    <%- include('partials/sidebar.ejs') %>
+    <%- include('partials/aside.ejs', {
+      correo: correo,
+      nombre: nombre, 
+      apellidoPaterno: apellidoPaterno,
+      apellidoMaterno: apellidoMaterno,
+      rol: rol,
+      privilegios: Privilegios,
+      }) %>  
+
+    <div id="main-content" class="ml-14 mt-8 pl-8">
+
+        <nav class="flex">
+            <a href="/ajustes">
+                <h1 id="adj" class="mb-6 text-2xl font-semibold leading-none tracking-tight text-blue-400 md:text-3xl lg:text-3xl">Ajustes</h1>
+            </a>
+            <h1 class="mb-6 pl-2 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">/ Usuarios</h1>
+        </nav>
+
+        <div id="alertas">
+            <%- include('partials/success', {success: success}) %>
+            <%- include('partials/error', {error: error}) %>
+        </div>
+
+        <input type="hidden" id="_csrf" value="<%= csrfToken %>">
+
+        <% if (Privilegios.some((Privilegios => Privilegios.Descripcion === 'Registra cuenta de usuario.'))) { %>
+        <a href="/ajustes/usuarios/agregarUsuario">
+            <button
+                type="button"
+                class="h-10 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none"
+            >
+                Agregar Usuario
+            </button>
         </a>
-        <h1 class="mb-6 pl-2 text-2xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">/ Usuarios</h1>
-      </nav>
+        <% } %>
 
-      <div id="alertas">
-        <%- include('partials/success', {success: success}) %>
-      </div>
-
-      <input type="hidden" id="_csrf" value="<%= csrfToken %>">
-
-      <a href="/ajustes/usuarios/agregarUsuario %>" class="text-blue-600 hover:underline"> Agregar usuario </a>
-
-      <div id="container" class="relative overflow-auto sm:rounded-lg w-3/4">
+        <div id="container" class="relative overflow-auto sm:rounded-lg w-3/4">
             <table class="text-sm text-left rtl:text-right text-gray-500 border-collapse rounded-lg w-full">
-              <thead class="text-xs text-white bg-gray-50">
+              <thead class="text-xs text-white bg-gray-50 sticky top-0 z-50">
                 <tr>
                   <th scope="col" class="px-6 py-3 bg-blue-700"> Nombre completo </th>
                   <th scope="col" class="px-6 py-3 bg-blue-700"> Correo </th>
                   <th scope="col" class="px-6 py-3 bg-blue-700"> Teléfono </th>
                   <th scope="col" class="px-6 py-3 bg-blue-700"> Domicilio </th>
                   <th scope="col" class="px-6 py-3 bg-blue-700"> Rol </th>
-                  <th scope="col" class="px-6 py-3 bg-blue-700">  </th>
+                  <th scope="col" class="px-6 py-3 bg-blue-700"> Acciones </th>
                 </tr>
               </thead>
 
               <tbody>
-                <% i = 0 %>
+                
                 <% usuarios.forEach((usuario) => { %>
                   <tr id="usuario<%- usuario.IDUsuario %>" class="bg-white border-b hover:bg-gray-50">
                     <td class="px-4 py-2 sm:px-3 sm:py-3">
@@ -124,27 +142,35 @@
                         </div>
                       </span>
                     </td>
-                    <td class="px-4 py-2 sm:px-3 sm:py-3">
-                        <%= roles[i].Nombre %> 
+                    <td id="rol" class="px-4 py-2 sm:px-3 sm:py-3">
+                      <%= usuario.NombreRol %>
                     </td>
-                    <td class="px-4 py-2 sm:px-3 sm:py-3"> 
-                      <% if (roles[i].Nombre != 'Owner') { %>
-                        <button onclick="confirmarEliminacion('<%=usuario.IDUsuario%>', '<%=usuario.Nombre%>', '<%=usuario.ApellidoPaterno%>')" type="button" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
+                    <td class="px-4 py-2 sm:px-3 sm:py-3">
+                      <% if (usuario.NombreRol != 'Owner') { %>
+                        <button onclick="confirmarAccion('modificación de rol','<%=usuario.IDUsuario%>', '<%=usuario.NombreRol%>', '<%=usuario.Nombre%>', '<%=usuario.ApellidoPaterno%>')" type="button"
+                            class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
+                            <svg class="w-6 h-6 text-blue-700" aria-hidden="true" width="24" xmlns="http://www.w3.org/2000/svg" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                            </svg>
+                            <span class="sr-only">Modificar usuario</span>
+                        </button>
+                        <button onclick="confirmarAccion('eliminación','<%=usuario.IDUsuario%>', '<%=usuario.NombreRol%>', '<%=usuario.Nombre%>', '<%=usuario.ApellidoPaterno%>')" type="button" class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
                             <svg class="w-6 h-6 text-red-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                             </svg>                                  
-                            <span class="sr-only">Eliminar rol</span>
+                            <span class="sr-only">Eliminar usuario</span>
                         </button>
                     <% } %>
                     </td>
-                        <% i = i + 1 %>
+                        
                   </tr>
                       <% }); %>
 
 <script>
 
-  function confirmarEliminacion(IDUsuario, Nombre, ApellidoPaterno) {
-      const modalHTML = `
+  const rolesTodos = <%- JSON.stringify(rolesTodos) %>;
+  function confirmarAccion(mensaje, IDUsuario, NombreRol, Nombre, ApellidoPaterno) {
+      let modalHTML = `
           <div id="deleteModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
               <div class="relative p-4 text-center bg-white rounded-lg shadow-md">
                   <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarModal()">
@@ -152,17 +178,80 @@
                           <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                       </svg>
                   </button>
-                  <h2 class="text-lg font-semibold text-gray-800">Confirmación de eliminación</h2>
-                  <p class="mt-2 text-sm text-gray-600">¿Estás seguro de que deseas eliminar al usuario "${Nombre} ${ApellidoPaterno}"?</p>
+                  <h2 class="text-lg font-semibold text-gray-800">Confirmación de ${mensaje}</h2>`;
+      if (mensaje === 'eliminación') {
+          modalHTML += `
+              <p class="mt-2 text-sm text-gray-600">¿Confirmas la eliminación del usuario "${Nombre} ${ApellidoPaterno}"?</p>
                   <div class="mt-4 flex justify-center space-x-2">
-                      <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" onclick="eliminar(${IDUsuario})">Sí, eliminar</button>
-                      <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300" onclick="cerrarModal()">Cancelar</button>
+                      <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" onclick="eliminar(${IDUsuario})">Sí, eliminar</button>`;
+      } else if (mensaje === 'modificación de rol') {
+          modalHTML += `   
+              <div class="mb-4">
+                <label for="rolSeleccionado" class="mt-2 text-sm text-gray-600"> Selecciona un rol </label>
+                <select id="rolSeleccionado" name="rolSeleccionado" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" onchange="capturarIDRol(this.value)" required>
+                <option value="" disabled selected>Selecciona un rol</option>`;
+
+                for (let i = 0; i < rolesTodos.length; i++) {
+                    if (rolesTodos[i].Nombre !== 'Owner' && rolesTodos[i].Nombre !== NombreRol) {
+                        modalHTML += `<option value="${rolesTodos[i].IDRol}">${rolesTodos[i].Nombre}</option>`;
+                    }
+                }
+
+                modalHTML += `</select>
+                </div>
+                    <p class="mt-2 text-sm text-gray-600">¿Confirmas la modificación el rol de "${Nombre} ${ApellidoPaterno}" cuyo rol actual es "${NombreRol}"?</p>
+                        <div class="mt-4 flex justify-center space-x-2">
+                            <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" onclick="cambiarRol(${IDUsuario})">Sí, cambiar</button>`;
+      }
+      else {
+          console.error('Mensaje no válido');
+      }
+      modalHTML += `
+          <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300" onclick="cerrarModal()">Cancelar</button>
                   </div>
               </div>
-          </div>
-      `;
-
+          </div>`;
       document.body.insertAdjacentHTML('beforeend', modalHTML);
+  }
+
+  let idRolSeleccionado;
+  function capturarIDRol(idRol) {
+      idRolSeleccionado = idRol;
+  }
+
+  function cambiarRol(IDUsuario) {
+      const csrf = document.getElementById('_csrf').value;
+      if (!idRolSeleccionado) {
+          document.getElementById('rolSeleccionado').focus();
+          return;
+      }
+
+      fetch(`/ajustes/usuarios/asignarRol`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'csrf-token': csrf,
+          },
+          body: JSON.stringify({IDUsuario : IDUsuario, idRolSeleccionado: idRolSeleccionado})
+      })
+      .then((result) => {
+          return result.json();
+      })
+      .then((data) => {
+          if (data.success) {
+            const filaUsuario = document.getElementById(`usuario${IDUsuario}`);
+            const celdaRol = filaUsuario.querySelector('#rol'); 
+            celdaRol.textContent = data.nuevoRol;
+
+            cerrarModal();
+            
+            const accion = 'Se actualizó rol de usuario exitosamente.';
+            operacionExitosa(accion);
+
+          } else {
+            console.error(data.error);
+          }
+      })
   }
 
   function eliminar(IDUsuario) {
@@ -181,28 +270,11 @@
       })
       .then((data) => {
           if (data.success) {
-            const alertas = document.getElementById('alertas');
-
-            const alertHTML = `
-              <div id="alert-success" class="flex relative items-center p-4 mb-4 text-sm mr-24 text-green-800 border border-green-300 rounded-lg bg-green-50" role="alert">
-                <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarAlert()">
-                  <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
-                      <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                  </svg>
-                </button>
-                <div>
-                  <span class="font-bold"> ¡Acción exitosa! </span> 
-                  <span id="success-message">${data.success}</span>
-                </div>
-              </div>
-            `;
-            alertas.innerHTML = alertHTML;
-            
-            document.getElementById('alert-success').style.display = 'block';
-            document.getElementById('success-message').innerHTML = data.success;
-
             document.getElementById(`usuario${IDUsuario}`).remove();
             cerrarModal();
+
+            const accion = 'Se eliminó usuario exitosamente.';
+            operacionExitosa(accion);
           } else {
             console.error(data.error);
           }
@@ -212,24 +284,35 @@
       });
   }
 
-  function cerrarModal() {
-      // Remueve el modal del DOM
-      const deleteModal = document.getElementById('deleteModal');
-      deleteModal.parentNode.removeChild(deleteModal);
+  function operacionExitosa(accion) {
+      const alertas = document.getElementById('alertas');
+          const alertHTML = `
+              <div id="alert-success" class="flex relative items-center p-4 mb-4 text-sm mr-24 text-green-800 border border-green-300 rounded-lg bg-green-50 w-2/3">
+                  <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarAlert()">
+                    <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                  </button>
+                  <div>
+                      <span class="font-bold"> ¡Acción exitosa! </span> 
+                      <span id="success-message">${accion}</span>
+                  </div>
+              </div>
+          `;
+          alertas.innerHTML = alertHTML;
+          document.getElementById('alert-success').style.display = 'block';
   }
 
-  function cerrarAlert() {
-      const successAlert = document.getElementById('alert-success');
-      successAlert.parentNode.removeChild(successAlert);
-  }
+const cerrarModal = () => {
+    // Remueve el modal del DOM
+    const deleteModal = document.getElementById("deleteModal");
+    deleteModal.parentNode.removeChild(deleteModal);
+};
+
+const cerrarAlert = () => {
+    const successAlert = document.getElementById("alert-success");
+    successAlert.parentNode.removeChild(successAlert);
+};
+
+
 </script>
-
-              </tbody>
-            </table>
-        </div>
-
-      </div>
-    </div>
-    
-
-  </body>

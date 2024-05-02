@@ -11,7 +11,7 @@ exports.getLogin = (req, res) => {
     const err = req.session.error || "";
     req.session.error = "";
     const error = req.flash("error") || "";
-    
+
     res.render("login", {
         correo: req.session.correo || "",
         registro: false,
@@ -66,6 +66,10 @@ exports.postLogin = (req, res) => {
                                                         usuario.IDUsuario;
                                                     req.session.Rol = rol;
                                                     req.session.isLoggedIn = true;
+                                                    req.session.NombreCompleto =
+                                                        usuario.Nombre +
+                                                        " " +
+                                                        usuario.ApellidoPaterno;
                                                     console.log(req.session);
                                                     res.redirect("/");
                                                 })
@@ -81,14 +85,21 @@ exports.postLogin = (req, res) => {
                                     console.log(error);
                                 });
                         } else {
-                            req.session.error = "Correo o contraseña incorrectos";
-                            req.flash("falla", "Correo o contraseña incorrectos");
+                            req.session.error =
+                                "Correo o contraseña incorrectos";
+                            req.flash(
+                                "falla",
+                                "Correo o contraseña incorrectos"
+                            );
                             res.redirect("/usuarios/login");
                         }
                     })
                     .catch((error) => {
                         console.log(error);
-                        req.flash("falla", "Error de conexión. Intenta más tarde.");
+                        req.flash(
+                            "falla",
+                            "Error de conexión. Intenta más tarde."
+                        );
                         res.redirect("/usuarios/login");
                     });
             } else {
@@ -112,19 +123,36 @@ exports.getUsuarios = (req, res) => {
     const err = req.session.error || "";
     req.session.error = "";
 
+    const { Privilegios } = req.session;
+
     const msg = req.flash("success") || "";
 
     Usuario.fetchAllUsers()
         .then(([usuariosFetched]) => {
             Usuario.fetchRoles()
                 .then(([rolesFetched]) => {
-                    res.render("usuarios", {
-                        usuarios: usuariosFetched,
-                        roles: rolesFetched,
-                        error: "",
-                        csrfToken: req.csrfToken(),
-                        success: msg,
-                    });
+                    Rol.fetchAll()
+                        .then(([rolesFetchedAll]) => {
+                            console.log("Roles todos:", rolesFetchedAll);
+                            console.log("Usuarios:", usuariosFetched);
+                            res.render("usuarios", {
+                                usuarios: usuariosFetched,
+                                roles: rolesFetched,
+                                rolesTodos: rolesFetchedAll,
+                                error: "",
+                                csrfToken: req.csrfToken(),
+                                success: msg,
+                                Privilegios: Privilegios,
+                                correo: req.session.Correo,
+                                rol: req.session.Rol,
+                                nombre: req.session.Nombre,
+                                apellidoPaterno: req.session.ApellidoPaterno,
+                                apellidoMaterno: req.session.apellidoMaterno,
+                            });
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
                 })
                 .catch((error) => {
                     console.log(error);
@@ -140,11 +168,18 @@ exports.getUsuarios = (req, res) => {
 /* ====== CU. 11 REGISTRA USUARIO | Andrea Medina - Sebastián Colín  ======= */
 
 exports.getRegistrarUsuario = (req, res) => {
+    const { privilegios } = req.session;
     Rol.fetchAll()
         .then(([rolesFetched]) => {
             res.render("registrarUsuario", {
                 csrfToken: req.csrfToken(),
                 roles: rolesFetched,
+                privilegios: privilegios,
+                correo: req.session.Correo,
+                rol: req.session.Rol,
+                nombre: req.session.Nombre,
+                apellidoPaterno: req.session.ApellidoPaterno,
+                apellidoMaterno: req.session.apellidoMaterno,
             });
         })
         .catch((error) => {
@@ -180,7 +215,10 @@ exports.postRegistrarUsuario = (req, res) => {
             nuevoUsuario
                 .save(req.body.rol)
                 .then(() => {
-                    req.flash("success", "El usuario se ha registrado exitosamente.");
+                    req.flash(
+                        "success",
+                        "El usuario se ha registrado exitosamente."
+                    );
                     res.redirect("/ajustes/usuarios");
                 })
                 .catch((error) => {
@@ -200,7 +238,9 @@ exports.postEliminarUsuario = (req, res) => {
 
     Usuario.eliminar(IDUsuario)
         .then(() => {
-            res.status(200).json({ success: "El usuario ha sido eliminado correctamente" });
+            res.status(200).json({
+                success: "El usuario ha sido eliminado correctamente",
+            });
         })
         .catch((error) => {
             console.log(error);
@@ -209,6 +249,28 @@ exports.postEliminarUsuario = (req, res) => {
 };
 
 /* ========================== FIN CU. 12 ==============================  */
+
+/* ====== CU. 18 ASIGNA ROL A USUARIO | Chimali Nava ======= */
+
+exports.postAsignarRol = (req, res) => {
+    const { IDUsuario, idRolSeleccionado } = req.body;
+    console.log("Datos controller: ", IDUsuario, idRolSeleccionado);
+
+    Usuario.asignarRol(IDUsuario, idRolSeleccionado)
+        .then(([nuevoRol]) => {
+            console.log("Rol asignado: ", nuevoRol[0].Nombre);
+            res.status(200).json({
+                success: true,
+                nuevoRol: nuevoRol[0].Nombre,
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(500).json({ error: "Error al asignar el rol" });
+        });
+};
+
+/* ========================== FIN CU. 18 ==============================  */
 
 /* ========== CU. 29 CERRAR SESIÓN | Andrea Medina  =============== */
 
@@ -236,18 +298,37 @@ exports.getCambiarContrasenia = (req, res) => {
     const scs = req.session.success || "";
     req.session.success = "";
 
+    const {
+        Nombre,
+        ApellidoPaterno,
+        ApellidoMaterno,
+        Correo,
+        Privilegios,
+    } = req.session;
+
     res.render("cambiarContrasenia", {
-        correo: req.session.Correo,
+        correo: Correo,
         csrfToken: req.csrfToken(),
         error: err,
         success: scs,
+        rol: req.session.Rol,
+        nombre: Nombre,
+        apellidoPaterno: ApellidoPaterno,
+        apellidoMaterno: ApellidoMaterno,
+        privilegios: Privilegios,
     });
 };
 
 exports.postCambiarContrasenia = (req, res) => {
-    // Obtener correo del usuario
-    const { Correo } = req.session;
-
+    // Obtener datos de la sesión
+    const {
+        Nombre,
+        ApellidoPaterno,
+        ApellidoMaterno,
+        Correo,
+        Privilegios,
+    } = req.session;
+    
     // Obtener los datos del formulario
     const { ContraseniaActual, NuevaContrasenia, ConfirmarNuevaContrasenia } =
         req.body;
@@ -261,10 +342,15 @@ exports.postCambiarContrasenia = (req, res) => {
         !/[^a-zA-Z0-9]/.test(NuevaContrasenia)
     ) {
         res.render("cambiarContrasenia", {
-            correo: req.session.Correo,
+            correo: Correo,
             csrfToken: req.csrfToken(),
-            error: "La contraseña no cumple con los requisitos",
+            error: "Nueva contraseña inválida. Debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un caracter especial",
             success: "",
+            rol: req.session.Rol,
+            nombre: Nombre,
+            apellidoPaterno: ApellidoPaterno,
+            apellidoMaterno: ApellidoMaterno,
+            privilegios: Privilegios,
         });
         return;
     }
@@ -272,10 +358,15 @@ exports.postCambiarContrasenia = (req, res) => {
     // Verificar que la nueva contraseña y la confirmación sean iguales
     if (NuevaContrasenia !== ConfirmarNuevaContrasenia) {
         res.render("cambiarContrasenia", {
-            correo: req.session.Correo,
+            correo: Correo,
             csrfToken: req.csrfToken(),
             error: "Las contraseñas no coinciden",
             success: "",
+            rol: req.session.Rol,
+            nombre: Nombre,
+            apellidoPaterno: ApellidoPaterno,
+            apellidoMaterno: ApellidoMaterno,
+            privilegios: Privilegios,
         });
         return;
     }
@@ -293,10 +384,15 @@ exports.postCambiarContrasenia = (req, res) => {
                         .then((doMatch2) => {
                             if (doMatch2) {
                                 res.render("cambiarContrasenia", {
-                                    correo: req.session.Correo,
+                                    correo: Correo,
                                     csrfToken: req.csrfToken(),
                                     error: "La nueva contraseña no puede ser igual a la anterior",
                                     success: "",
+                                    rol: req.session.Rol,
+                                    nombre: Nombre,
+                                    apellidoPaterno: ApellidoPaterno,
+                                    apellidoMaterno: ApellidoMaterno,
+                                    privilegios: Privilegios,
                                 });
                             } else {
                                 // Cambiar la contraseña
@@ -306,11 +402,15 @@ exports.postCambiarContrasenia = (req, res) => {
                                 )
                                     .then(() => {
                                         res.render("cambiarContrasenia", {
-                                            correo: req.session.Correo,
+                                            correo: Correo,
                                             csrfToken: req.csrfToken(),
                                             error: "",
-                                            success:
-                                                "Contraseña cambiada exitosamente",
+                                            success: "Contraseña cambiada exitosamente",
+                                            rol: req.session.Rol,
+                                            nombre: Nombre,
+                                            apellidoPaterno: ApellidoPaterno,
+                                            apellidoMaterno: ApellidoMaterno,
+                                            privilegios: Privilegios,
                                         });
                                     })
                                     .catch((error) => {
@@ -323,10 +423,15 @@ exports.postCambiarContrasenia = (req, res) => {
                         });
                 } else {
                     res.render("cambiarContrasenia", {
-                        correo: req.session.Correo,
+                        correo: Correo,
                         csrfToken: req.csrfToken(),
                         error: "Contraseña actual incorrecta",
                         success: "",
+                        rol: req.session.Rol,
+                        nombre: Nombre,
+                        apellidoPaterno: ApellidoPaterno,
+                        apellidoMaterno: ApellidoMaterno,
+                        privilegios: Privilegios,
                     });
                 }
             })

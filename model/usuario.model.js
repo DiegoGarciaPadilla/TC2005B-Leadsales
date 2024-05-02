@@ -60,19 +60,34 @@ module.exports = class Usuario {
 
     static fetchAllUsers() {
         return db.execute(
-            "SELECT * FROM usuario WHERE FechaHoraEliminado IS NULL"
+            `
+            SELECT U.*, UR.IDRol, R.Nombre AS NombreRol 
+            FROM usuario AS U 
+            JOIN (
+                SELECT UR1.*
+                FROM usuario_rol AS UR1
+                INNER JOIN (
+                    SELECT IDUsuario, MAX(FechaHoraInicio) AS MaxFechaHoraInicio
+                    FROM usuario_rol
+                    WHERE FechaHoraFin IS NULL
+                    GROUP BY IDUsuario
+                ) AS UR2 ON UR1.IDUsuario = UR2.IDUsuario AND UR1.FechaHoraInicio = UR2.MaxFechaHoraInicio
+            ) AS UR ON U.IDUsuario = UR.IDUsuario
+            JOIN rol AS R ON UR.IDRol = R.IDRol
+            WHERE U.FechaHoraEliminado IS NULL
+            `
         );
     }
 
     static fetchRol(IDUsuario) {
-        return db.execute("SELECT IDRol FROM usuario_rol WHERE IDUsuario= ?", [
+        return db.execute("SELECT IDRol FROM usuario_rol WHERE IDUsuario= ? AND FechaHoraFin IS NULL", [
             IDUsuario,
         ]);
     }
 
     static fetchRoles() {
         return db.execute(
-            "SELECT R.Nombre FROM rol AS R JOIN usuario_rol AS UR ON UR.IDRol = R.IDRol"
+            "SELECT R.Nombre FROM rol AS R JOIN usuario_rol AS UR ON UR.IDRol = R.IDRol JOIN usuario AS U ON UR.IDUsuario = U.IDUsuario WHERE UR.FechaHoraFin IS NULL AND U.FechaHoraEliminado IS NULL;"
         );
     }
 
@@ -106,8 +121,19 @@ module.exports = class Usuario {
             [IDUsuario]
         );
         const query2 = db.execute(
-            "UPDATE usuario_rol SET FechaHoraFin = CURRENT_TIMESTAMP() WHERE IDUsuario = ?",
-            [IDUsuario]
+            `
+            UPDATE usuario_rol 
+            SET FechaHoraFin = CURRENT_TIMESTAMP() 
+            WHERE IDUsuario = ? AND FechaHoraInicio = (
+                SELECT MAX(FechaHoraInicio) 
+                FROM (
+                    SELECT FechaHoraInicio
+                    FROM usuario_rol 
+                    WHERE IDUsuario = ?
+                ) AS derivedTable
+            )
+            `,
+            [IDUsuario, IDUsuario]
         );
 
         return Promise.all([query1, query2]);
@@ -134,5 +160,31 @@ module.exports = class Usuario {
                     [hashedPassword, Correo]
                 )
             );
+    }
+
+    static async asignarRol(IDUsuario, IDRol) {
+        let query1 = db.execute(
+            `
+            UPDATE usuario_rol 
+            SET FechaHoraFin = CURRENT_TIMESTAMP() 
+            WHERE IDUsuario = ? AND FechaHoraInicio = (
+                SELECT MAX(FechaHoraInicio) 
+                FROM (
+                    SELECT FechaHoraInicio
+                    FROM usuario_rol 
+                    WHERE IDUsuario = ?
+                ) AS derivedTable
+            )
+            `,
+            [IDUsuario, IDUsuario]
+        );
+
+        let query2 = db.execute(
+            "INSERT INTO usuario_rol (IDUsuario, IDRol, FechaHoraInicio) VALUES (?, ?, CURRENT_TIMESTAMP())",
+            [IDUsuario, IDRol]
+        );
+
+        await Promise.all([query1, query2]);
+        return db.execute("SELECT Nombre FROM rol WHERE IDRol = ?", [IDRol]);
     }
 };

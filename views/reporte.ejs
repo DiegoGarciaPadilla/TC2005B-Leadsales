@@ -1,544 +1,1053 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Directorio</title>
-        <link rel="stylesheet" href="/css/output.css" />
 
-        <style>
-            body {
-                background-color: #e4e8ee;
-            }
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Directorio</title>
+    <link rel="stylesheet" href="/css/output.css" />
 
-            #container {
-                position: relative;
-                height: 500px;
-                box-shadow: 1px 4px 8px rgba(36, 37, 42, 0.2);
-            }
-            #containerElements {
-                overflow-y: auto;
-                height: 100%;
-            }
-            #element {
-                position: relative;
-            }
-            #main-content {
-                transition: padding-left 0.3s ease;
-                padding-left: 3.5rem;
-            }
-            .side:hover ~ #main-content {
-                padding-left: 10rem;
-            }
-        </style>
+    <style>
+        body {
+            background-color: #e4e8ee;
+        }
 
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js" 
-        integrity="sha512-t2JWqzirxOmR9MZKu+BMz0TNHe55G5BZ/tfTmXMlxpUY8tsTo3QMD27QGoYKZKFAraIPDhFv56HLdN11ctmiTQ==" 
+        #container {
+            position: relative;
+            height: 500px;
+            box-shadow: 1px 4px 8px rgba(36, 37, 42, 0.2);
+        }
+
+        #containerElements {
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        #element {
+            position: relative;
+        }
+
+        #main-content {
+            transition: padding-left 0.3s ease;
+            padding-left: 3.5rem;
+        }
+
+        .side:hover~#main-content {
+            padding-left: 10rem;
+        }
+        #descargarBoton:disabled {
+            background-color: #a4a4a4;
+            color: #ffffff;
+            cursor: not-allowed;
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"
+        integrity="sha512-t2JWqzirxOmR9MZKu+BMz0TNHe55G5BZ/tfTmXMlxpUY8tsTo3QMD27QGoYKZKFAraIPDhFv56HLdN11ctmiTQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js" ></script>
-    </head>
-    <body style="overflow-x: hidden;">
-        <%- include('partials/sidebar.ejs') %>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js"></script>
+</head>
 
-        <div id="main-content" class="w-full ml-14 mt-12 pl-20 display:flex">
-            <h1 class="mb-8 text-4xl text-gray-900">Hi</h1>
-            <div class="flex">
+<body style="overflow-x: hidden">
+    <%- include('partials/sidebar.ejs') %>
+
+        <div id="main-content" class="w-full ml-14 mt-8 pl-20 flex flex-col">
+            <!-- Flex container for vertical alignment -->
+            <h1 class="mb-6 text-4xl font-semibold leading-none tracking-tight text-blue-600 md:text-3xl lg:text-3xl">
+                Reporte
+            </h1>
+            <p class="mb-4 font-bold text-red-700">* Obligatorio</p>
+            <div id="alertas">
+
+            </div>
+            <div class="flex flex-col">
+                <div class="mb-4 flex flex-row space-between">
+                    <form action="/reporte" method="GET" class="flex flex-row gap-10">
+                        <div>
+                            <label for="dateSelector" class="mr-2">Inicio</label>
+                            <input type="date" id="dateStart" required
+                                class="px-2 py-1 border border-gray-300 rounded-md"
+                                max="<%= new Date().toISOString().split('T')[0] %>" onchange="validateDate()" />
+                        </div>
+                        <div>
+                            <label for="dateSelector" class="mr-2">Fin</label>
+                            <input type="date" id="dateEnd" required class="px-2 py-1 border border-gray-300 rounded-md"
+                                max="<%= new Date().toISOString().split('T')[0] %>" onchange="validateDate()" />
+                        </div>
+                        <div>
+                            <button type="button" id="searchByDateBtn"
+                                class="h-10 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">
+                                Buscar por fecha
+                            </button>
+                            <button type="button" id="resetDateBtn"
+                                class="h-10 text-blue-700 bg-white hover:bg-gray-200 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none border border-blue-700">
+                                Limpiar fechas
+                            </button>
+                            <button id="descargarBoton" onclick="descargarPDF()" type="button"  
+                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm ml-28 px-5 py-2.5 me-2 mb-2 focus:outline-none">
+                                Generar PDF
+                            </button>  
+                            <input id="_csrf" type="hidden" name="_csrf" value="<%= csrfToken %>" > 
+                        </div>
+                    </form>
+                </div>
                 <div class="mb-4">
                     <label for="graphSelector" class="mr-2">Selecciona gráfica:</label>
-                    <select
-                        id="graphSelector"
-                        class="px-2 py-1 border border-gray-300 rounded-md"
-                        onchange="showGraph()"
-                    >
+                    <select id="graphSelector" class="px-2 py-1 border border-gray-300 rounded-md"
+                        onchange="selectGraph()">
+                        <option selected value="allGraphs"> Todas las gráficas</option>
                         <option value="graphOne">Leads por día</option>
-                        <option value="graphTwo">Cantidad de leads por año, por mes</option>
-                        <option value="graphThree">Leads por usuario</option>
-                        <option value="graphFour">Leads por status</option>
-                        <option value="graphFive">Graph Five</option>
+                        <option value="graphTwo">
+                            Cantidad de leads por año, por mes
+                        </option>
+                        <option value="graphThree">Leads por Usuario</option>
+                        <option value="graphFour">Leads por Status</option>
+                        <option value="graphFive">Leads por Embudo</option>
+                        <option value="graphSeven">Archivados</option>
+                        <option value="graphEight">Tipo de creación de leads</option>
                         <!-- Add more options for other graphs -->
                     </select>
+                    <p class="flex items-center text-sm text-gray-500">Más sobre gráficas
+                        <button data-popover-target="popover-description" data-popover-placement="bottom-end" type="button"
+                            onmouseover="document.getElementById('popoverInfo').classList.remove('hidden')"
+                            onmouseout="document.getElementById('popoverInfo').classList.add('hidden')">
+                            <svg class="w-4 h-4 ms-2 text-gray-400 hover:text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </p>
+                    <div id="popoverInfo" class="hidden absolute bg-white p-2 rounded-lg text-sm text-gray-500">
+                        <li>En las gráficas con leyendas puedes ocultar un conjunto de datos haciendo clic sobre este.</li>
+                        <li>Para mostrarlo nuevamente, haz clic sobre la leyenda correspondiente.</li>
+                        <li>Puedes consultar más información sobre un punto específico de la gráfica colocando el cursor sobre este.</li>
+                    </div>
                 </div>
-                <div class="ml-auto pr-20">
-                    <button onclick="descargarPDF()" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Generar PDF</button>
+                <div class="mb-4">
+                    <label for="descripcion" class="mr-2">Descripción de tu reporte:
+                        <span class="font-bold text-red-700"> * </span>
+                    </label>
+                    <input id="descripcion" name="descripcion" class="px-2 py-1 border border-gray-300 rounded-md" maxlength="32" required>
                 </div>
             </div>
 
-            <div
-                id="graphOneContainer"
-                class="graph-container w-3/4 px-4 py-8 ml-32"
-            >
+            <div class="items-center ps-2 mb-5 hidden">
+                <canvas id="logo"></canvas>
+                <span class="sidebar-text self-center text-xl font-semibold whitespace-nowrap text-gray-800 pl-2">Leadtics</span>
+             </div>
+
+            <div id="graphOneContainer" class="graph-container w-3/4 px-4 py-8 ml-32">
+                <p class="text-center font-bold text-2xl"> Leads promedio por día </p>
                 <canvas id="graphOne" width="400" height="200"></canvas>
             </div>
-            <div
-                id="graphTwoContainer"
-                class="graph-container w-3/4 px-4 py-8 ml-32"
-                style="display: none"
-            >
+            <div id="graphTwoContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
+                <p class="text-center font-bold text-2xl"> Cantidad de leads por año, por mes </p>
                 <canvas id="graphTwo" width="400" height="200"></canvas>
             </div>
-            <div
-                id="graphThreeContainer"
-                class="graph-container w-3/4 px-4 py-8 ml-32"
-                style="display: none"
-            >
+            <div id="graphThreeContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
+                <p class="text-center font-bold text-2xl"> Leads por usuarios </p>
                 <canvas id="graphThree" width="400" height="200"></canvas>
             </div>
-            <div
-                id="graphFourContainer"
-                class="graph-container w-3/4 px-4 py-8 ml-32"
-                style="display: none; width: 50%; height: 50%;"
-            >
-                <canvas id="graphFour" width="400" height="200"></canvas>
+            <div id="graphFourContainer" class="graph-container px-4 py-8 ml-32"
+                style="display: none; width: 50%; height: 50%">
+                <p class="text-center font-bold text-2xl"> Leads por status </p>
+                <canvas id="graphFour" width="200" height="100"></canvas>
             </div>
-            <div
-                id="graphFiveContainer"
-                class="graph-container w-3/4 px-4 py-8 ml-32"
-                style="display: none"
-            >
+            <div id="graphFiveContainer" class="graph-container w-3/4 px-4 py-8 ml-32" 
+                style="display: none; width: 50%; height: 50%">
+                <p class="text-center font-bold text-2xl"> Leads por Embudo </p>
                 <canvas id="graphFive" width="400" height="200"></canvas>
             </div>
+            <div id="graphSevenContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
+                <p class="text-center font-bold text-2xl"> Archivados </p>
+                <canvas id="graphSeven" width="400" height="200"></canvas>
+            </div>
+            <div id="graphEightContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
+                <p class="text-center font-bold text-2xl"> Tipo de creación de leads </p>
+                <canvas id="graphEight" width="400" height="200"></canvas>
+            </div>
         </div>
-    </body>
+</body>
 
-    <script defer>
-        const graficas_asincronas = (idGraph) => {
-            fetch(`/reporte/${idGraph}`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+<script defer>
+    // Cada reload, regresar a todas las gráficas
+    window.onload = function() {
+        const selectElement = document.getElementById('graphSelector');
+        selectElement.selectedIndex = 0;
+
+        const contenedorGraficas =
+            document.querySelectorAll(".graph-container");
+
+        contenedorGraficas.forEach((container) => {
+            container.style.display = "block"; // Show all graph containers
+        });
+
+    }
+    // Select tomado en cuenta desde recarga
+    document.addEventListener('DOMContentLoaded', (event) => {
+        selectGraph();
+    });
+
+    // Descripción obligatoria
+    const descripcion = document.getElementById('descripcion');
+    const pdfButton = document.getElementById('descargarBoton');
+
+    pdfButton.disabled = true;
+    descripcion.addEventListener('input', function() {
+        pdfButton.disabled = !descripcion.value;
+    });
+
+
+    const getData = (dateStart = '', dateEnd = '') => {
+
+        const url = dateStart && dateEnd ? `/reporte/json?dateStart=${dateStart}&dateEnd=${dateEnd}` : `/reporte/json`;
+
+        fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((result) => {
+                if (!result.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return result.json();
             })
-                .then((result) => {
-                    console.log("llegue a primer then");
-                    if (!result.ok) {
-                        throw new Error("Network response was not ok");
+            .then((data) => {
+                console.log(data);
+                Object.keys(data).forEach((key) => {
+                    const graphData = data[key];
+
+                    // Leads promedio por día
+
+                    if (key === "graph1Data") {
+                        const leadsPorDia = {};
+
+                        graphData.forEach((item) => {
+                            let fecha = item.Fecha;
+                            let leads = item.Leads;
+
+                            if (!leadsPorDia[fecha]) {
+                                leadsPorDia[fecha] = [];
+                            }
+                            leadsPorDia[fecha].push(leads);
+                        });
+
+                        let promedioLeadsPorDia = {};
+                        Object.keys(leadsPorDia).forEach((fecha) => {
+                            let totalLeads = leadsPorDia[fecha].reduce(
+                                (acc, val) => {
+                                    return acc + val;
+                                },
+                                0
+                            );
+
+                            let promedioLeads =
+                                totalLeads / leadsPorDia[fecha].length;
+                            promedioLeadsPorDia[fecha] = promedioLeads;
+                        });
+
+                        // Datos para Chart JS
+                        let fechas = Object.keys(promedioLeadsPorDia);
+                        let leads = fechas.map((fecha) => {
+                            return promedioLeadsPorDia[fecha];
+                        });
+
+                        // Destruir gráfica si ya existe
+                        let chart_1 = Chart.getChart("graphOne");
+                        if (chart_1) chart_1.destroy();
+
+                        // Instancia de Chart JS
+                        let ctx1 = document
+                            .getElementById("graphOne")
+                            .getContext("2d");
+                        chart_1 = new Chart(ctx1, {
+                            type: "line",
+                            data: {
+                                labels: fechas,
+                                datasets: [
+                                    {
+                                        label: "",
+                                        data: leads,
+                                        backgroundColor:
+                                            "rgba(54, 162, 235, 0.2)",
+                                        borderColor:
+                                            "rgba(54, 162, 235, 1)",
+                                        borderWidth: 1,
+                                        lineTension: 0.4,
+                                    },
+                                ],
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        ticks: {
+                                            beginAtZero: true,
+                                        },
+                                    },
+                                    x: {
+                                        ticks: {
+                                            autoSkip: true,
+                                            maxRotation: 90,
+                                            minRotation: 60,
+                                        },
+                                        display: true,
+                                        min: 50,
+                                        max: 150,
+                                    },
+                                },
+                            },
+                            plugins: [colorFondo],
+                        });
                     }
-                    return result.json();
-                })
-                .then((data) => {
-                    console.log("llegue a segundo then");
-                    console.log(data);
-                    Object.keys(data).forEach((key) => {
-                        const graphData = data[key];
-                        console.log(graphData);
 
-                        // Leads promedio por día
+                    // Leads promedio por mes y año
 
-                        if (key === "graph1Data") {
-                            const leadsPorDia = {};
+                    if (key === "graph2Data") {
+                        // Meses
+                        const mesesStrings = [
+                            "Enero",
+                            "Febrero",
+                            "Marzo",
+                            "Abril",
+                            "Mayo",
+                            "Junio",
+                            "Julio",
+                            "Agosto",
+                            "Septiembre",
+                            "Octubre",
+                            "Noviembre",
+                            "Diciembre",
+                        ];
 
-                            graphData.forEach((item) => {
-                                let fecha = item.Fecha;
-                                let leads = item.Leads;
+                        // Arreglos para letiables
 
-                                if (!leadsPorDia[fecha]) {
-                                    leadsPorDia[fecha] = [];
-                                }
-                                leadsPorDia[fecha].push(leads);
+                        let anios = [];
+                        let meses = [];
+                        let leadPorAnioMes = [];
+
+                        // Iterar JSON
+
+                        graphData.forEach((item) => {
+                            let anio = item.Anio;
+                            let mes = item.Mes;
+                            let leads = item.NoLeads;
+
+                            if (!anios.includes(anio)) {
+                                anios.push(anio);
+                            }
+                            if (!meses.includes(mes)) {
+                                meses.push(mes);
+                            }
+                            if (!leadPorAnioMes[anio]) {
+                                leadPorAnioMes[anio] = {};
+                            }
+
+                            leadPorAnioMes[anio][mes] = leads;
+                        });
+
+                        // Sort de meses y años
+                        anios.sort((a, b) => parseInt(a) - parseInt(b));
+                        meses.sort((a, b) => parseInt(a) - parseInt(b));
+
+                        let datasets = anios.map((anio) => {
+                            let data = meses.map((mes) => {
+                                return leadPorAnioMes[anio][mes] || 0; // Default 0 si no hay leads en un mes
                             });
 
-                            let promedioLeadsPorDia = {};
-                            Object.keys(leadsPorDia).forEach((fecha) => {
-                                let totalLeads = leadsPorDia[fecha].reduce(
-                                    (acc, val) => {
-                                        return acc + val;
+                            return {
+                                label: anio,
+                                data: data,
+                                backgroundColor: getRandomColor(),
+                                stack: "Stack 0",
+                            };
+                        });
+
+                        // Destruir gráfica si ya existe
+                        let chart_2 = Chart.getChart("graphTwo");
+                        if (chart_2) chart_2.destroy();
+
+                        // Instancia de Chart JS
+                        let ctx2 = document
+                            .getElementById("graphTwo")
+                            .getContext("2d");
+                        chart_2 = new Chart(ctx2, {
+                            type: "bar",
+                            data: {
+                                labels: meses.map((mes) => {
+                                    return mesesStrings[mes - 1];
+                                }),
+                                datasets: datasets,
+                            },
+                            options: {
+                                scales: {
+                                    x: {
+                                        stacked: true,
+                                        ticks: {
+                                            beginAtZero: true,
+                                        },
                                     },
-                                    0
-                                );
-
-                                let promedioLeads =
-                                    totalLeads / leadsPorDia[fecha].length;
-                                promedioLeadsPorDia[fecha] = promedioLeads;
-                            });
-
-                            // Datos para Chart JS
-                            let fechas = Object.keys(promedioLeadsPorDia);
-                            let leads = fechas.map((fecha) => {
-                                return promedioLeadsPorDia[fecha];
-                            });
-
-                            // Instancia de Chart JS
-                            let ctx1 = document
-                                .getElementById("graphOne")
-                                .getContext("2d");
-                            let chart_1 = new Chart(ctx1, {
-                                type: "line",
-                                data: {
-                                    labels: fechas,
-                                    datasets: [
-                                        {
-                                            label: "Leads por día",
-                                            data: leads,
-                                            backgroundColor:
-                                                "rgba(54, 162, 235, 0.2)",
-                                            borderColor:
-                                                "rgba(54, 162, 235, 1)",
-                                            borderWidth: 1,
-                                            lineTension: 0.4,
+                                    y: {
+                                        stacked: true,
+                                        ticks: {
+                                            beginAtZero: true,
                                         },
-                                    ],
+                                    },
                                 },
-                                options: {
-                                    scales: {
-                                        y: {
-                                            ticks: {
-                                                beginAtZero: true,
-                                            },
-                                        },
-                                        x: {
-                                            ticks: {
-                                                autoSkip: true,
-                                                maxRotation: 90,
-                                                minRotation: 90
-                                            },
+                            },
+                            plugins: [colorFondo], 
+                        });
+                        
+                        function getRandomColor() {
+                            // Rango de HUES
+                            let blue = Math.floor(Math.random() * 256);
+                            let green = Math.floor(
+                                Math.random() * (blue + 1)
+                            );
+
+                            let blueHex = blue
+                                .toString(16)
+                                .padStart(2, "0");
+                            let greenHex = green
+                                .toString(16)
+                                .padStart(2, "0");
+
+                            // Construir HEX
+                            let color = "#" + "00" + greenHex + blueHex;
+
+                            return color;
+                        }
+
+                    }
+
+                    // Leads asignados por usuario
+
+                    if (key === "graph3Data") {
+                        let leadsPorUsuario = {};
+
+                        graphData.forEach((item) => {
+                            let usuario = item.Asignadoa;
+                            let leads = item.LeadsPorUsuario;
+
+                            if (!leadsPorUsuario[usuario]) {
+                                leadsPorUsuario[usuario] = 0;
+                            }
+
+                            leadsPorUsuario[usuario] += leads;
+                        });
+
+                        // Ordenar por cantidad de leads
+                        leadsPorUsuario = Object.keys(leadsPorUsuario)
+                            .sort((a, b) => {
+                                return (
+                                    leadsPorUsuario[b] - leadsPorUsuario[a]
+                                );
+                            })
+                            .reduce((acc, key) => {
+                                acc[key] = leadsPorUsuario[key];
+                                return acc;
+                            }, {});
+
+                        // Destruir gráfica si ya existe
+                        let chart_3 = Chart.getChart("graphThree");
+                        if (chart_3) chart_3.destroy();
+
+                        // Instancia de Chart JS
+                        let ctx3 = document
+                            .getElementById("graphThree")
+                            .getContext("2d");
+                        chart_3 = new Chart(ctx3, {
+                            type: "bar",
+                            data: {
+                                labels: Object.keys(leadsPorUsuario).map(
+                                    (usuario) => {
+                                        return usuario;
+                                    }
+                                ),
+                                datasets: [
+                                    {
+                                        label: "Leads por usuario",
+                                        data: Object.values(
+                                            leadsPorUsuario
+                                        ),
+                                        backgroundColor: Object.keys(
+                                            leadsPorUsuario
+                                        ).map((usuario) => {
+                                            return getRandomColor();
+                                        }),
+                                    },
+                                ],
+                            },
+                            options: {
+                                indexAxis: "y",
+                                responsive: true,
+                            },
+                            plugins: [colorFondo],
+                        });
+
+                        function getRandomColor() {
+                            // Rango de HUES
+                            let blue = Math.floor(Math.random() * 256);
+                            let green = Math.floor(
+                                Math.random() * (blue + 1)
+                            );
+
+                            let blueHex = blue
+                                .toString(16)
+                                .padStart(2, "0");
+                            let greenHex = green
+                                .toString(16)
+                                .padStart(2, "0");
+
+                            // Construir HEX
+                            let color = "#" + "00" + greenHex + blueHex;
+
+                            return color;
+                        }
+                    }
+
+                    // Gráfica por status
+
+                    if (key === "graph4Data") {
+                        let leadsPorStatus = {};
+
+                        graphData.forEach((item) => {
+                            let status = item.Status;
+                            let leads = item.Cantidad;
+
+                            if (!leadsPorStatus[status]) {
+                                leadsPorStatus[status] = [];
+                            }
+                            leadsPorStatus[status].push(leads);
+                        });
+
+                        // Destruir gráfica si ya existe
+                        let chart_4 = Chart.getChart("graphFour");
+                        if (chart_4) chart_4.destroy();
+
+                        // Instancia de Chart JS
+                        let ctx4 = document
+                            .getElementById("graphFour")
+                            .getContext("2d");
+
+                        let labels = Object.keys(leadsPorStatus);
+                        let data = [].concat(...Object.values(leadsPorStatus));
+                        let total = data.reduce((a, b) => a + b, 0);
+
+                        let labelsWithPercentages = labels.map((label, i) => `${label} (${((data[i] / total) * 100).toFixed(2)}%)`);
+
+                        chart_4 = new Chart(ctx4, {
+                            type: "doughnut",
+                            data: {
+                                labels: labelsWithPercentages, // Usar las etiquetas con porcentajes
+                                datasets: [
+                                    {
+                                        label: "Leads por Status",
+                                        data: Object.values(leadsPorStatus),
+                                        backgroundColor: labels.map((status) => {
+                                            return getRandomColor();
+                                        }),
+                                    },
+                                ],
+                            },
+                            options: {
+                                responsive: true,
+                            },
+                            plugins: [colorFondo],
+                        });
+
+                        function getRandomColor() {
+                            // Rango de HUES
+                            let blue = Math.floor(Math.random() * 256);
+                            let green = Math.floor(
+                                Math.random() * (blue + 1)
+                            );
+
+                            let blueHex = blue
+                                .toString(16)
+                                .padStart(2, "0");
+                            let greenHex = green
+                                .toString(16)
+                                .padStart(2, "0");
+
+                            // Construir HEX
+                            let color = "#" + "00" + greenHex + blueHex;
+
+                            return color;
+                        }
+                    }
+
+                    // Gráfica por embudo
+
+                    if (key === "graph5Data") {
+
+                        let leadsPorEmbudo = {};
+
+                        graphData.forEach((item) => {
+                            let embudo = item.Embudo;
+                            let cantidad = item.Cantidad;
+
+                            if (!leadsPorEmbudo[embudo]) {
+                                leadsPorEmbudo[embudo] = [];
+                            }
+
+                            leadsPorEmbudo[embudo].push(cantidad);
+                        });
+
+                        console.log('leadsPorEmbudo: ', leadsPorEmbudo);
+
+                        let chart_5 = Chart.getChart("graphFive");
+                        if (chart_5) chart_5.destroy();
+
+                        let ctx5 = document.getElementById('graphFive').getContext('2d');
+
+                        let labels = Object.keys(leadsPorEmbudo);
+                        let data = [].concat(...Object.values(leadsPorEmbudo));
+                        let total = data.reduce((a, b) => a + b, 0);
+
+                        // Agregar porcentajes a las etiquetas
+                        let labelsWithPercentages = labels.map((label, i) => `${label} (${((data[i] / total) * 100).toFixed(2)}%)`);
+
+                        chart_5 = new Chart(ctx5, {
+                            type: 'doughnut',
+                            data: {
+                                labels: labelsWithPercentages,
+                                datasets: [
+                                    {    
+                                        label: 'Leads por Embudo',
+                                        data: data,
+                                        backgroundColor: labels.map((embudo) => {
+                                            return getRandomColor();
+                                        }),
+                                    },
+                                ],
+                            },
+                            options: {
+                                responsive: true,
+                            },
+                            plugins: [colorFondo],
+                        });
+
+                        function getRandomColor() {
+                            // Rango de HUES
+                            let blue = Math.floor(Math.random() * 256);
+                            let green = Math.floor(
+                                Math.random() * (blue + 1)
+                            );
+
+                            let blueHex = blue
+                                .toString(16)
+                                .padStart(2, "0");
+                            let greenHex = green
+                                .toString(16)
+                                .padStart(2, "0");
+
+                            // Construir HEX
+                            let color = "#" + "00" + greenHex + blueHex;
+
+                            return color;
+                        }
+                    }
+
+                    // Gráfica de leads archivados y activos
+                    if (key === "graph7Data") {
+
+                        console.log('graph7Data', graphData);
+
+                        let embudosData = {};
+
+                        graphData.forEach((item) => {
+                            let embudo = item.Embudo;
+                            let archivado = item.Archivado;
+                            let cantidad = Number(item.Cantidad);
+
+                            if (!embudosData[embudo]) {
+                                embudosData[embudo] = { "Si": 0, "No": 0 };
+                            }
+
+                            embudosData[embudo][archivado] += cantidad;
+                        });
+
+                        let chart_7 = Chart.getChart("graphSeven");
+                        if (chart_7) chart_7.destroy();
+
+                        let ctx7 = document.getElementById('graphSeven').getContext('2d');
+
+                        let labels = Object.keys(embudosData);
+                        let dataSi = labels.map(label => embudosData[label].Si);
+                        let dataNo = labels.map(label => embudosData[label].No);
+
+                        chart_7 = new Chart(ctx7, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Si',
+                                    data: dataSi,
+                                    backgroundColor: 'rgba(220, 38, 38, 0.4)',
+                                    borderColor: 'rgba(220, 38, 38, 1)',
+                                    borderWidth: 1
+                                }, {
+                                    label: 'No',
+                                    data: dataNo,
+                                    backgroundColor: 'rgba(67, 147, 108, 0.4)',
+                                    borderColor: 'rgba(67, 147, 108, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                },
+                            },
+                            plugins: [colorFondo],
+                        });
+
+                    }
+                    if (key === "graph8Data") {
+
+                        let labels = graphData.map(item => item.Mes_Anio);
+                        let dataCreadosManualmente = graphData.map(item => item.CreadosManualmente);
+                        let dataCargados = graphData.map(item => item.Cargados);
+
+                        let chart_8 = Chart.getChart("graphEight");
+                        if (chart_8) chart_8.destroy();
+
+                        let ctx8 = document.getElementById('graphEight').getContext('2d');
+                        chart_8 = new Chart(ctx8, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Creados Manualmente',
+                                    data: dataCreadosManualmente,
+                                    backgroundColor: 'rgba(220, 38, 38, 0.4)',
+                                    borderColor: 'rgba(220, 38, 38, 1)',
+                                    fill: false
+                                }, {
+                                    label: 'Cargados',
+                                    data: dataCargados,
+                                    backgroundColor: 'rgba(67, 147, 108, 0.4)',
+                                    borderColor: 'rgba(67, 147, 108, 1)',
+                                    fill: false
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    x: {
+                                        display: true,
+                                        title: {
                                             display: true,
-                                            min: 50, 
-                                            max: 150,
+                                            text: 'Año-Mes'
                                         },
-                                    },  
-                                },
-                                plugins: [colorFondo]
-                            });
-                        }
-
-                        // Leads promedio por mes y año
-
-                        if (key === "graph2Data") {
-                            // Meses
-                            const mesesStrings = [
-                                "Enero",
-                                "Febrero",
-                                "Marzo",
-                                "Abril",
-                                "Mayo",
-                                "Junio",
-                                "Julio",
-                                "Agosto",
-                                "Septiembre",
-                                "Octubre",
-                                "Noviembre",
-                                "Diciembre",
-                            ];
-
-                            // Arreglos para variables
-
-                            let anios = [];
-                            let meses = [];
-                            let leadPorAnioMes = [];
-
-                            // Iterar JSON
-
-                            graphData.forEach((item) => {
-                                let anio = item.Anio;
-                                let mes = item.Mes;
-                                let leads = item.NoLeads;
-
-                                if (!anios.includes(anio)) {
-                                    anios.push(anio);
-                                }
-                                if (!meses.includes(mes)) {
-                                    meses.push(mes);
-                                }
-                                if (!leadPorAnioMes[anio]) {
-                                    leadPorAnioMes[anio] = {};
-                                }
-
-                                leadPorAnioMes[anio][mes] = leads;
-                            });
-
-                            // Sort de meses y años
-                            anios.sort((a, b) => parseInt(a) - parseInt(b));
-                            meses.sort((a, b) => parseInt(a) - parseInt(b));
-
-                            let datasets = anios.map((anio) => {
-                                let data = meses.map((mes) => {
-                                    return leadPorAnioMes[anio][mes] || 0; // Default 0 si no hay leads en un mes
-                                });
-
-                                return {
-                                    label: anio,
-                                    data: data,
-                                    backgroundColor: getRandomColor(),
-                                    stack: "Stack 0",
-                                };
-                            });
-
-                            // Instancia de Chart JS
-                            var ctx2 = document
-                                .getElementById("graphTwo")
-                                .getContext("2d");
-                            var chart_2 = new Chart(ctx2, {
-                                type: "bar",
-                                data: {
-                                    labels: meses.map((mes) => {
-                                        return mesesStrings[mes - 1];
-                                    }),
-                                    datasets: datasets,
-                                },
-                                options: {
-                                    scales: {
-                                        x: {
-                                            stacked: true,
-                                            ticks: {
-                                                beginAtZero: true,
-                                            },
-                                        },
-                                        y: {
-                                            stacked: true,
-                                            ticks: {
-                                                beginAtZero: true,
-                                            },
-                                        },
-                                    },
-                                },
-                            });
-
-                            function getRandomColor() {
-                                // Rango de HUES
-                                let blue = Math.floor(Math.random() * 256);
-                                let green = Math.floor(
-                                    Math.random() * (blue + 1)
-                                );
-
-                                let blueHex = blue
-                                    .toString(16)
-                                    .padStart(2, "0");
-                                let greenHex = green
-                                    .toString(16)
-                                    .padStart(2, "0");
-
-                                // Construir HEX
-                                let color = "#" + "00" + greenHex + blueHex;
-
-                                return color;
-                            }
-                        }
-
-                        // Leads asignados por usuario
-
-                        if (key === "graph3Data") {
-                            let leadsPorUsuario = {};
-
-                            graphData.forEach((item) => {
-                                let usuario = item.Asignadoa;
-                                let leads = item.LeadsPorUsuario;
-
-                                if (!leadsPorUsuario[usuario]) {
-                                    leadsPorUsuario[usuario] = 0;
-                                }
-
-                                leadsPorUsuario[usuario] += leads;
-                            });
-
-                            // Ordenar por cantidad de leads
-                            leadsPorUsuario = Object.keys(leadsPorUsuario)
-                                .sort((a, b) => {
-                                    return (
-                                        leadsPorUsuario[b] - leadsPorUsuario[a]
-                                    );
-                                })
-                                .reduce((acc, key) => {
-                                    acc[key] = leadsPorUsuario[key];
-                                    return acc;
-                                }, {});
-
-                            // Instancia de Chart JS
-                            var ctx3 = document
-                                .getElementById("graphThree")
-                                .getContext("2d");
-                            var chart_3 = new Chart(ctx3, {
-                                type: "bar",
-                                data: {
-                                    labels: Object.keys(leadsPorUsuario).map(
-                                        (usuario) => {
-                                            return usuario;
+                                        ticks: {
+                                            autoSkip: true,
+                                            minRotation: 60
                                         }
-                                    ),
-                                    datasets: [
-                                        {
-                                            label: "Leads por usuario",
-                                            data: Object.values(
-                                                leadsPorUsuario
-                                            ),
-                                            backgroundColor: Object.keys(
-                                                leadsPorUsuario
-                                            ).map((usuario) => {
-                                                return getRandomColor();
-                                            }),
-                                        },
-                                    ],
-                                },
-                                options: {
-                                    indexAxis: "y",
-                                    responsive: true,
-                                    title: {
-                                        text: "New Bar Chart",
-                                        display: true,
                                     },
-                                },
-                            });
-
-                            function getRandomColor() {
-                                // Rango de HUES
-                                let blue = Math.floor(Math.random() * 256);
-                                let green = Math.floor(
-                                    Math.random() * (blue + 1)
-                                );
-
-                                let blueHex = blue
-                                    .toString(16)
-                                    .padStart(2, "0");
-                                let greenHex = green
-                                    .toString(16)
-                                    .padStart(2, "0");
-
-                                // Construir HEX
-                                let color = "#" + "00" + greenHex + blueHex;
-
-                                return color;
-                            }
-                        }
-
-                        // Gráfica por status
-
-                        if (key === "graph4Data") {
-                            let leadsPorStatus = {};
-
-                            graphData.forEach((item) => {
-                                let status = item.Status;
-                                let leads = item.Cantidad;
-
-                                if (!leadsPorStatus[status]) {
-                                    leadsPorStatus[status] = [];
-                                }
-                                leadsPorStatus[status].push(leads);
-                            });
-
-                            // Instancia de Chart JS
-                            var ctx4 = document
-                                .getElementById("graphFour")
-                                .getContext("2d");
-                            var chart_4 = new Chart(ctx4, {
-                                type: "doughnut",
-                                data: {
-                                    labels: Object.keys(
-                                        leadsPorStatus
-                                    ),
-                                    datasets: [
-                                        {
-                                            label: "Leads por status",
-                                            data: Object.values(
-                                                leadsPorStatus
-                                            ),
-                                            backgroundColor: Object.keys(
-                                                leadsPorStatus
-                                            ).map((status) => {
-                                                return getRandomColor();
-                                            }),
+                                    y: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Cantidad'
                                         }
-                                    ],
-                                },
-                                options: {
-                                    responsive: true,
-                                    plugins: {
-                                    legend: {
-                                        position: 'top',
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Leads por status'
                                     }
-                                    }
-                                },
-                            });
-
-                            function getRandomColor() {
-                                // Rango de HUES
-                                let blue = Math.floor(Math.random() * 256);
-                                let green = Math.floor(
-                                    Math.random() * (blue + 1)
-                                );
-
-                                let blueHex = blue
-                                    .toString(16)
-                                    .padStart(2, "0");
-                                let greenHex = green
-                                    .toString(16)
-                                    .padStart(2, "0");
-
-                                // Construir HEX
-                                let color = "#" + "00" + greenHex + blueHex;
-
-                                return color;
-                            }
-                            
-                        }
-
-                        // Gráfica por embudo
-
-                        if (key === "graph5Data") {
-                        }
-                    });
+                                }
+                            },
+                            plugins: [colorFondo],
+                        });
+                    }
                 });
-        };
+            });
+    };
 
-        const showGraph = () => {
-            const graficaSeleccionada =
-                document.getElementById("graphSelector").value;
-            const contenedorGraficas =
-                document.querySelectorAll(".graph-container");
+    const selectGraph = () => {
+        const graficaSeleccionada =
+            document.getElementById("graphSelector").value;
+        const contenedorGraficas =
+            document.querySelectorAll(".graph-container");
 
+        if (graficaSeleccionada === "allGraphs") {
+            contenedorGraficas.forEach((container) => {
+                container.style.display = "block"; // Show all graph containers
+            });
+
+        } else {
             contenedorGraficas.forEach((container) => {
                 container.style.display = "none"; // Hide all graph containers
             });
-
+    
             const contenedorSeleccionado = document.getElementById(
                 graficaSeleccionada + "Container"
             );
             contenedorSeleccionado.style.display = "block"; // Show the selected graph container
-
-            console.log("Grafica seleccionada: ", graficaSeleccionada);
-            console.log("Contenedor seleccionado: ", contenedorSeleccionado.id);
-        };
-
-        function descargarPDF() {
-
-            const canvas = document.getElementById('graphOne');
-
-            const imagenUno = canvas.toDataURL('image/jpeg', 1.0);
-            const pdf = new jsPDF('landscape'); 
-            pdf.setFontSize(20);
-            pdf.addImage(imagenUno, 'JPEG', 15, 15, 280, 150);
-            pdf.save('reporte.pdf')
         }
+        
+    };
 
-        const colorFondo = {
-            id: 'colorFondo',
-            beforeDraw: (chart, options) => {
-                const { ctx, width, height } = chart;
-                ctx.fillStyle = '#e4e8ee';
-                ctx.fillRect (0, 0, width, height);
-                ctx.restore();
+    const descargarPDF = () => {
+        
+        const canvasUno = document.getElementById("graphOne");
+        const canvasDos = document.getElementById("graphTwo");
+        const canvasTres = document.getElementById("graphThree");
+        const canvasCuatro = document.getElementById("graphFour");
+        const canvasCinco = document.getElementById("graphFive");
+        const canvasSiete = document.getElementById("graphSeven");
+        const canvasOcho = document.getElementById("graphEight");
+        
+        const imagenUno = canvasUno.toDataURL("image/jpeg", 1.0);
+        const imagenDos = canvasDos.toDataURL("image/jpeg", 1.0);
+        const imagenTres = canvasTres.toDataURL("image/jpeg", 1.0);
+        const imagenCuatro = canvasCuatro.toDataURL("image/jpeg", 1.0);
+        const imagenCinco = canvasCinco.toDataURL("image/jpeg", 1.0);
+        const imagenSiete = canvasSiete.toDataURL("image/jpeg", 1.0);
+        const imagenOcho = canvasOcho.toDataURL("image/jpeg", 1.0);
+        
+        const descripcion = document.getElementById('descripcion').value; 
+
+        // Crear PDF
+        const pdf = new jsPDF("portrait");
+        
+        // const canvasLogo = document.getElementById("logo");
+        // const ctxLogo = canvasLogo.getContext("2d");
+        // const logo = new Image();
+        // logo.src = "./uploads/magGlass.jpg";
+        // logo.onload = function() {
+        //     ctxLogo.drawImage(logo, 0, 0);
+        //     const imagenLogo = canvasLogo.toDataURL("image/png", 1.0);
+        //     pdf.addImage(imagenLogo, "PNG", 10, 10, 30, 15);
+        // }
+
+        // const imgLogo = "./uploads/magGlass.jpg";
+        // pdf.addImage(imgLogo, "JPG", 10, 10, 30, 15);
+
+            // Página 1
+                // Título del reporte
+            pdf.setTextColor(37, 99, 235);
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(20);
+            pdf.text(
+                `REPORTE - ${descripcion}`,
+                pdf.internal.pageSize.width / 2,
+                15,
+                null,
+                null,
+                "center"
+            );
+
+            pdf.setTextColor(37, 99, 235);
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(14);
+            pdf.text(
+                "Leads por día",
+                pdf.internal.pageSize.width / 2,
+                28,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenUno, "JPEG", 10, 35, 190, 110);
+            pdf.text(
+                "Cantidad de leads por año, por mes",
+                pdf.internal.pageSize.width / 2,
+                158,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenDos, "JPEG", 10, 165, 190, 110);
+
+            // Página 2
+            pdf.addPage()
+            pdf.text(
+                "Leads por usuarios",
+                pdf.internal.pageSize.width / 2,
+                28,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenTres, "JPEG", 10, 35, 190, 110);
+            pdf.text(
+                "Leads por status",
+                pdf.internal.pageSize.width / 2,
+                158,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenCuatro, "JPEG", 50, 165, 110, 110);
+            
+            // Página 3
+            pdf.addPage()
+            pdf.text(
+                "Leads por embudo",
+                pdf.internal.pageSize.width / 2,
+                28,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenCinco, "JPEG", 50, 35, 110, 110);
+            pdf.text(
+                "Leads archivados",
+                pdf.internal.pageSize.width / 2,
+                158,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenSiete, "JPEG", 10, 165, 190, 110);
+
+            // Página 4
+            pdf.addPage()
+            pdf.text(
+                "Tipo de creación de leads",
+                pdf.internal.pageSize.width / 2,
+                28,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenOcho, "JPEG", 10, 35, 190, 110);
+
+            // Número de página
+            const pageCount = pdf.internal.getNumberOfPages();
+
+            for(let i = 1; i <= pageCount; i++) {
+                pdf.setPage(i);
+                pdf.setTextColor(0, 0, 0);
+                pdf.setFont("helvetica", "normal");
+                pdf.setFontSize(10);
+                pdf.text(`${i}`, 195, 285);
             }
 
+            // Generar PDF 
+            pdf.save(`reporte.pdf`);
+
+            const pdfData = pdf.output('datauristring');
+            console.log("Esto es pdfData: ", pdfData);
+
+            // Convert the PDF to a base64 string
+            const pdfBase64 = pdf.output('datauristring').split(',')[1];
+
+            const csrf = document.getElementById('_csrf').value;
+            fetch('/reporte/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'csrf-token': csrf,
+                },
+                body: JSON.stringify({ 
+                    pdfData: pdfBase64, 
+                    descripcion: descripcion}),
+                })
+                .then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Respuesta de red no está bien');
+                    }
+                    return res.json();
+                })
+                .then((data) => {
+                    console.log("Esto es data", data);
+                    operacionExitosa(data.message);
+                    
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+
         }
 
-        /*
-const hideGraph = () => {
+    const colorFondo = {
+        id: "colorFondo",
+        beforeDraw: (chart, options) => {
+            const { ctx, width, height } = chart;
+            ctx.fillStyle = "#e4e8ee";
+            ctx.fillRect(0, 0, width, height);
+            ctx.restore();
+        },
+    };
 
-  const nums = ['Two', 'Three', 'Four', 'Five', 'Six', 'Seven'];
+    const validateDate = () => {
+        const startDate = document.getElementById("dateStart");
+        const endDate = document.getElementById("dateEnd");
 
-  for (let i = 0; i <= 5; i++) {
-    let string = 'graph' + nums[i] + 'Container';
-    document.getElementById(string).style.display = 'none';
-  }
+        if (startDate.value && !endDate.value) {
+            endDate.min = startDate.value;
+            startDate.max = "";
+        }
 
-}
-*/
+        if (!startDate.value && endDate.value) {
+            startDate.max = endDate.value;
+            endDate.min = "";
+        }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            graficas_asincronas("1");
+        if (startDate.value && endDate.value) {
+            endDate.min = startDate.value;
+            startDate.max = endDate.value;
+        }
+
+        if (!startDate.value && !endDate.value) {
+            startDate.max = new Date().toISOString().split("T")[0];
+            endDate.max = new Date().toISOString().split("T")[0];
+        }
+    };
+
+    // Cargar gráficas por defecto
+
+    document.addEventListener("DOMContentLoaded", () => {
+        getData();
+    });
+
+    // Cargar gráficas con fecha
+
+    document.getElementById("searchByDateBtn").addEventListener("click", () => {
+
+        // Obtener fechas de los inputs
+        const dateStart = document.getElementById("dateStart").value;
+        const dateEnd = document.getElementById("dateEnd").value;
+
+        // Obtener datos con fechas y cargar gráficas
+        getData(dateStart, dateEnd);
+    });
+
+    // Limpiar fechas
+
+        document.getElementById("resetDateBtn").addEventListener("click", () => {
+            document.getElementById("dateStart").value = "";
+            document.getElementById("dateEnd").value = "";
+            getData();
         });
+        
+    </script>
+
+    <script>
+        function operacionExitosa(accion) {
+        const alertas = document.getElementById('alertas');
+            const alertHTML = `
+                <div id="alert-success" class="flex relative items-center p-4 mb-4 text-sm mr-24 text-green-800 border border-green-300 rounded-lg bg-green-50 w-2/3">
+                    <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-gray-900" onclick="cerrarAlert()">
+                        <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                    <div>
+                        <span class="font-bold"> ¡Acción exitosa! </span> 
+                        <span id="success-message">${accion}</span>
+                    </div>
+                </div>
+            `;
+            alertas.innerHTML = alertHTML;
+            document.getElementById('alert-success').style.display = 'block';
+        }
+
+        function cerrarAlert() {
+            const successAlert = document.getElementById('alert-success');
+            successAlert.parentNode.removeChild(successAlert);
+        }
     </script>
 </html>

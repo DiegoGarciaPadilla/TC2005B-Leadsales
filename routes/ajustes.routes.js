@@ -16,6 +16,8 @@ const Usuario = require("../model/usuario.model");
 
 const {
     getRoles,
+    getCrearRol,
+    postCrearRol,
     getEditarRol,
     postEditarRol,
     postEliminarRol,
@@ -28,6 +30,7 @@ const {
     getRegistrarUsuario,
     postRegistrarUsuario,
     postEliminarUsuario,
+    postAsignarRol,
 } = require("../controllers/usuario.controller");
 
 const {
@@ -37,6 +40,7 @@ const {
     consultaUsuarios,
     registraCuenta,
     eliminaUsuario,
+    asignaRol,
 } = require("../util/privilegios/privilegios");
 
 const {
@@ -47,6 +51,10 @@ const {
 // Rutas
 
 router.get("/roles", isAuth, consultaRol, getRoles);
+
+router.get("/roles/crearRol", isAuth, getCrearRol);
+
+router.post("/roles/crearRol", isAuth, postCrearRol);
 
 router.get("/roles/editarRol/:IDRol", isAuth, modificaRol, getEditarRol);
 
@@ -74,7 +82,9 @@ router.post("/usuarios/eliminar", isAuth, eliminaUsuario, postEliminarUsuario);
 
 router.get("/cambiarContrasenia", isAuth, getCambiarContrasenia);
 
-router.post("/cambiarContrasenia", isAuth, postCambiarContrasenia);4
+router.post("/cambiarContrasenia", isAuth, postCambiarContrasenia);
+
+router.post("/usuarios/asignarRol", isAuth, asignaRol, postAsignarRol);
 
 router.get('/', isAuth, (req, res) => {
     Usuario.fetchAllUsers()
