@@ -105,31 +105,42 @@
             </div>
 
             <div id="graphOneContainer" class="graph-container w-3/4 px-4 py-8 ml-32">
+                <p class="text-center font-bold text-2xl"> Leads promedio por día </p>
                 <canvas id="graphOne" width="400" height="200"></canvas>
             </div>
             <div id="graphTwoContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
+                <p class="text-center font-bold text-2xl"> Cantidad de leads por año, por mes </p>
                 <canvas id="graphTwo" width="400" height="200"></canvas>
             </div>
             <div id="graphThreeContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
+                <p class="text-center font-bold text-2xl"> Leads por usuarios </p>
                 <canvas id="graphThree" width="400" height="200"></canvas>
             </div>
-            <div id="graphFourContainer" class="graph-container w-3/4 px-4 py-8 ml-32"
+            <div id="graphFourContainer" class="graph-container px-4 py-8 ml-32"
                 style="display: none; width: 50%; height: 50%">
-                <canvas id="graphFour" width="400" height="200"></canvas>
+                <p class="text-center font-bold text-2xl"> Leads por status </p>
+                <canvas id="graphFour" width="200" height="100"></canvas>
             </div>
-            <div id="graphFiveContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
+            <div id="graphFiveContainer" class="graph-container w-3/4 px-4 py-8 ml-32" 
+                style="display: none; width: 50%; height: 50%">
+                <p class="text-center font-bold text-2xl"> Leads por Embudo </p>
                 <canvas id="graphFive" width="400" height="200"></canvas>
             </div>
             <div id="graphSevenContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
+                <p class="text-center font-bold text-2xl"> Archivados </p>
                 <canvas id="graphSeven" width="400" height="200"></canvas>
             </div>
             <div id="graphEightContainer" class="graph-container w-3/4 px-4 py-8 ml-32" style="display: none">
+                <p class="text-center font-bold text-2xl"> Tipo de creación de leads </p>
                 <canvas id="graphEight" width="400" height="200"></canvas>
             </div>
         </div>
 </body>
 
 <script defer>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        selectGraph();
+    });
     const getData = (dateStart = '', dateEnd = '') => {
 
         const url = dateStart && dateEnd ? `/reporte/json?dateStart=${dateStart}&dateEnd=${dateEnd}` : `/reporte/json`;
@@ -412,23 +423,10 @@
                                 ],
                             },
                             options: {
-                                plugins: {
-                                    title: {
-                                        display: true,
-                                        text: 'Leads por Usuario',
-                                        font: {
-                                            size: 20,
-                                            weight: 'bold',
-                                        },
-                                        color: '#20293A'
-                                    },
-                                    legend: {
-                                        display: false
-                                    }
-                                },
                                 indexAxis: "y",
                                 responsive: true,
                             },
+                            plugins: [colorFondo],
                         });
 
                         function getRandomColor() {
@@ -498,21 +496,8 @@
                             },
                             options: {
                                 responsive: true,
-                                plugins: {
-                                    legend: {
-                                        position: "right",
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Leads por Status',
-                                        font: {
-                                            size: 20,
-                                            weight: 'bold',
-                                        },
-                                        color: '#20293A'
-                                    }
-                                },
                             },
+                            plugins: [colorFondo],
                         });
 
                         function getRandomColor() {
@@ -583,21 +568,8 @@
                             },
                             options: {
                                 responsive: true,
-                                plugins: {
-                                    legend: {
-                                        position: 'right',
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Leads por Embudo',
-                                        font: {
-                                            size: 20,
-                                            weight: 'bold',
-                                        },
-                                        color: '#20293A'
-                                    }
-                                },
                             },
+                            plugins: [colorFondo],
                         });
 
                         function getRandomColor() {
@@ -668,24 +640,13 @@
                                 }]
                             },
                             options: {
-                                plugins: {
-                                    colorFondo,
-                                    title: {
-                                        display: true,
-                                        text: 'Leads Activos vs Archivados',
-                                        font: {
-                                            size: 20,
-                                            weight: 'bold',
-                                        },
-                                        color: '#20293A'
-                                    }
-                                },
                                 scales: {
                                     y: {
                                         beginAtZero: true
                                     }
-                                }
-                            }
+                                },
+                            },
+                            plugins: [colorFondo],
                         });
 
                     }
@@ -718,17 +679,6 @@
                                 }]
                             },
                             options: {
-                                plugins: {
-                                    title: {
-                                        display: true,
-                                        text: 'Leads Creados Manualmente vs Cargados mediante CSV',
-                                        font: {
-                                            size: 20,
-                                            weight: 'bold',
-                                        },
-                                        color: '#20293A'
-                                    }
-                                },
                                 scales: {
                                     x: {
                                         display: true,
@@ -749,7 +699,8 @@
                                         }
                                     }
                                 }
-                            }
+                            },
+                            plugins: [colorFondo],
                         });
                     }
                 });
@@ -766,7 +717,7 @@
             contenedorGraficas.forEach((container) => {
                 container.style.display = "block"; // Show all graph containers
             });
-            
+
         } else {
             contenedorGraficas.forEach((container) => {
                 container.style.display = "none"; // Hide all graph containers
@@ -801,8 +752,6 @@
             const pdf = new jsPDF("portrait");
             
             // Página 1
-            pdf.setFillColor(125, 157, 200);
-            //pdf.rect(200, 200, 280, 150, 'F'); // Dibuja el rectángulo
                 // Título del reporte
             pdf.setTextColor(37, 99, 235);
             pdf.setFont("helvetica", "bold");
@@ -838,8 +787,61 @@
             );
             pdf.addImage(imagenDos, "JPEG", 10, 165, 190, 110);
 
+            // Página 2
             pdf.addPage()
-            pdf.addImage(imagenUno, "JPEG", 20, 40, 260, 145);
+            pdf.text(
+                "Leads por usuarios",
+                pdf.internal.pageSize.width / 2,
+                28,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenTres, "JPEG", 10, 35, 190, 110);
+            pdf.text(
+                "Leads por status",
+                pdf.internal.pageSize.width / 2,
+                158,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenCuatro, "JPEG", 50, 165, 110, 110);
+            
+            // Página 3
+            pdf.addPage()
+            pdf.text(
+                "Leads por embudo",
+                pdf.internal.pageSize.width / 2,
+                28,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenCinco, "JPEG", 50, 35, 110, 110);
+            pdf.text(
+                "Leads archivados",
+                pdf.internal.pageSize.width / 2,
+                158,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenSiete, "JPEG", 10, 165, 190, 110);
+
+            // Página 4
+            pdf.addPage()
+            pdf.text(
+                "Tipo de creación de leads",
+                pdf.internal.pageSize.width / 2,
+                28,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenOcho, "JPEG", 10, 35, 190, 110);
+
+            // Generar PDF 
             pdf.save(`reporte.pdf`);
 
             const csrf = document.getElementById('_csrf').value;
