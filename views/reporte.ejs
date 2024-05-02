@@ -89,6 +89,7 @@
                     <label for="graphSelector" class="mr-2">Selecciona gráfica:</label>
                     <select id="graphSelector" class="px-2 py-1 border border-gray-300 rounded-md"
                         onchange="selectGraph()">
+                        <option selected value="allGraphs"> Todas las gráficas</option>
                         <option value="graphOne">Leads por día</option>
                         <option value="graphTwo">
                             Cantidad de leads por año, por mes
@@ -211,20 +212,6 @@
                                 ],
                             },
                             options: {
-                                plugins: {
-                                    title: {
-                                        display: true,
-                                        text: 'Leads promedio por día',
-                                        font: {
-                                            size: 20,
-                                            weight: 'bold',
-                                        },
-                                        color: '#20293A',
-                                    },
-                                    legend: {
-                                        display: false
-                                    }
-                                },
                                 scales: {
                                     y: {
                                         ticks: {
@@ -243,6 +230,7 @@
                                     },
                                 },
                             },
+                            plugins: [colorFondo],
                         });
                     }
 
@@ -325,17 +313,6 @@
                                 datasets: datasets,
                             },
                             options: {
-                                plugins: {
-                                    title: {
-                                        display: true,
-                                        text: 'Leads por Mes y Año',
-                                        font: {
-                                            size: 20,
-                                            weight: 'bold',
-                                        },
-                                        color: '#20293A'
-                                    }
-                                },
                                 scales: {
                                     x: {
                                         stacked: true,
@@ -350,7 +327,8 @@
                                         },
                                     },
                                 },
-                            }, 
+                            },
+                            plugins: [colorFondo], 
                         });
                         
                         function getRandomColor() {
@@ -784,30 +762,85 @@
         const contenedorGraficas =
             document.querySelectorAll(".graph-container");
 
-        contenedorGraficas.forEach((container) => {
-            container.style.display = "none"; // Hide all graph containers
-        });
-
-        const contenedorSeleccionado = document.getElementById(
-            graficaSeleccionada + "Container"
-        );
-        contenedorSeleccionado.style.display = "block"; // Show the selected graph container
+        if (graficaSeleccionada === "allGraphs") {
+            contenedorGraficas.forEach((container) => {
+                container.style.display = "block"; // Show all graph containers
+            });
+            
+        } else {
+            contenedorGraficas.forEach((container) => {
+                container.style.display = "none"; // Hide all graph containers
+            });
+    
+            const contenedorSeleccionado = document.getElementById(
+                graficaSeleccionada + "Container"
+            );
+            contenedorSeleccionado.style.display = "block"; // Show the selected graph container
+        }
+        
     };
 
     const descargarPDF = () => {
-        const canvas = document.getElementById("graphOne");
+            const canvasUno = document.getElementById("graphOne");
+            const canvasDos = document.getElementById("graphTwo");
+            const canvasTres = document.getElementById("graphThree");
+            const canvasCuatro = document.getElementById("graphFour");
+            const canvasCinco = document.getElementById("graphFive");
+            const canvasSiete = document.getElementById("graphSeven");
+            const canvasOcho = document.getElementById("graphEight");
 
-            const imagenUno = canvas.toDataURL("image/jpeg", 1.0);
-            const pdf = new jsPDF("landscape");
+            const imagenUno = canvasUno.toDataURL("image/jpeg", 1.0);
+            const imagenDos = canvasDos.toDataURL("image/jpeg", 1.0);
+            const imagenTres = canvasTres.toDataURL("image/jpeg", 1.0);
+            const imagenCuatro = canvasCuatro.toDataURL("image/jpeg", 1.0);
+            const imagenCinco = canvasCinco.toDataURL("image/jpeg", 1.0);
+            const imagenSiete = canvasSiete.toDataURL("image/jpeg", 1.0);
+            const imagenOcho = canvasOcho.toDataURL("image/jpeg", 1.0);
+
+            // Crear PDF
+            const pdf = new jsPDF("portrait");
+            
+            // Página 1
+            pdf.setFillColor(125, 157, 200);
+            //pdf.rect(200, 200, 280, 150, 'F'); // Dibuja el rectángulo
+                // Título del reporte
+            pdf.setTextColor(37, 99, 235);
+            pdf.setFont("helvetica", "bold");
             pdf.setFontSize(20);
-            pdf.addImage(imagenUno, "JPEG", 15, 15, 280, 150);
+            pdf.text(
+                "REPORTE - Descripción",
+                pdf.internal.pageSize.width / 2,
+                15,
+                null,
+                null,
+                "center"
+            );
+
+            pdf.setTextColor(37, 99, 235);
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(14);
+            pdf.text(
+                "Leads por día",
+                pdf.internal.pageSize.width / 2,
+                28,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenUno, "JPEG", 10, 35, 190, 110);
+            pdf.text(
+                "Cantidad de leads por año, por mes",
+                pdf.internal.pageSize.width / 2,
+                158,
+                null,
+                null,
+                "center"
+            );
+            pdf.addImage(imagenDos, "JPEG", 10, 165, 190, 110);
+
+            pdf.addPage()
+            pdf.addImage(imagenUno, "JPEG", 20, 40, 260, 145);
             pdf.save(`reporte.pdf`);
-
-            const pdfData = pdf.output('datauristring');
-            console.log("Esto es pdfData: ", pdfData);
-
-            // Convert the PDF to a base64 string
-            const pdfBase64 = pdf.output('datauristring').split(',')[1];
 
             const csrf = document.getElementById('_csrf').value;
             fetch('/reporte/save', {
@@ -816,7 +849,6 @@
                     'Content-Type': 'application/json',
                     'csrf-token': csrf,
                 },
-                body: JSON.stringify({ pdfData: pdfBase64}),
                 })
                 .then((res) => {
                     if (!res.ok) {
