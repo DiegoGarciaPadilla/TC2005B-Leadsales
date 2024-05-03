@@ -101,7 +101,9 @@
                         <option value="graphTwo">
                             Cantidad de leads por año, por mes
                         </option>
+                        <% if (privilegios.some (privilegio => privilegio === 'Genera reporte todos.')) { %>
                         <option value="graphThree">Leads por Usuario</option>
+                        <% } %>
                         <option value="graphFour">Leads por Status</option>
                         <option value="graphFive">Leads por Embudo</option>
                         <option value="graphSeven">Archivados</option>
@@ -136,7 +138,6 @@
                     <canvas id="logo"></canvas>
                     <span class="sidebar-text self-center text-xl font-semibold whitespace-nowrap text-gray-800 pl-2">Leadtics</span>
                  </div>
-    
                 <div id="graphOneContainer" class="graph-container w-3/4 px-4 py-8">
                     <p class="text-center font-bold text-2xl"> Leads promedio por día </p>
                     <canvas id="graphOne" width="400" height="200"></canvas>
@@ -145,10 +146,12 @@
                     <p class="text-center font-bold text-2xl"> Cantidad de leads por año, por mes </p>
                     <canvas id="graphTwo" width="400" height="200"></canvas>
                 </div>
+                <% if (privilegios.some (privilegio => privilegio === 'Genera reporte todos.')) { %>
                 <div id="graphThreeContainer" class="graph-container w-3/4 px-4 py-8" style="display: none">
                     <p class="text-center font-bold text-2xl"> Leads por usuarios </p>
                     <canvas id="graphThree" width="400" height="200"></canvas>
                 </div>
+                <% } %>
                 <div id="graphFourContainer" class="graph-container px-4 py-8"
                     style="display: none; width: 50%; height: 50%">
                     <p class="text-center font-bold text-2xl"> Leads por status </p>

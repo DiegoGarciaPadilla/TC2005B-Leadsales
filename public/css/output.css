@@ -1788,11 +1788,6 @@ video {
   border-color: rgb(59 130 246 / var(--tw-border-opacity));
 }
 
-.focus\:border-b-blue-500:focus {
-  --tw-border-opacity: 1;
-  border-bottom-color: rgb(59 130 246 / var(--tw-border-opacity));
-}
-
 .focus\:underline:focus {
   text-decoration-line: underline;
 }
