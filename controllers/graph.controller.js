@@ -29,7 +29,7 @@ exports.getReporteJSON = (req, res, next) => {
     // Caso cuando se pueden consultar los leads de todos
     if (
         Privilegios.some(
-            (priv) => priv.Descripcion === "Consulta directorio todos."
+            (priv) => priv.Descripcion === "Genera reporte todos."
         )
     ) {
         // Arreglo de promesas a ser resueltas
