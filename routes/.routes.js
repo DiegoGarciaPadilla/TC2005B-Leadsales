@@ -23,17 +23,19 @@ const Lead = require("../model/leads.model");
 
 const { isAuth } = require("../util/privilegios/is-auth");
 
+const { generaReporte } = require("../util/privilegios/privilegios");
+
 // Rutas
 
 router.get("/FAQ", isAuth, (req, res) => {
     res.render("FAQ");
 });
 
-router.get("/reporte/json", isAuth, getReporteJSON);
+router.get("/reporte/json", isAuth, getReporteJSON, generaReporte);
 
-router.get("/reporte", isAuth, getReporte);
+router.get("/reporte", isAuth, getReporte, generaReporte);
 
-router.post("/reporte/save", isAuth, postPDF);
+router.post("/reporte/save", isAuth, postPDF, generaReporte);
 
 router.post("/", isAuth, post_CSV); // ANTES de router,use("/")
 

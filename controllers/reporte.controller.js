@@ -85,7 +85,7 @@ exports.consultaReporte = (req, res) => {
             const reporte = reporteFetched[0];
             // Assuming reporte contains the PDF data URI
             const pdfDataURI = reporte.Liga;
-            console.log("URI: ", pdfDataURI);
+            console.log("URI: ", pdfDataURI);   
 
             const fileName = `Reporte_${IDReporte}.pdf`; // You can customize the file name here
 
