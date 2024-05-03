@@ -18,7 +18,8 @@ const {
     postEliminarLead,
     postDescargarLeads,
     getEditarLead,
-    postEditarLead
+    postEditarLead,
+    getBusquedaLead,
 } = require("../controllers/leads.controller");
 
 // Importamos el middleware de privilegios
@@ -47,6 +48,8 @@ router.get("/editarLead/:leadId", isAuth, modificaLead, getEditarLead);
 router.post("/editarLead/:leadId", isAuth, modificaLead, postEditarLead);
 
 router.get("/:leadId", isAuth, getLeadDetails);
+
+router.get("/busqueda/:valorBusqueda", isAuth, consultaDirectorio, getBusquedaLead);
 
 router.get("/", isAuth, consultaDirectorio, getLeads);
 

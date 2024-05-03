@@ -205,6 +205,23 @@ exports.postCrearLead = async (req, res) => {
 
 /* ========================== FIN CU. 5 ==============================  */
 
+/* =================== BÚSQUEDA DE LEAD | Chimali Nava =================== */
+
+exports.getBusquedaLead = (req, res, next) => {
+    console.log("Buscando leads");
+    Lead.buscaLead(req.params.valorBusqueda)
+    .then(([leads, fieldData]) => {
+        console.log("Leads encontrados", leads);
+        return res.status(200).json({ leads: leads});
+    })
+    .catch((error) => {
+        console.error("Explicación error", error);
+        return res.status(500).json({ message: "Error al buscar leads" });
+    });
+};
+
+/* ========================== FIN BÚSQUEDA DE LEAD ==============================  */
+
 /* ========== CU. 8 ELIMINA LEAD | Chimali Nava =============== */
 
 exports.postEliminarLead = async (req, res) => {

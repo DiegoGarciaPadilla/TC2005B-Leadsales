@@ -152,4 +152,9 @@ module.exports = class Lead {
     static fetchEmbudos() {
         return db.execute("SELECT DISTINCT(Embudo) FROM `lead`");
     }
+
+    static buscaLead(valorBusqueda){
+        return db.execute("SELECT * FROM `lead` WHERE Nombre LIKE ? OR Telefono LIKE ? OR Correo LIKE ? OR Compania LIKE ? OR Asignadoa LIKE ? OR Embudo LIKE ? AND FechaHoraEliminado IS NULL",
+        Array(6).fill('%' + valorBusqueda + '%'));
+    }
 };

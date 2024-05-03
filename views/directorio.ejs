@@ -119,6 +119,7 @@
                     </svg>
                     <span class="sr-only">Descargar leads</span>
                 </button>
+                <input id="searchBar" class="input is-info" type="text" placeholder="Buscar...">
             </div>
 
             <div
@@ -784,6 +785,106 @@
                 }
             };
 
+            const busqueda = () => {
+                const valorBusqueda = document.getElementById("searchBar").value;
+                fetch('/directorio/busqueda/'+ valorBusqueda, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                }).then((result) => {
+                    return result.json();
+                }).then((data) => {
+                    console.log(data);
+                    const containerElements = document.getElementById("containerElements");
+                    containerElements.innerHTML = ''; // Limpiar la tabla antes de agregar nuevos datos
+
+                    if (Array.isArray(data.leads)) {
+                        data.leads.forEach((lead) => {
+                            const newRow = `
+                            <tr class="bg-white border-b hover:bg-gray-50">
+                                <td class="px-4 py-2 sm:px-3 sm:py-3">
+                                    <div class="flex items-center">
+                                        <input
+                                            id="${lead.IDLead}"
+                                            type="checkbox"
+                                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                                            onchange="updateButtonState()"
+                                        />
+                                        <label for="${lead.IDLead}" class="sr-only">checkbox</label>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-2 sm:px-3 sm:py-3">
+                                    ${lead.Nombre.substr(0, 15) + (lead.Nombre.length > 15 ? '...' : '')}
+                                </td>
+                                <td class="px-4 py-2 sm:px-3 sm:py-3">
+                                    ${lead.Ultimomensaje ? lead.Ultimomensaje.substr(0, 20) + (lead.Ultimomensaje.length > 20 ? '...' : '') : ''}
+                                </td>
+                                <td class="px-4 py-2 sm:px-3 sm:py-3">
+                                    ${lead.Primermensaje ? lead.Primermensaje.substr(0, 20) + (lead.Primermensaje.length > 20 ? '...' : '') : ''}
+                                </td>
+                                <td class="px-4 py-2 sm:px-3 sm:py-3">
+                                    ${lead.Asignadoa}
+                                </td>
+                                <td class="px-4 py-2 sm:px-3 sm:py-3">
+                                    ${lead.Telefono}
+                                </td>
+                                <td class="flex justify-center pt-2.5">
+                                    <button onclick="showDialog(${lead.IDLead})">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                            class="w-6 h-6"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                            />
+                                        </svg>
+                                    </button>
+                                </td>
+                                <td>
+                                    <a
+                                        href="/directorio/editarLead/${lead.IDLead}"
+                                        class="text-blue-700 border border-white font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center ml-5"
+                                    >
+                                        <svg
+                                            class="w-6 h-6 text-blue-700"
+                                            aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="24"
+                                            height="24"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke="currentColor"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"
+                                            ></path>
+                                        </svg>
+                                        <span class="sr-only">Modificar lead</span>
+                                    </a>
+                                </td>
+                            </tr>`;
+                            containerElements.insertAdjacentHTML("beforeend", newRow);
+                        });
+                    } else {
+                        console.error('Los datos devueltos no son un array:', data);
+                    }
+                }).catch((error) => {
+                    console.error('Error al buscar:', error);
+                });
+            };
+
+            document.getElementById("searchBar").addEventListener("keyup", busqueda);
+            
             // ================== Inicialización ==================
 
             // Obtener los leads al cargar la página
