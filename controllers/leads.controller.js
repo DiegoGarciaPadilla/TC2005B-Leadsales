@@ -208,10 +208,8 @@ exports.postCrearLead = async (req, res) => {
 /* =================== BÚSQUEDA DE LEAD | Chimali Nava =================== */
 
 exports.getBusquedaLead = (req, res, next) => {
-    console.log("Buscando leads");
     Lead.buscaLead(req.params.valorBusqueda)
     .then(([leads, fieldData]) => {
-        console.log("Leads encontrados", leads);
         return res.status(200).json({ leads: leads});
     })
     .catch((error) => {
