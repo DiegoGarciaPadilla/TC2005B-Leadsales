@@ -269,8 +269,6 @@
 
             // Muestra el popup de confirmación de acción
             const confirmarAccion = (mensaje) => {
-                console.log("Confirmar acción:", mensaje);
-
                 let html = `<div id="deleteModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
                         <div class="relative p-4 text-center bg-white rounded-lg shadow-md w-80 h-40">
                             <h2 class="text-lg font-semibold text-gray-800">Confirmación de ${mensaje}</h2>`;
@@ -338,7 +336,6 @@
             // Elimina los leads seleccionados (MOVER AL CONTROLADOR!!!)
             const eliminarLeads = () => {
                 const selectedLeads = obtenerLeads();
-                console.log(selectedLeads);
                 if (selectedLeads.length > 0) {
                     const csrf = document.getElementById("_csrf").value;
                     fetch(`/directorio/eliminarLeads`, {
@@ -373,7 +370,6 @@
                             }
                         })
                         .catch((error) => {
-                            console.log(error);
                         });
                 } else {
                     alert("No se ha seleccionado ningún lead");
@@ -760,8 +756,6 @@
                 // Obtener los elementos de la barra de navegación
                 const navigationElement = document.getElementById("navigation")
                 const pagesButtons = navigationElement.querySelectorAll("a");
-
-                console.log(pagesButtons);
 
                 pagesButtons.forEach((pageElement) => {
                     pageElement.className = notCurrentPageClass;

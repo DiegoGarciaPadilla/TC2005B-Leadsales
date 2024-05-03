@@ -220,7 +220,6 @@
                 return result.json();
             })
             .then((data) => {
-                console.log(data);
                 Object.keys(data).forEach((key) => {
                     const graphData = data[key];
 
@@ -600,8 +599,6 @@
                             leadsPorEmbudo[embudo].push(cantidad);
                         });
 
-                        console.log('leadsPorEmbudo: ', leadsPorEmbudo);
-
                         let chart_5 = Chart.getChart("graphFive");
                         if (chart_5) chart_5.destroy();
 
@@ -657,9 +654,6 @@
 
                     // Gráfica de leads archivados y activos
                     if (key === "graph7Data") {
-
-                        console.log('graph7Data', graphData);
-
                         let embudosData = {};
 
                         graphData.forEach((item) => {
@@ -939,7 +933,6 @@
             }
 
             const pdfData = pdf.output('datauristring');
-            console.log("Esto es pdfData: ", pdfData);
 
             // Convert the PDF to a base64 string
             const pdfBase64 = pdf.output('datauristring').split(',')[1];
@@ -962,12 +955,10 @@
                     return res.json();
                 })
                 .then((data) => {
-                    console.log("Esto es data", data);
                     operacionExitosa(data.message);
                     
                 })
                 .catch((error) => {
-                    console.log(error);
                 })
 
         }

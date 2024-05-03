@@ -109,9 +109,6 @@
 
 
   function descargaPDF(IDReporte) {
-
-    console.log(IDReporte);
-
     fetch(`/historial/${ IDReporte }`, {
       method: 'GET', 
       headers: {
@@ -119,12 +116,9 @@
       }
     })
     .then((result) => {
-      console.log('primer then');
       return result.blob()
     })
     .then((data) => {
-      console.log('segundo then');
-
       // Create a link element
       const link = document.createElement('a');
       link.href = `/historial/${ IDReporte }`;
@@ -143,7 +137,6 @@
 
     })
     .catch((error) => {
-      console.log(error);
     })
   }
 

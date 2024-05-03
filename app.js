@@ -80,5 +80,4 @@ app.use((req, res, next) => {
 
 // Levantar el servidor
 app.listen(443, () => {
-    console.log("Servidor corriendo en http://localhost:443");
 });

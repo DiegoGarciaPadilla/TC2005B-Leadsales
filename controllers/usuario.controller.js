@@ -22,9 +22,6 @@ exports.getLogin = (req, res) => {
 };
 
 exports.postLogin = (req, res) => {
-    // Imprimir en consola el cuerpo de la solicitud
-    console.log(req.body);
-
     // Obtener el usuario del body
     const { email, password } = req.body;
 
@@ -34,7 +31,6 @@ exports.postLogin = (req, res) => {
             if (usuarios.length === 1) {
                 // Obtener el usuario
                 const usuario = usuarios[0];
-                console.log(usuario);
 
                 // Comparar la contraseña
                 bcrypt
@@ -51,7 +47,6 @@ exports.postLogin = (req, res) => {
                                                 .then(([rolFetched]) => {
                                                     const rol =
                                                         rolFetched[0].IDRol;
-                                                    console.log(privilegios);
                                                     req.session.Privilegios =
                                                         privilegios;
                                                     req.session.Correo =
@@ -70,19 +65,15 @@ exports.postLogin = (req, res) => {
                                                         usuario.Nombre +
                                                         " " +
                                                         usuario.ApellidoPaterno;
-                                                    console.log(req.session);
                                                     res.redirect("/");
                                                 })
                                                 .catch((error) => {
-                                                    console.log(error);
                                                 });
                                         })
                                         .catch((error) => {
-                                            console.log(error);
                                         });
                                 })
                                 .catch((error) => {
-                                    console.log(error);
                                 });
                         } else {
                             req.session.error =
@@ -95,7 +86,7 @@ exports.postLogin = (req, res) => {
                         }
                     })
                     .catch((error) => {
-                        console.log(error);
+
                         req.flash(
                             "falla",
                             "Error de conexión. Intenta más tarde."
@@ -109,7 +100,6 @@ exports.postLogin = (req, res) => {
             }
         })
         .catch((error) => {
-            console.log(error);
             req.flash("falla", "Error de conexión. Intenta más tarde.");
             res.redirect("/usuarios/login");
         });
@@ -133,8 +123,6 @@ exports.getUsuarios = (req, res) => {
                 .then(([rolesFetched]) => {
                     Rol.fetchAll()
                         .then(([rolesFetchedAll]) => {
-                            console.log("Roles todos:", rolesFetchedAll);
-                            console.log("Usuarios:", usuariosFetched);
                             res.render("usuarios", {
                                 usuarios: usuariosFetched,
                                 roles: rolesFetched,
@@ -151,15 +139,15 @@ exports.getUsuarios = (req, res) => {
                             });
                         })
                         .catch((error) => {
-                            console.log(error);
+
                         });
                 })
                 .catch((error) => {
-                    console.log(error);
+
                 });
         })
         .catch((error) => {
-            console.log(error);
+
         });
 };
 
@@ -183,7 +171,6 @@ exports.getRegistrarUsuario = (req, res) => {
             });
         })
         .catch((error) => {
-            console.log(error);
         });
 };
 
@@ -198,15 +185,11 @@ exports.postRegistrarUsuario = (req, res) => {
         req.body.domicilio
     );
 
-    console.log(req.body);
-    console.log(nuevoUsuario);
-
     Usuario.fetchAllUsers()
         .then(([usuariosFetched]) => {
             for (let i = 0; i < usuariosFetched.length; i += 1) {
                 if (usuariosFetched[i].Correo === nuevoUsuario.Correo) {
                     if (usuariosFetched[i].FechaHoraEliminado === null) {
-                        console.log("El correo ya está registrado");
                         req.session.error = "El correo ya está registrado";
                         res.redirect("/usuarios/agregarUsuario");
                     }
@@ -222,7 +205,6 @@ exports.postRegistrarUsuario = (req, res) => {
                     res.redirect("/ajustes/usuarios");
                 })
                 .catch((error) => {
-                    console.log(error);
                 });
         })
         .catch();
@@ -234,7 +216,6 @@ exports.postRegistrarUsuario = (req, res) => {
 
 exports.postEliminarUsuario = (req, res) => {
     const { IDUsuario } = req.body;
-    console.log("IDUsuario controller: ", IDUsuario);
 
     Usuario.eliminar(IDUsuario)
         .then(() => {
@@ -243,7 +224,6 @@ exports.postEliminarUsuario = (req, res) => {
             });
         })
         .catch((error) => {
-            console.log(error);
             res.status(500).json({ error: "Error al eliminar el usuario" });
         });
 };
@@ -254,18 +234,15 @@ exports.postEliminarUsuario = (req, res) => {
 
 exports.postAsignarRol = (req, res) => {
     const { IDUsuario, idRolSeleccionado } = req.body;
-    console.log("Datos controller: ", IDUsuario, idRolSeleccionado);
 
     Usuario.asignarRol(IDUsuario, idRolSeleccionado)
         .then(([nuevoRol]) => {
-            console.log("Rol asignado: ", nuevoRol[0].Nombre);
             res.status(200).json({
                 success: true,
                 nuevoRol: nuevoRol[0].Nombre,
             });
         })
         .catch((error) => {
-            console.log(error);
             res.status(500).json({ error: "Error al asignar el rol" });
         });
 };
@@ -275,7 +252,6 @@ exports.postAsignarRol = (req, res) => {
 /* ========== CU. 29 CERRAR SESIÓN | Andrea Medina  =============== */
 
 exports.getLogout = (req, res) => {
-    console.log(req.session);
     Usuario.logout(req.session.IDUsuario)
         .then(() => {
             req.session.destroy(() => {
@@ -283,7 +259,6 @@ exports.getLogout = (req, res) => {
             });
         })
         .catch((error) => {
-            console.log(error);
         });
 };
 
@@ -414,12 +389,10 @@ exports.postCambiarContrasenia = (req, res) => {
                                         });
                                     })
                                     .catch((error) => {
-                                        console.log(error);
                                     });
                             }
                         })
                         .catch((error) => {
-                            console.log(error);
                         });
                 } else {
                     res.render("cambiarContrasenia", {
@@ -436,7 +409,6 @@ exports.postCambiarContrasenia = (req, res) => {
                 }
             })
             .catch((error) => {
-                console.log(error);
             });
     });
 };

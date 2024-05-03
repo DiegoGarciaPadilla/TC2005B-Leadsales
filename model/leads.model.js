@@ -24,7 +24,6 @@ module.exports = class Lead {
             "SELECT CONCAT(Nombre, ' ', ApellidoPaterno) AS NombreCompleto FROM `usuario` WHERE Correo = ?",
             [correo]
         );
-        console.log(rows[0].NombreCompleto);
 
         if (rows.length === 0) {
             // No se encontró ningún usuario con ese correo

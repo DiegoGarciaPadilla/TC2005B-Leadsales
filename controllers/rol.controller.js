@@ -25,7 +25,6 @@ exports.getCrearRol = (req, res) => {
             });
         })
         .catch((error) => {
-            console.log(error);
         });
 };
 
@@ -37,10 +36,6 @@ exports.postCrearRol = async (req, res) => {
     const PrivilegiosArray = Array.isArray(Privilegios)
         ? Privilegios
         : [Privilegios];
-
-    console.log("Nombre: ", Nombre);
-    console.log("Descripcion: ", DescripcionRol);
-    console.log("Privilegios seleccionados: ", PrivilegiosArray);
 
     // Crea el rol (se usa async/await para esperar a que se cree el rol antes de asignarle los privilegios)
     await Rol.createRol(Nombre, DescripcionRol);
@@ -56,11 +51,9 @@ exports.postCrearRol = async (req, res) => {
                     res.redirect("/ajustes/roles");
                 })
                 .catch((error) => {
-                    console.log(error);
                 });
         })
         .catch((error) => {
-            console.log(error);
         });
 
 };
@@ -92,7 +85,6 @@ exports.getRoles = (req, res) => {
             });
         })
         .catch((error) => {
-            console.log(error);
         });
 
 };
@@ -123,7 +115,6 @@ exports.getEditarRol = (req, res) => {
                     // Obtiene los privilegios del rol
                     Privilegio.fetchPrivilegiosByIDRol(IDRol)
                         .then(([privilegiosRolFetched]) => {
-                            console.log(privilegiosRolFetched);
                             res.render("editarRol", {
                                 rolObtenido: rolFetched[0],
                                 privilegios: privilegiosFetched,
@@ -140,21 +131,17 @@ exports.getEditarRol = (req, res) => {
                             });
                         })
                         .catch((error) => {
-                            console.log(error);
                         });
                 })
                 .catch((error) => {
-                    console.log(error);
                 });
         })
         .catch((error) => {
-            console.log(error);
         });
 };
 
 exports.postEditarRol = async (req, res) => {
     try {
-        console.log("Editar rol post");
         // Obtiene el id del rol
         const { IDRol } = req.params;
 
@@ -165,7 +152,6 @@ exports.postEditarRol = async (req, res) => {
 
         // Obtiene los datos del formulario
         const { Nombre, DescripcionRol, Privilegios } = req.body;
-        console.log("EN POST EDITAR - Nombre: ", Nombre, "Descripcion: ", DescripcionRol, "Privilegios: ", Privilegios);
 
         // Parsear los privilegios a un array
         const PrivilegiosArray = Array.isArray(Privilegios)
@@ -183,7 +169,6 @@ exports.postEditarRol = async (req, res) => {
 
         res.redirect("/ajustes/roles");
     } catch (error) {
-        console.log(error);
     }
 };
 
@@ -194,7 +179,6 @@ exports.postEditarRol = async (req, res) => {
 exports.postEliminarRol = async (req, res) => {
     try {
         const { IDRol } = req.body;
-        console.log("IDRol a eliminar: ", IDRol);
         await Rol.deleteRolById(IDRol);
         res.status(200).json({ success: true });
     } catch(error) {

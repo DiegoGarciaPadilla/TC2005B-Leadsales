@@ -110,7 +110,6 @@ exports.getReporteJSON = (req, res, next) => {
                 res.status(200).json(resData);
             })
             .catch((error) => {
-                console.log("Error recogiendo datos de leads:", error);
                 res.status(500).json({ error: "Internal server error" });
             });
     } else {
@@ -191,7 +190,6 @@ exports.getReporteJSON = (req, res, next) => {
                 res.status(200).json(resData);
             })
             .catch((error) => {
-                console.log("Error recogiendo datos de leads:", error);
                 res.status(500).json({ error: "Internal server error" });
             });
     }
@@ -203,15 +201,12 @@ exports.getReporteJSON = (req, res, next) => {
 
 exports.postPDF = (req, res, next) => {
     const { IDUsuario } = req.session;
-    console.log("Esto es body: ", req.body);
     const { pdfData, descripcion } = req.body;
     const { csrfToken } = req.csrfToken();
   
     Reporte.insertReport(IDUsuario, descripcion, pdfData)
       .then(([rows]) => {
         reporteID = rows[0].id;
-        console.log("ID del reporte: ", reporteID);
-        console.log("PDF Almacenado");
         
         // Convert the base64 string back to a Buffer
         const pdfBuffer = Buffer.from(pdfData, 'base64');
@@ -224,14 +219,12 @@ exports.postPDF = (req, res, next) => {
             if (err) {
             console.error('Error writing PDF:', err);
             } else {
-            console.log(`PDF saved successfully as ${pdfPath}`);
             }
         }));
 
         res.status(200).json({ message: "PDF Almacenado correctamente" });
       })
       .catch((error) => {
-        console.log(error);
       });
 
   };

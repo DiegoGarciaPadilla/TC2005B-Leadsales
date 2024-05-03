@@ -103,7 +103,6 @@ router.get('/', isAuth, (req, res) => {
     });
         
     }).catch((error) => {
-        console.log(error);
     });
 
 });

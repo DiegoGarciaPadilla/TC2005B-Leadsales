@@ -31,7 +31,6 @@ module.exports = class Reporte {
             return db.execute('SELECT LAST_INSERT_ID() as id');
           })
           .catch((error) => {
-            console.log(error);
           });
       }
 };

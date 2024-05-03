@@ -50,7 +50,6 @@ module.exports = class Usuario {
                 );
             })
             .catch((error) => {
-                console.log(error);
             });
     }
 

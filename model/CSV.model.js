@@ -18,7 +18,6 @@ module.exports = class CSV {
             .pipe(csvParser())
             .on("data", (data) => results.push(data))
             .on("end", () => {
-                console.log(results);
                 const query = "INSERT INTO `lead` SET ?";
                 results.forEach((row) => {
                     // Transform row object properties to match column names
@@ -81,13 +80,10 @@ module.exports = class CSV {
                     .pipe(csvParser())
                     .on("headers", (headers) => {
                         headers.forEach((header) =>  {
-                            // console.log(header);
                             headings.push(header)
                         });
-                        console.log('Checando CSV');
                         for (let i = 0; i < headings.length; i++) {
                             if (!nombres.includes(headings[i])) {
-                                console.log(`Missing heading: ${headings[i]}`);
                                 resolve(false);
                                 return;
                             }
@@ -100,7 +96,6 @@ module.exports = class CSV {
                         reject(error);
                     })
                     .on("end", () => {
-                        console.log('CSV procesado!');
                     }); 
 
             });

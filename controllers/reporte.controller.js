@@ -9,7 +9,6 @@ const path = require('path');
 
 exports.getReportes = (req, res) => {
     const { NombreCompleto, Privilegios } = req.session;
-    console.log(NombreCompleto, Privilegios);
     if (
         Privilegios.some(
             (priv) => priv.Descripcion === "Consulta historial todos."
@@ -64,16 +63,12 @@ async function downloadPDFFromURI(pdfDataURI, fileName) {
     try {
         // Check if pdfDataURI is a Buffer
         if (!Buffer.isBuffer(pdfDataURI)) {
-            console.log('Error: pdfDataURI must be a Buffer');
             return;
         }
 
         // Write the Buffer to a file
         fs.writeFileSync(fileName, pdfDataURI);
-
-        console.log(`PDF downloaded successfully as ${fileName}`);
     } catch (error) {
-        console.log('Error downloading PDF:', error);
     }
 }
 
@@ -84,8 +79,7 @@ exports.consultaReporte = (req, res) => {
         .then(([reporteFetched]) => {
             const reporte = reporteFetched[0];
             // Assuming reporte contains the PDF data URI
-            const pdfDataURI = reporte.Liga;
-            console.log("URI: ", pdfDataURI);   
+            const pdfDataURI = reporte.Liga; 
 
             const fileName = `Reporte_${IDReporte}.pdf`; // You can customize the file name here
 
@@ -99,9 +93,7 @@ exports.consultaReporte = (req, res) => {
                 res.download(pdfPath, err => {
                     if (err) {
                     // Handle error
-                    console.log("errorrrr: ", err);
                     } else {
-                    console.log('File sent successfully');
                     }
                 });
 
@@ -116,7 +108,6 @@ exports.consultaReporte = (req, res) => {
             //res.status(200).json('PDF descargado exitosamente.');
         })
         .catch((error) => {
-            console.log("error", error);
         })
 }
 
