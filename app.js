@@ -73,6 +73,11 @@ app.use("/directorio", leadsRoutes);
 app.use("/historial", reportesRoutes);
 app.use("/", csrfProtection, routes);
 
+// Handle 404 errors
+app.use((req, res, next) => {
+    res.render("404");
+});
+
 // Levantar el servidor
 app.listen(443, () => {
     console.log("Servidor corriendo en http://localhost:443");
